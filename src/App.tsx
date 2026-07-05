@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 
-type Page = "home" | "workouts" | "progress" | "nutrition" | "community";
+type Page = "home" | "train" | "track" | "community" | "profile";
 
 const workouts = [
   {
     day: "Day 1",
     title: "Heavy Glute Strength",
-    focus: "Hip thrusts, split squats, RDLs",
+    focus: "Strength + progressive overload",
     exercises: ["DB Hip Thrust 5x8", "Bulgarian Split Squat 4x10", "RDL 4x10", "Step-Ups 3x12", "Bridge Hold 3x60s"],
   },
   {
@@ -18,7 +18,7 @@ const workouts = [
   {
     day: "Day 3",
     title: "Glute Pump",
-    focus: "Volume and constant tension",
+    focus: "Volume + constant tension",
     exercises: ["Hip Thrust 4x15", "Walking Lunges 3x20", "Goblet Squat 3x15", "Glute Bridge 3x20", "Bridge Pulses 3x40"],
   },
   {
@@ -31,15 +31,16 @@ const workouts = [
 
 const nav: { id: Page; label: string; icon: string }[] = [
   { id: "home", label: "Home", icon: "🏠" },
-  { id: "workouts", label: "Workouts", icon: "🏋️" },
-  { id: "progress", label: "Progress", icon: "📈" },
-  { id: "nutrition", label: "Nutrition", icon: "🍗" },
+  { id: "train", label: "Train", icon: "🏋️" },
+  { id: "track", label: "Track", icon: "📈" },
   { id: "community", label: "Social", icon: "💬" },
+  { id: "profile", label: "Profile", icon: "👤" },
 ];
 
 function saved<T>(key: string, fallback: T): T {
   try {
-    return JSON.parse(localStorage.getItem(key) || "") ?? fallback;
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
   } catch {
     return fallback;
   }
@@ -50,7 +51,9 @@ export default function App() {
   const [checks, setChecks] = useState<Record<string, boolean>>(() => saved("gc.checks", {}));
   const [water, setWater] = useState(() => saved("gc.water", 4));
   const [protein, setProtein] = useState(() => saved("gc.protein", 80));
-  const [measurements, setMeasurements] = useState(() => saved("gc.measurements", { waist: "", hips: "", glutes: "", weight: "" }));
+  const [measurements, setMeasurements] = useState(() =>
+    saved("gc.measurements", { waist: "", hips: "", glutes: "", weight: "" })
+  );
 
   useEffect(() => localStorage.setItem("gc.checks", JSON.stringify(checks)), [checks]);
   useEffect(() => localStorage.setItem("gc.water", JSON.stringify(water)), [water]);
@@ -60,6 +63,8 @@ export default function App() {
   const total = workouts.flatMap((w) => w.exercises).length;
   const done = Object.values(checks).filter(Boolean).length;
   const percent = Math.round((done / total) * 100);
+  const xp = done * 25 + water * 5 + Math.floor(protein / 10);
+  const level = xp < 250 ? "Bronze" : xp < 500 ? "Silver" : xp < 900 ? "Gold" : "Elite";
 
   return (
     <div className="app">
@@ -72,11 +77,21 @@ export default function App() {
           <div className="avatar">GC</div>
         </header>
 
-        {page === "home" && <Home percent={percent} water={water} protein={protein} />}
-        {page === "workouts" && <Workouts checks={checks} setChecks={setChecks} />}
-        {page === "progress" && <Progress measurements={measurements} setMeasurements={setMeasurements} percent={percent} />}
-        {page === "nutrition" && <Nutrition water={water} setWater={setWater} protein={protein} setProtein={setProtein} />}
+        {page === "home" && (
+          <Home percent={percent} water={water} protein={protein} xp={xp} level={level} setPage={setPage} />
+        )}
+
+        {page === "train" && <Train checks={checks} setChecks={setChecks} />}
+
+        {page === "track" && (
+          <Track measurements={measurements} setMeasurements={setMeasurements} percent={percent} xp={xp} level={level} />
+        )}
+
         {page === "community" && <Community />}
+
+        {page === "profile" && (
+          <Profile water={water} setWater={setWater} protein={protein} setProtein={setProtein} />
+        )}
       </main>
 
       <nav className="bottom-nav">
@@ -91,33 +106,45 @@ export default function App() {
   );
 }
 
-function Home({ percent, water, protein }: { percent: number; water: number; protein: number }) {
+function Home({ percent, water, protein, xp, level, setPage }: any) {
   return (
     <section className="page">
       <div className="hero-card">
-        <p className="pill">4-Day Glute Build</p>
-        <h2>Build. Grow. Strengthen.</h2>
-        <p>Premium workout tracking for glute growth, progress, nutrition, and future GymCord white-label gym apps.</p>
-        <button>Start Today’s Workout</button>
+        <p className="pill">Premium Fitness Platform</p>
+        <h2>Train. Track. Earn.</h2>
+        <p>Complete workouts, track progress, earn XP, unlock rewards, and build consistency.</p>
+        <button onClick={() => setPage("train")}>Start Today’s Workout</button>
       </div>
 
       <div className="grid">
-        <Card label="Streak" value="14 days" />
+        <Card label="Level" value={level} />
+        <Card label="XP" value={`${xp}`} />
         <Card label="Progress" value={`${percent}%`} />
-        <Card label="Water" value={`${water} / 8`} />
-        <Card label="Protein" value={`${protein}g`} />
+        <Card label="Streak" value="14 days" />
+      </div>
+
+      <div className="panel reward">
+        <p className="pill">Rewards Engine</p>
+        <h3>Next Reward</h3>
+        <p>Hit your AI-selected goal milestone to unlock member rewards.</p>
+        <span>Potential rewards: free month · gift cards · prepaid debit · gym perks</span>
       </div>
 
       <div className="panel">
-        <h3>Today’s Workout</h3>
+        <h3>Today’s Mission</h3>
         <p>Day 1 — Heavy Glute Strength</p>
-        <span>Hip thrusts · RDLs · Split squats</span>
+        <span>Complete all sets + log protein to maximize XP.</span>
+      </div>
+
+      <div className="grid">
+        <Card label="Water" value={`${water} / 8`} />
+        <Card label="Protein" value={`${protein}g`} />
       </div>
     </section>
   );
 }
 
-function Workouts({ checks, setChecks }: any) {
+function Train({ checks, setChecks }: any) {
   return (
     <section className="page">
       {workouts.map((workout) => (
@@ -125,12 +152,17 @@ function Workouts({ checks, setChecks }: any) {
           <p className="pill">{workout.day}</p>
           <h3>{workout.title}</h3>
           <span>{workout.focus}</span>
+
           <div className="exercise-list">
             {workout.exercises.map((ex) => {
               const key = `${workout.day}-${ex}`;
               return (
                 <label className="exercise-row" key={key}>
-                  <input type="checkbox" checked={!!checks[key]} onChange={() => setChecks({ ...checks, [key]: !checks[key] })} />
+                  <input
+                    type="checkbox"
+                    checked={!!checks[key]}
+                    onChange={() => setChecks({ ...checks, [key]: !checks[key] })}
+                  />
                   <span>{ex}</span>
                 </label>
               );
@@ -142,13 +174,13 @@ function Workouts({ checks, setChecks }: any) {
   );
 }
 
-function Progress({ measurements, setMeasurements, percent }: any) {
+function Track({ measurements, setMeasurements, percent, xp, level }: any) {
   return (
     <section className="page">
       <div className="panel center">
         <div className="big-emoji">📈</div>
         <h2>{percent}% Complete</h2>
-        <p>Your workout completion is saved on this device.</p>
+        <p>{level} member · {xp} XP earned</p>
       </div>
 
       <div className="panel">
@@ -163,11 +195,17 @@ function Progress({ measurements, setMeasurements, percent }: any) {
           />
         ))}
       </div>
+
+      <div className="panel">
+        <h3>AI Goal Review</h3>
+        <p>Coming next: AI evaluates consistency, measurement changes, photos, and logged workouts.</p>
+        <span>When a member reaches a verified milestone, GymCord can trigger reward eligibility.</span>
+      </div>
     </section>
   );
 }
 
-function Nutrition({ water, setWater, protein, setProtein }: any) {
+function Profile({ water, setWater, protein, setProtein }: any) {
   return (
     <section className="page">
       <div className="panel">
@@ -187,6 +225,11 @@ function Nutrition({ water, setWater, protein, setProtein }: any) {
           <button onClick={() => setProtein(protein + 10)}>+</button>
         </div>
       </div>
+
+      <div className="panel">
+        <h3>White-Label Ready</h3>
+        <p>Future gyms can swap logo, colors, workouts, challenges, and rewards.</p>
+      </div>
     </section>
   );
 }
@@ -197,7 +240,19 @@ function Community() {
       <div className="panel center">
         <div className="big-emoji">💬</div>
         <h2>Community</h2>
-        <p>Coming next: member feed, trainer posts, gym announcements, and transformation wins.</p>
+        <p>Coming next: member feed, trainer posts, gym announcements, transformation wins, and reward shoutouts.</p>
+      </div>
+
+      <div className="panel">
+        <h3>Reward Feed Preview</h3>
+        <p>🏆 Sarah unlocked Gold Consistency</p>
+        <span>Reward eligible: Starbucks gift card</span>
+      </div>
+
+      <div className="panel">
+        <h3>Trainer Update</h3>
+        <p>New glute challenge drops Monday.</p>
+        <span>Complete 4 workouts this week to earn bonus XP.</span>
       </div>
     </section>
   );

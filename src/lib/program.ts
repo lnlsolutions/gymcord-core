@@ -1,4 +1,6 @@
-export const workouts = [
+import type { WorkoutDay } from "../types/gymcord";
+
+export const workouts: WorkoutDay[] = [
   {
     day: "Day 1",
     title: "Heavy Glute Strength",
@@ -9,30 +11,30 @@ export const workouts = [
         name: "DB Hip Thrust",
         prescription: "5 sets × 8 reps",
         description: "Sit with upper back against a bench, dumbbell across hips, feet planted. Drive hips upward until your torso is flat.",
-        cues: ["Chin tucked", "Ribs down", "Push through heels", "Pause and squeeze glutes at top"],
+        cues: ["Chin tucked", "Ribs down", "Push through heels", "Pause and squeeze"],
       },
       {
         name: "Bulgarian Split Squat",
         prescription: "4 sets × 10 each leg",
-        description: "Place rear foot on bench, front foot far enough forward to keep tension on glutes. Lower slowly, then drive up.",
-        cues: ["Slight forward lean", "Long stride", "Front heel pressure", "Control the bottom"],
+        description: "Place rear foot on bench and step the front foot forward. Lower slowly, then drive up through the front heel.",
+        cues: ["Slight forward lean", "Long stride", "Heel pressure", "Control the bottom"],
       },
       {
         name: "Romanian Deadlift",
         prescription: "4 sets × 10 reps",
-        description: "Hold dumbbells in front of thighs. Push hips back, keep soft knees, lower until hamstrings stretch, then stand tall.",
-        cues: ["Hips back", "Flat back", "Dumbbells close", "Squeeze glutes to stand"],
+        description: "Hold dumbbells in front of thighs. Push hips back, keep knees soft, lower until hamstrings stretch, then stand tall.",
+        cues: ["Hips back", "Flat back", "Dumbbells close", "Squeeze glutes"],
       },
       {
         name: "Bench Step-Ups",
         prescription: "3 sets × 12 each leg",
-        description: "Place full foot on bench. Step up by driving through the working heel, then lower under control.",
-        cues: ["Full foot on bench", "Do not bounce", "Control down", "Use glute to lift"],
+        description: "Place full foot on bench. Step up by driving through the working heel, then lower with control.",
+        cues: ["Full foot on bench", "No bouncing", "Control down", "Use glute to lift"],
       },
       {
         name: "Glute Bridge Hold",
         prescription: "3 sets × 60 sec",
-        description: "Lie on back, knees bent. Lift hips and hold the top position while squeezing glutes hard.",
+        description: "Lie on back with knees bent. Lift hips and hold the top position while squeezing glutes hard.",
         cues: ["Pelvis tucked", "Ribs down", "Knees stable", "Max squeeze"],
       },
     ],
@@ -46,20 +48,20 @@ export const workouts = [
       {
         name: "Single-Leg RDL",
         prescription: "4 sets × 10 each leg",
-        description: "Hold dumbbell in one hand or both. Hinge forward while one leg reaches back, then return to standing.",
-        cues: ["Square hips", "Slow lower", "Soft knee", "Feel glute stretch"],
+        description: "Hold dumbbell in one or both hands. Hinge forward while one leg reaches back, then return to standing.",
+        cues: ["Square hips", "Slow lower", "Soft knee", "Glute stretch"],
       },
       {
         name: "DB Sumo Squat",
         prescription: "4 sets × 12 reps",
-        description: "Take wide stance with toes slightly out. Hold dumbbell low, squat down, then drive up through heels.",
-        cues: ["Knees out", "Chest tall", "Deep range", "Squeeze at top"],
+        description: "Take a wide stance with toes slightly out. Hold dumbbell low, squat down, then drive up through heels.",
+        cues: ["Knees out", "Chest tall", "Deep range", "Squeeze top"],
       },
       {
         name: "Single-Leg Hip Thrust",
         prescription: "3 sets × 12 each leg",
         description: "Upper back on bench, one foot planted, one leg lifted. Drive hips up using the planted leg.",
-        cues: ["Hips level", "Heel drive", "Pause at top", "No lower-back arch"],
+        cues: ["Hips level", "Heel drive", "Pause top", "No back arch"],
       },
       {
         name: "Frog Pumps",
@@ -84,7 +86,7 @@ export const workouts = [
       {
         name: "DB Hip Thrust",
         prescription: "4 sets × 15 reps",
-        description: "Same hip thrust setup, but use higher reps with constant tension and a strong lockout.",
+        description: "Use hip thrust setup, but perform higher reps with constant tension and a strong lockout.",
         cues: ["Smooth reps", "No resting bottom", "Hard squeeze", "Controlled tempo"],
       },
       {
@@ -97,7 +99,7 @@ export const workouts = [
         name: "Goblet Squat",
         prescription: "3 sets × 15 reps",
         description: "Hold dumbbell at chest. Squat deep while keeping knees tracking out and torso strong.",
-        cues: ["Deep stretch", "Knees out", "Core tight", "Drive up strong"],
+        cues: ["Deep stretch", "Knees out", "Core tight", "Drive up"],
       },
       {
         name: "Glute Bridge",

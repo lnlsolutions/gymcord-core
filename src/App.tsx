@@ -8,9 +8,24 @@ const nav: { id: Page; label: string; icon: string }[] = [
   { id: "home", label: "Home", icon: "🏠" },
   { id: "train", label: "Train", icon: "🏋️" },
   { id: "meals", label: "Meals", icon: "🍽️" },
-  { id: "progress", label: "Progress", icon: "📸" },
+  { id: "progress", label: "Progress", icon: "📅" },
   { id: "coach", label: "Coach", icon: "🤖" },
 ];
+
+const todayKey = () => new Date().toISOString().slice(0, 10);
+
+const emptyDay = {
+  checks: {},
+  weights: {},
+  notes: {},
+  mealPhoto: "",
+  ingredients: "",
+  calories: "",
+  protein: 0,
+  water: 4,
+  measurements: { waist: "", hips: "", glutes: "", weight: "" },
+  photos: { front: "", side: "", back: "" },
+};
 
 function saved<T>(key: string, fallback: T): T {
   try {
@@ -23,60 +38,35 @@ function saved<T>(key: string, fallback: T): T {
 
 export default function App() {
   const [page, setPage] = useState<Page>("home");
+  const [selectedDate, setSelectedDate] = useState(todayKey());
   const [profile, setProfile] = useState(() =>
     saved("gc.profile", {
       name: "",
       goal: "",
-      startDate: new Date().toISOString().slice(0, 10),
+      startDate: todayKey(),
     })
   );
 
+  const [logs, setLogs] = useState<Record<string, any>>(() => saved("gc.dailyLogs", {}));
   const [activeWorkout, setActiveWorkout] = useState<any>(null);
-  const [checks, setChecks] = useState<Record<string, boolean>>(() => saved("gc.checks", {}));
-  const [weights, setWeights] = useState<Record<string, string>>(() => saved("gc.weights", {}));
-  const [notes, setNotes] = useState<Record<string, string>>(() => saved("gc.notes", {}));
-
-  const [meals, setMeals] = useState(() =>
-    saved("gc.meals", {
-      photo: "",
-      ingredients: "",
-      breakfast: "",
-      lunch: "",
-      dinner: "",
-      snacks: "",
-      protein: 0,
-      calories: "",
-      water: 4,
-    })
-  );
-
-  const [measurements, setMeasurements] = useState(() =>
-    saved("gc.measurements", {
-      waist: "",
-      hips: "",
-      glutes: "",
-      weight: "",
-    })
-  );
-
-  const [photos, setPhotos] = useState(() =>
-    saved("gc.photos", {
-      before: "",
-      after: "",
-      side: "",
-    })
-  );
-
   const [timer, setTimer] = useState(90);
   const [running, setRunning] = useState(false);
 
+  const dayLog = logs[selectedDate] || emptyDay;
+
+  function updateDay(patch: any) {
+    setLogs({
+      ...logs,
+      [selectedDate]: {
+        ...emptyDay,
+        ...dayLog,
+        ...patch,
+      },
+    });
+  }
+
   useEffect(() => localStorage.setItem("gc.profile", JSON.stringify(profile)), [profile]);
-  useEffect(() => localStorage.setItem("gc.checks", JSON.stringify(checks)), [checks]);
-  useEffect(() => localStorage.setItem("gc.weights", JSON.stringify(weights)), [weights]);
-  useEffect(() => localStorage.setItem("gc.notes", JSON.stringify(notes)), [notes]);
-  useEffect(() => localStorage.setItem("gc.meals", JSON.stringify(meals)), [meals]);
-  useEffect(() => localStorage.setItem("gc.measurements", JSON.stringify(measurements)), [measurements]);
-  useEffect(() => localStorage.setItem("gc.photos", JSON.stringify(photos)), [photos]);
+  useEffect(() => localStorage.setItem("gc.dailyLogs", JSON.stringify(logs)), [logs]);
 
   useEffect(() => {
     if (!running) return;
@@ -92,21 +82,31 @@ export default function App() {
     return () => clearInterval(interval);
   }, [running]);
 
-  const total = workouts.flatMap((w) => w.exercises).length;
-  const complete = Object.values(checks).filter(Boolean).length;
-  const workoutPct = Math.round((complete / total) * 100);
+  const totalExercises = workouts.flatMap((w) => w.exercises).length;
+  const completedToday = Object.values(dayLog.checks || {}).filter(Boolean).length;
+  const workoutPct = Math.round((completedToday / totalExercises) * 100);
+
+  const weekDates = getLastSevenDays();
+
+  const weeklyCompletion = Math.round(
+    weekDates.reduce((sum, date) => {
+      const log = logs[date] || emptyDay;
+      const done = Object.values(log.checks || {}).filter(Boolean).length;
+      return sum + Math.round((done / totalExercises) * 100);
+    }, 0) / 7
+  );
 
   const score = useMemo(() => {
     let totalScore = 0;
     totalScore += Math.min(40, workoutPct * 0.4);
-    totalScore += Math.min(20, Number(meals.protein) / 6.5);
-    totalScore += Math.min(15, Number(meals.water) * 2);
-    totalScore += photos.before ? 8 : 0;
-    totalScore += photos.after ? 8 : 0;
-    totalScore += photos.side ? 4 : 0;
-    totalScore += measurements.weight || measurements.glutes ? 5 : 0;
+    totalScore += Math.min(20, Number(dayLog.protein) / 6.5);
+    totalScore += Math.min(15, Number(dayLog.water) * 2);
+    totalScore += dayLog.photos?.front ? 8 : 0;
+    totalScore += dayLog.photos?.side ? 5 : 0;
+    totalScore += dayLog.photos?.back ? 7 : 0;
+    totalScore += dayLog.measurements?.weight || dayLog.measurements?.glutes ? 5 : 0;
     return Math.min(100, Math.round(totalScore));
-  }, [workoutPct, meals, photos, measurements]);
+  }, [workoutPct, dayLog]);
 
   if (!profile.name || !profile.goal) {
     return <Onboarding profile={profile} setProfile={setProfile} />;
@@ -123,12 +123,16 @@ export default function App() {
           <div className="avatar">GC</div>
         </header>
 
+        <DateStrip selectedDate={selectedDate} setSelectedDate={setSelectedDate} logs={logs} />
+
         {page === "home" && (
           <Home
             profile={profile}
             workoutPct={workoutPct}
-            meals={meals}
+            weeklyCompletion={weeklyCompletion}
+            dayLog={dayLog}
             score={score}
+            selectedDate={selectedDate}
             setPage={setPage}
           />
         )}
@@ -137,12 +141,8 @@ export default function App() {
           <Train
             activeWorkout={activeWorkout}
             setActiveWorkout={setActiveWorkout}
-            checks={checks}
-            setChecks={setChecks}
-            weights={weights}
-            setWeights={setWeights}
-            notes={notes}
-            setNotes={setNotes}
+            dayLog={dayLog}
+            updateDay={updateDay}
             timer={timer}
             setTimer={setTimer}
             running={running}
@@ -150,14 +150,15 @@ export default function App() {
           />
         )}
 
-        {page === "meals" && <Meals meals={meals} setMeals={setMeals} />}
+        {page === "meals" && <Meals dayLog={dayLog} updateDay={updateDay} />}
 
         {page === "progress" && (
           <Progress
-            measurements={measurements}
-            setMeasurements={setMeasurements}
-            photos={photos}
-            setPhotos={setPhotos}
+            logs={logs}
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            dayLog={dayLog}
+            updateDay={updateDay}
           />
         )}
 
@@ -165,10 +166,9 @@ export default function App() {
           <Coach
             score={score}
             workoutPct={workoutPct}
-            meals={meals}
-            photos={photos}
-            measurements={measurements}
+            dayLog={dayLog}
             profile={profile}
+            weeklyCompletion={weeklyCompletion}
           />
         )}
       </main>
@@ -189,6 +189,42 @@ export default function App() {
   );
 }
 
+function getLastSevenDays() {
+  return Array.from({ length: 7 }).map((_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (6 - i));
+    return d.toISOString().slice(0, 10);
+  });
+}
+
+function shortDate(date: string) {
+  const d = new Date(date + "T00:00:00");
+  return d.toLocaleDateString("en-US", { weekday: "short", day: "numeric" });
+}
+
+function DateStrip({ selectedDate, setSelectedDate, logs }: any) {
+  const dates = getLastSevenDays();
+
+  return (
+    <div className="date-strip">
+      {dates.map((date) => {
+        const log = logs[date] || emptyDay;
+        const complete = Object.values(log.checks || {}).filter(Boolean).length > 0;
+        return (
+          <button
+            key={date}
+            className={selectedDate === date ? "active" : ""}
+            onClick={() => setSelectedDate(date)}
+          >
+            <span>{shortDate(date)}</span>
+            <small>{complete ? "✓" : "•"}</small>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 function Onboarding({ profile, setProfile }: any) {
   return (
     <div className="app">
@@ -197,23 +233,13 @@ function Onboarding({ profile, setProfile }: any) {
           <div className="hero-card">
             <p className="pill">GymCord Beta</p>
             <h2>Start your 7-day transformation.</h2>
-            <p>Track workouts, meals, photos, measurements, and get a transformation score.</p>
+            <p>Track workouts, meals, photos, measurements, and daily progress history.</p>
           </div>
 
           <div className="panel">
             <h3>Create Profile</h3>
-            <input
-              className="input"
-              placeholder="Your name"
-              value={profile.name}
-              onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-            />
-            <input
-              className="input"
-              placeholder="Main goal"
-              value={profile.goal}
-              onChange={(e) => setProfile({ ...profile, goal: e.target.value })}
-            />
+            <input className="input" placeholder="Your name" value={profile.name} onChange={(e) => setProfile({ ...profile, name: e.target.value })} />
+            <input className="input" placeholder="Main goal" value={profile.goal} onChange={(e) => setProfile({ ...profile, goal: e.target.value })} />
           </div>
         </section>
       </main>
@@ -221,54 +247,39 @@ function Onboarding({ profile, setProfile }: any) {
   );
 }
 
-function Home({ profile, workoutPct, meals, score, setPage }: any) {
+function Home({ profile, workoutPct, weeklyCompletion, dayLog, score, selectedDate, setPage }: any) {
   return (
     <section className="page">
       <div className="hero-card">
-        <p className="pill">Today’s Focus</p>
+        <p className="pill">{selectedDate}</p>
         <h2>{profile.goal}</h2>
-        <p>Train hard, log your meals, upload progress, and let GymCord score your consistency.</p>
+        <p>Track today. Review any day. Build proof of progress.</p>
         <button onClick={() => setPage("train")}>Start Training</button>
       </div>
 
       <div className="grid">
-        <Card label="Workout" value={`${workoutPct}%`} />
-        <Card label="Protein" value={`${meals.protein}g`} />
-        <Card label="Water" value={`${meals.water} / 8`} />
+        <Card label="Today" value={`${workoutPct}%`} />
+        <Card label="7-Day Avg" value={`${weeklyCompletion}%`} />
+        <Card label="Protein" value={`${dayLog.protein}g`} />
         <Card label="Score" value={`${score}%`} />
       </div>
 
       <div className="panel">
-        <h3>Today’s Checklist</h3>
-        <p>✅ Complete workout</p>
-        <p>✅ Upload meal photo</p>
-        <p>✅ Edit ingredients/macros</p>
-        <p>✅ Hit water + protein target</p>
+        <h3>Today’s Data</h3>
+        <p>Workout completion: {workoutPct}%</p>
+        <p>Protein: {dayLog.protein}g</p>
+        <p>Water: {dayLog.water} / 8</p>
+        <p>Calories: {dayLog.calories || "Not logged"}</p>
       </div>
     </section>
   );
 }
 
-function Train({
-  activeWorkout,
-  setActiveWorkout,
-  checks,
-  setChecks,
-  weights,
-  setWeights,
-  notes,
-  setNotes,
-  timer,
-  setTimer,
-  running,
-  setRunning,
-}: any) {
+function Train({ activeWorkout, setActiveWorkout, dayLog, updateDay, timer, setTimer, running, setRunning }: any) {
   if (activeWorkout) {
     return (
       <section className="page">
-        <button className="back-btn" onClick={() => setActiveWorkout(null)}>
-          ← Back to Workouts
-        </button>
+        <button className="back-btn" onClick={() => setActiveWorkout(null)}>← Back to Workouts</button>
 
         <div className="panel">
           <p className="pill">{activeWorkout.day}</p>
@@ -276,19 +287,9 @@ function Train({
           <span>{activeWorkout.focus}</span>
 
           <div className="timer-box">
-            <strong>
-              {String(Math.floor(timer / 60)).padStart(2, "0")}:
-              {String(timer % 60).padStart(2, "0")}
-            </strong>
+            <strong>{String(Math.floor(timer / 60)).padStart(2, "0")}:{String(timer % 60).padStart(2, "0")}</strong>
             <button onClick={() => setRunning(!running)}>{running ? "Pause" : "Start Rest"}</button>
-            <button
-              onClick={() => {
-                setTimer(90);
-                setRunning(false);
-              }}
-            >
-              Reset
-            </button>
+            <button onClick={() => { setTimer(90); setRunning(false); }}>Reset</button>
           </div>
 
           <div className="exercise-list">
@@ -299,16 +300,16 @@ function Train({
                   <label className="exercise-row">
                     <input
                       type="checkbox"
-                      checked={!!checks[key]}
-                      onChange={() => setChecks({ ...checks, [key]: !checks[key] })}
+                      checked={!!dayLog.checks[key]}
+                      onChange={() => updateDay({ checks: { ...dayLog.checks, [key]: !dayLog.checks[key] } })}
                     />
                     <span>{ex}</span>
                   </label>
                   <input
                     className="input"
                     placeholder="Weight used / reps / notes"
-                    value={weights[key] || ""}
-                    onChange={(e) => setWeights({ ...weights, [key]: e.target.value })}
+                    value={dayLog.weights[key] || ""}
+                    onChange={(e) => updateDay({ weights: { ...dayLog.weights, [key]: e.target.value } })}
                   />
                 </div>
               );
@@ -317,9 +318,9 @@ function Train({
 
           <textarea
             className="textarea"
-            placeholder="Workout notes..."
-            value={notes[activeWorkout.day] || ""}
-            onChange={(e) => setNotes({ ...notes, [activeWorkout.day]: e.target.value })}
+            placeholder="Workout notes for this day..."
+            value={dayLog.notes[activeWorkout.day] || ""}
+            onChange={(e) => updateDay({ notes: { ...dayLog.notes, [activeWorkout.day]: e.target.value } })}
           />
         </div>
       </section>
@@ -335,11 +336,11 @@ function Train({
   );
 }
 
-function Meals({ meals, setMeals }: any) {
+function Meals({ dayLog, updateDay }: any) {
   const uploadMeal = (file?: File) => {
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => setMeals({ ...meals, photo: reader.result as string });
+    reader.onload = () => updateDay({ mealPhoto: reader.result as string });
     reader.readAsDataURL(file);
   };
 
@@ -347,8 +348,8 @@ function Meals({ meals, setMeals }: any) {
     <section className="page">
       <div className="panel">
         <h3>Meal Photo</h3>
-        <p>Upload a meal photo. For now, edit ingredients manually. AI breakdown comes next.</p>
-        {meals.photo && <img className="progress-photo" src={meals.photo} alt="Meal" />}
+        <p>Upload today’s meal photo, then edit ingredients/macros.</p>
+        {dayLog.mealPhoto && <img className="progress-photo" src={dayLog.mealPhoto} alt="Meal" />}
         <input className="file" type="file" accept="image/*" onChange={(e) => uploadMeal(e.target.files?.[0])} />
       </div>
 
@@ -356,34 +357,29 @@ function Meals({ meals, setMeals }: any) {
         <h3>Editable Breakdown</h3>
         <textarea
           className="textarea tall"
-          placeholder="Ingredients + amounts. Example: 2 eggs, 1 cup rice, 6 oz chicken..."
-          value={meals.ingredients}
-          onChange={(e) => setMeals({ ...meals, ingredients: e.target.value })}
+          placeholder="Ingredients + amounts"
+          value={dayLog.ingredients}
+          onChange={(e) => updateDay({ ingredients: e.target.value })}
         />
-        <input
-          className="input"
-          placeholder="Calories"
-          value={meals.calories}
-          onChange={(e) => setMeals({ ...meals, calories: e.target.value })}
-        />
+        <input className="input" placeholder="Calories" value={dayLog.calories} onChange={(e) => updateDay({ calories: e.target.value })} />
       </div>
 
       <div className="grid">
         <div className="panel">
           <h3>Protein</h3>
           <div className="counter">
-            <button onClick={() => setMeals({ ...meals, protein: Math.max(0, meals.protein - 10) })}>−</button>
-            <strong>{meals.protein}g</strong>
-            <button onClick={() => setMeals({ ...meals, protein: meals.protein + 10 })}>+</button>
+            <button onClick={() => updateDay({ protein: Math.max(0, dayLog.protein - 10) })}>−</button>
+            <strong>{dayLog.protein}g</strong>
+            <button onClick={() => updateDay({ protein: dayLog.protein + 10 })}>+</button>
           </div>
         </div>
 
         <div className="panel">
           <h3>Water</h3>
           <div className="counter">
-            <button onClick={() => setMeals({ ...meals, water: Math.max(0, meals.water - 1) })}>−</button>
-            <strong>{meals.water}</strong>
-            <button onClick={() => setMeals({ ...meals, water: meals.water + 1 })}>+</button>
+            <button onClick={() => updateDay({ water: Math.max(0, dayLog.water - 1) })}>−</button>
+            <strong>{dayLog.water}</strong>
+            <button onClick={() => updateDay({ water: dayLog.water + 1 })}>+</button>
           </div>
         </div>
       </div>
@@ -402,16 +398,32 @@ function Meals({ meals, setMeals }: any) {
   );
 }
 
-function Progress({ measurements, setMeasurements, photos, setPhotos }: any) {
-  const uploadPhoto = (type: "before" | "after" | "side", file?: File) => {
+function Progress({ logs, selectedDate, setSelectedDate, dayLog, updateDay }: any) {
+  const uploadPhoto = (type: "front" | "side" | "back", file?: File) => {
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => setPhotos({ ...photos, [type]: reader.result as string });
+    reader.onload = () => updateDay({ photos: { ...dayLog.photos, [type]: reader.result as string } });
     reader.readAsDataURL(file);
   };
 
   return (
     <section className="page">
+      <div className="panel">
+        <h3>Daily Calendar</h3>
+        <div className="calendar-list">
+          {getLastSevenDays().map((date) => {
+            const log = logs[date] || emptyDay;
+            const done = Object.values(log.checks || {}).filter(Boolean).length;
+            return (
+              <button key={date} className={selectedDate === date ? "active" : ""} onClick={() => setSelectedDate(date)}>
+                <strong>{shortDate(date)}</strong>
+                <span>{done} exercises · {log.protein || 0}g protein · {log.water || 0}/8 water</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       <div className="panel">
         <h3>Measurements</h3>
         {["waist", "hips", "glutes", "weight"].map((field) => (
@@ -419,39 +431,34 @@ function Progress({ measurements, setMeasurements, photos, setPhotos }: any) {
             key={field}
             className="input"
             placeholder={field}
-            value={measurements[field]}
-            onChange={(e) => setMeasurements({ ...measurements, [field]: e.target.value })}
+            value={dayLog.measurements[field]}
+            onChange={(e) => updateDay({ measurements: { ...dayLog.measurements, [field]: e.target.value } })}
           />
         ))}
       </div>
 
-      {["before", "side", "after"].map((type) => (
+      {["front", "side", "back"].map((type) => (
         <div className="panel" key={type}>
           <h3>{type} Photo</h3>
-          {photos[type] && <img className="progress-photo" src={photos[type]} alt={type} />}
-          <input
-            className="file"
-            type="file"
-            accept="image/*"
-            onChange={(e) => uploadPhoto(type as any, e.target.files?.[0])}
-          />
+          {dayLog.photos[type] && <img className="progress-photo" src={dayLog.photos[type]} alt={type} />}
+          <input className="file" type="file" accept="image/*" onChange={(e) => uploadPhoto(type as any, e.target.files?.[0])} />
         </div>
       ))}
     </section>
   );
 }
 
-function Coach({ score, workoutPct, meals, photos, measurements, profile }: any) {
+function Coach({ score, workoutPct, dayLog, profile, weeklyCompletion }: any) {
   const feedback =
     score >= 85
       ? "You are reward eligible. Keep consistency high and verify progress with updated photos."
       : workoutPct < 50
-      ? "Finish more workouts. Training consistency is your biggest gap."
-      : meals.protein < 100
+      ? "Finish more workouts today. Training consistency is your biggest gap."
+      : dayLog.protein < 100
       ? "Increase protein closer to 100–130g per day."
-      : !photos.before
-      ? "Upload your before photo to improve progress verification."
-      : !measurements.weight
+      : !dayLog.photos.front
+      ? "Upload your front progress photo to improve verification."
+      : !dayLog.measurements.weight
       ? "Add measurements so the coach can better track progress."
       : "You are close. Keep logging meals and training consistently.";
 
@@ -470,9 +477,9 @@ function Coach({ score, workoutPct, meals, photos, measurements, profile }: any)
       </div>
 
       <div className="panel">
-        <h3>Reward Rules</h3>
-        <p>85%+ score unlocks eligibility.</p>
-        <span>Score includes workouts, meals, protein, water, photos, and measurements.</span>
+        <h3>7-Day Overview</h3>
+        <p>Average workout completion: {weeklyCompletion}%</p>
+        <span>Use Progress to view each day’s workout, meal, photo, and measurement logs.</span>
       </div>
     </section>
   );

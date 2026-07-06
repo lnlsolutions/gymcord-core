@@ -82,6 +82,47 @@ h3 {
   padding-top: 24px;
 }
 
+.date-strip {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 18px 0 4px;
+  scrollbar-width: none;
+}
+
+.date-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.date-strip button {
+  min-width: 72px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 20px;
+  padding: 12px 10px;
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(18px);
+}
+
+.date-strip button.active {
+  background: linear-gradient(135deg, #ff4fa0, #ff7a9c);
+  color: white;
+  box-shadow: 0 14px 35px rgba(255, 79, 160, 0.24);
+}
+
+.date-strip button span {
+  display: block;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.date-strip button small {
+  display: block;
+  margin-top: 5px;
+  font-size: 14px;
+  font-weight: 900;
+}
+
 .hero-card,
 .panel,
 .card,
@@ -211,6 +252,41 @@ h3 {
   background:
     radial-gradient(circle at top right, rgba(120, 255, 190, 0.2), transparent 34%),
     rgba(255, 255, 255, 0.07);
+}
+
+.calendar-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.calendar-list button {
+  width: 100%;
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 18px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+}
+
+.calendar-list button.active {
+  background:
+    radial-gradient(circle at top right, rgba(255, 79, 160, 0.22), transparent 38%),
+    rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 79, 160, 0.35);
+}
+
+.calendar-list strong {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 5px;
+}
+
+.calendar-list span {
+  display: block;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.62);
 }
 
 .workout-card {

@@ -5,7 +5,8 @@
 body {
   margin: 0;
   background:
-    radial-gradient(circle at top right, rgba(255, 79, 160, 0.25), transparent 35%),
+    radial-gradient(circle at top right, rgba(255, 79, 160, 0.28), transparent 34%),
+    radial-gradient(circle at top left, rgba(255, 138, 101, 0.12), transparent 30%),
     linear-gradient(180deg, #0b0610, #050407);
   color: white;
   font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
@@ -17,9 +18,13 @@ textarea {
   font: inherit;
 }
 
+button {
+  cursor: pointer;
+}
+
 .app {
   min-height: 100vh;
-  padding-bottom: 92px;
+  padding-bottom: 96px;
 }
 
 .screen {
@@ -39,9 +44,9 @@ textarea {
   margin: 0;
   color: #ff79b0;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
 }
 
 h1,
@@ -54,6 +59,11 @@ p {
 h1 {
   margin-bottom: 0;
   font-size: 34px;
+  letter-spacing: -0.04em;
+}
+
+h2 {
+  letter-spacing: -0.04em;
 }
 
 .avatar {
@@ -73,7 +83,8 @@ h1 {
 
 .hero-card,
 .panel,
-.card {
+.card,
+.exercise-card {
   border: 1px solid rgba(255, 255, 255, 0.09);
   background: rgba(255, 255, 255, 0.07);
   backdrop-filter: blur(22px);
@@ -81,21 +92,22 @@ h1 {
 }
 
 .hero-card {
-  border-radius: 30px;
+  border-radius: 32px;
   padding: 28px;
   background:
-    radial-gradient(circle at top right, rgba(255, 255, 255, 0.18), transparent 35%),
-    linear-gradient(135deg, #ff4fa0, #7f1d52 60%, #18111f);
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.2), transparent 35%),
+    linear-gradient(135deg, #ff4fa0, #7f1d52 58%, #18111f);
+  box-shadow: 0 22px 70px rgba(255, 79, 160, 0.25);
 }
 
 .hero-card h2 {
-  font-size: 38px;
+  font-size: 40px;
   line-height: 0.95;
   margin-bottom: 14px;
 }
 
 .hero-card p {
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(255, 255, 255, 0.8);
   line-height: 1.45;
 }
 
@@ -105,10 +117,10 @@ h1 {
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.18);
   color: white !important;
-  font-size: 12px;
-  font-weight: 800;
+  font-size: 11px;
+  font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.13em;
 }
 
 .hero-card button,
@@ -121,7 +133,6 @@ h1 {
   background: white;
   color: #120812;
   font-weight: 900;
-  cursor: pointer;
 }
 
 .danger {
@@ -146,7 +157,7 @@ h1 {
   margin-bottom: 8px;
   color: rgba(255, 255, 255, 0.62);
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .card strong {
@@ -184,10 +195,69 @@ h1 {
   margin-bottom: 12px;
 }
 
+.reward-ready {
+  border-color: rgba(120, 255, 190, 0.28);
+  background:
+    radial-gradient(circle at top right, rgba(120, 255, 190, 0.18), transparent 34%),
+    rgba(255, 255, 255, 0.07);
+}
+
+.day-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.day-tabs button {
+  border: 0;
+  border-radius: 16px;
+  padding: 12px 6px;
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.day-tabs button.active {
+  background: linear-gradient(135deg, #ff4fa0, #ff7a9c);
+  color: white;
+}
+
+.timer-box {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+  padding: 14px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.24);
+}
+
+.timer-box strong {
+  font-size: 28px;
+  letter-spacing: -0.04em;
+}
+
+.timer-box button {
+  border: 0;
+  border-radius: 14px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-weight: 900;
+}
+
 .exercise-list {
   display: grid;
-  gap: 10px;
+  gap: 12px;
   margin-top: 18px;
+}
+
+.exercise-card {
+  border-radius: 22px;
+  padding: 12px;
 }
 
 .exercise-row {
@@ -206,7 +276,7 @@ h1 {
 }
 
 .exercise-row span {
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .input,
@@ -249,11 +319,15 @@ h1 {
   color: white;
   font-size: 26px;
   font-weight: 900;
-  cursor: pointer;
 }
 
 .counter strong {
   font-size: 30px;
+}
+
+.photo-grid {
+  display: grid;
+  gap: 16px;
 }
 
 .file {
@@ -287,7 +361,7 @@ h1 {
   gap: 4px;
   padding: 8px;
   border-radius: 26px;
-  background: rgba(10, 8, 13, 0.88);
+  background: rgba(10, 8, 13, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(28px);
   box-shadow: 0 12px 60px rgba(0, 0, 0, 0.42);
@@ -299,7 +373,6 @@ h1 {
   background: transparent;
   color: rgba(255, 255, 255, 0.55);
   padding: 9px 3px;
-  cursor: pointer;
 }
 
 .bottom-nav button span {

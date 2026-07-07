@@ -1,15 +1,51 @@
+:root {
+  --bg: #07040a;
+  --bg-soft: #0d0812;
+  --panel: rgba(255, 255, 255, 0.075);
+  --panel-strong: rgba(255, 255, 255, 0.11);
+  --line: rgba(255, 255, 255, 0.1);
+  --text: #ffffff;
+  --muted: rgba(255, 255, 255, 0.66);
+  --muted-2: rgba(255, 255, 255, 0.46);
+  --pink: #ff4fa0;
+  --pink-2: #ff7ab8;
+  --peach: #ff8a65;
+  --green: #75f0b2;
+  --red: #ff4d6d;
+  --shadow: 0 22px 70px rgba(0, 0, 0, 0.35);
+  --glow: 0 20px 60px rgba(255, 79, 160, 0.28);
+}
+
 * {
   box-sizing: border-box;
 }
 
+html {
+  background: var(--bg);
+}
+
 body {
   margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background:
-    radial-gradient(circle at top right, rgba(255, 79, 160, 0.32), transparent 34%),
-    radial-gradient(circle at top left, rgba(255, 138, 101, 0.14), transparent 30%),
-    linear-gradient(180deg, #0b0610, #050407);
-  color: white;
-  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    radial-gradient(circle at 90% -10%, rgba(255, 79, 160, 0.34), transparent 32%),
+    radial-gradient(circle at 0% 0%, rgba(255, 138, 101, 0.14), transparent 30%),
+    linear-gradient(180deg, #0d0612 0%, #07040a 52%, #030204 100%);
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(to bottom, black, transparent 70%);
 }
 
 button,
@@ -20,15 +56,35 @@ textarea {
 
 button {
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:active {
+  transform: scale(0.985);
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin-top: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  letter-spacing: -0.04em;
 }
 
 .app {
   min-height: 100vh;
-  padding-bottom: 100px;
+  padding-bottom: 104px;
 }
 
 .screen {
-  width: min(430px, 100%);
+  width: min(480px, 100%);
   min-height: 100vh;
   margin: 0 auto;
   padding: 28px 18px;
@@ -36,57 +92,189 @@ button {
 
 .topbar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 }
 
 .eyebrow {
   margin: 0;
-  color: #ff79b0;
-  font-size: 12px;
+  color: var(--pink-2);
+  font-size: 11px;
   font-weight: 900;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
 }
 
-h1,
-h2,
-h3,
-p {
-  margin-top: 0;
-}
-
-h1 {
-  margin-bottom: 0;
+.topbar h1 {
+  margin: 4px 0 0;
   font-size: 34px;
-  letter-spacing: -0.04em;
-}
-
-h2,
-h3 {
-  letter-spacing: -0.04em;
+  line-height: 1;
 }
 
 .avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 18px;
+  width: 50px;
+  height: 50px;
+  border-radius: 19px;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, #ff4fa0, #ff8a65);
-  font-weight: 900;
-  box-shadow: 0 12px 40px rgba(255, 79, 160, 0.35);
+  font-weight: 950;
+  background: linear-gradient(135deg, var(--pink), var(--peach));
+  box-shadow: var(--glow);
 }
 
 .page {
-  padding-top: 24px;
+  padding-top: 22px;
+}
+
+.hero-card,
+.panel,
+.card,
+.exercise-card,
+.workout-card,
+.reward-card,
+.coach-card {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  box-shadow: var(--shadow);
+}
+
+.hero-card {
+  border-radius: 34px;
+  padding: 28px;
+  background:
+    radial-gradient(circle at 90% 0%, rgba(255, 255, 255, 0.22), transparent 34%),
+    radial-gradient(circle at 15% 20%, rgba(255, 138, 101, 0.2), transparent 32%),
+    linear-gradient(135deg, #ff4fa0 0%, #9d215e 52%, #17101e 100%);
+  box-shadow: var(--glow);
+}
+
+.hero-card h2 {
+  margin: 14px 0;
+  font-size: 42px;
+  line-height: 0.92;
+}
+
+.hero-card p {
+  color: rgba(255, 255, 255, 0.84);
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+.hero-card button,
+.primary-button,
+.back-btn,
+.workout-overlay button {
+  width: 100%;
+  border: 0;
+  border-radius: 19px;
+  margin-top: 18px;
+  padding: 16px 18px;
+  color: #160812;
+  background: white;
+  font-weight: 950;
+}
+
+.back-btn {
+  margin-top: 0;
+  margin-bottom: 14px;
+  color: white;
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid var(--line);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 7px 12px;
+  border-radius: 999px;
+  color: white;
+  background: rgba(255, 255, 255, 0.17);
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.card {
+  border-radius: 24px;
+  padding: 18px;
+}
+
+.card p {
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.card strong {
+  display: block;
+  font-size: 25px;
+  line-height: 1;
+}
+
+.card span {
+  display: block;
+  margin-top: 7px;
+  color: var(--muted-2);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.panel {
+  margin-top: 16px;
+  border-radius: 28px;
+  padding: 22px;
+}
+
+.panel h3 {
+  margin-bottom: 10px;
+  font-size: 23px;
+}
+
+.panel p {
+  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.82);
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.panel span {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.center {
+  text-align: center;
+}
+
+.big-emoji {
+  font-size: 58px;
+  margin-bottom: 12px;
+}
+
+.reward-ready {
+  border-color: rgba(117, 240, 178, 0.35);
+  background:
+    radial-gradient(circle at 90% 0%, rgba(117, 240, 178, 0.2), transparent 35%),
+    rgba(255, 255, 255, 0.075);
 }
 
 .date-strip {
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding: 18px 0 4px;
+  padding: 18px 0 2px;
   scrollbar-width: none;
 }
 
@@ -96,213 +284,76 @@ h3 {
 
 .date-strip button {
   min-width: 72px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid var(--line);
   border-radius: 20px;
-  padding: 12px 10px;
+  padding: 12px 8px;
+  color: var(--muted);
   background: rgba(255, 255, 255, 0.07);
-  color: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(18px);
 }
 
 .date-strip button.active {
-  background: linear-gradient(135deg, #ff4fa0, #ff7a9c);
   color: white;
-  box-shadow: 0 14px 35px rgba(255, 79, 160, 0.24);
+  background: linear-gradient(135deg, var(--pink), var(--pink-2));
+  box-shadow: var(--glow);
 }
 
-.date-strip button span {
+.date-strip span {
   display: block;
   font-size: 12px;
-  font-weight: 900;
+  font-weight: 950;
 }
 
-.date-strip button small {
+.date-strip small {
   display: block;
   margin-top: 5px;
-  font-size: 14px;
-  font-weight: 900;
+  font-size: 15px;
+  font-weight: 950;
 }
 
-.hero-card,
-.panel,
-.card,
-.exercise-card,
-.workout-card {
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  background: rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(22px);
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
-}
-
-.hero-card {
-  border-radius: 32px;
-  padding: 28px;
-  background:
-    radial-gradient(circle at top right, rgba(255, 255, 255, 0.2), transparent 35%),
-    linear-gradient(135deg, #ff4fa0, #7f1d52 58%, #18111f);
-  box-shadow: 0 22px 70px rgba(255, 79, 160, 0.25);
-}
-
-.hero-card h2 {
-  font-size: 40px;
-  line-height: 0.95;
-  margin-bottom: 14px;
-}
-
-.hero-card p {
-  color: rgba(255, 255, 255, 0.82);
-  line-height: 1.45;
-}
-
-.pill {
-  display: inline-block;
-  padding: 7px 12px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.18);
-  color: white !important;
-  font-size: 11px;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.13em;
-}
-
-.hero-card button,
-.danger,
-.workout-overlay button,
-.back-btn {
-  width: 100%;
-  margin-top: 18px;
-  border: 0;
-  border-radius: 18px;
-  padding: 16px;
-  background: white;
-  color: #120812;
-  font-weight: 900;
-}
-
-.back-btn {
-  background: rgba(255, 255, 255, 0.08);
-  color: white;
-  margin-top: 0;
-  margin-bottom: 14px;
-}
-
-.danger {
-  background: linear-gradient(135deg, #ff3b6b, #991b3f);
-  color: white;
-  box-shadow: 0 14px 35px rgba(255, 59, 107, 0.25);
-}
-
-.grid {
+.habit-list {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 16px;
+  gap: 10px;
+  margin-top: 14px;
 }
 
-.card {
-  border-radius: 22px;
-  padding: 18px;
+.habit-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
 }
 
-.card p {
-  margin-bottom: 8px;
-  color: rgba(255, 255, 255, 0.62);
-  font-size: 13px;
+.habit-item span {
+  color: white;
   font-weight: 800;
 }
 
-.card strong {
-  font-size: 22px;
-}
-
-.panel {
-  margin-top: 16px;
-  border-radius: 26px;
-  padding: 22px;
-}
-
-.panel h3 {
-  margin-bottom: 8px;
-  font-size: 22px;
-}
-
-.panel p {
-  margin-bottom: 8px;
-  font-weight: 700;
-  line-height: 1.45;
-}
-
-.panel span {
-  color: rgba(255, 255, 255, 0.62);
-  line-height: 1.45;
-}
-
-.center {
-  text-align: center;
-}
-
-.big-emoji {
-  font-size: 56px;
-  margin-bottom: 12px;
-}
-
-.reward-ready {
-  border-color: rgba(120, 255, 190, 0.3);
-  background:
-    radial-gradient(circle at top right, rgba(120, 255, 190, 0.2), transparent 34%),
-    rgba(255, 255, 255, 0.07);
-}
-
-.calendar-list {
-  display: grid;
-  gap: 10px;
-  margin-top: 16px;
-}
-
-.calendar-list button {
-  width: 100%;
-  text-align: left;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 18px;
-  padding: 15px;
-  background: rgba(255, 255, 255, 0.06);
-  color: white;
-}
-
-.calendar-list button.active {
-  background:
-    radial-gradient(circle at top right, rgba(255, 79, 160, 0.22), transparent 38%),
-    rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 79, 160, 0.35);
-}
-
-.calendar-list strong {
-  display: block;
-  font-size: 15px;
-  margin-bottom: 5px;
-}
-
-.calendar-list span {
-  display: block;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.62);
+.habit-item strong {
+  color: var(--pink-2);
 }
 
 .workout-card {
   position: relative;
-  height: 250px;
+  display: block;
+  width: 100%;
+  height: 260px;
   overflow: hidden;
-  border-radius: 30px;
+  border-radius: 32px;
   margin-bottom: 16px;
+  padding: 0;
+  text-align: left;
+  color: white;
 }
 
 .workout-card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
-  transform: scale(1.02);
+  transform: scale(1.03);
 }
 
 .workout-card::after {
@@ -310,8 +361,8 @@ h3 {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(to top, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.24), rgba(0, 0, 0, 0.05)),
-    radial-gradient(circle at top right, rgba(255, 79, 160, 0.25), transparent 40%);
+    linear-gradient(to top, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.32), transparent),
+    radial-gradient(circle at 90% 0%, rgba(255, 79, 160, 0.28), transparent 42%);
 }
 
 .workout-overlay {
@@ -325,54 +376,135 @@ h3 {
 }
 
 .workout-overlay h3 {
-  font-size: 27px;
   margin: 10px 0 6px;
+  font-size: 28px;
 }
 
 .workout-overlay span {
-  color: rgba(255, 255, 255, 0.72);
-  font-weight: 700;
+  color: rgba(255, 255, 255, 0.74);
+  font-weight: 750;
 }
 
-.workout-overlay button {
-  padding: 14px;
-  margin-top: 16px;
+.workout-meta {
+  display: flex;
+  gap: 9px;
+  margin-top: 12px;
+}
+
+.workout-meta small {
+  padding: 7px 10px;
+  border-radius: 999px;
+  color: white;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.workout-player {
+  background:
+    radial-gradient(circle at 90% 0%, rgba(255, 79, 160, 0.16), transparent 34%),
+    var(--panel);
 }
 
 .timer-box {
-  margin-top: 18px;
   display: grid;
   grid-template-columns: 1fr auto auto;
-  gap: 8px;
   align-items: center;
+  gap: 8px;
+  margin-top: 18px;
   padding: 14px;
-  border-radius: 20px;
-  background: rgba(0, 0, 0, 0.24);
+  border-radius: 21px;
+  background: rgba(0, 0, 0, 0.25);
 }
 
 .timer-box strong {
-  font-size: 28px;
-  letter-spacing: -0.04em;
+  font-size: 30px;
+  letter-spacing: -0.05em;
 }
 
 .timer-box button {
   border: 0;
   border-radius: 14px;
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.1);
+  padding: 11px 12px;
   color: white;
+  background: rgba(255, 255, 255, 0.1);
   font-weight: 900;
 }
 
 .exercise-list {
   display: grid;
-  gap: 12px;
-  margin-top: 18px;
+  gap: 14px;
+  margin-top: 16px;
 }
 
 .exercise-card {
+  border-radius: 28px;
+  padding: 14px;
+}
+
+.exercise-image {
+  width: 100%;
+  height: 170px;
   border-radius: 22px;
-  padding: 12px;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 16px;
+  border: 1px solid var(--line);
+}
+
+.exercise-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.exercise-header h4 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.exercise-reps {
+  display: inline-block;
+  color: var(--pink-2);
+  font-size: 13px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.exercise-description {
+  margin: 12px 0 14px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 650;
+}
+
+.muscle-list,
+.cue-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.muscle-list span,
+.cue-chip {
+  padding: 8px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.muscle-list span {
+  color: #ffd8e8;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.cue-chip {
+  color: white;
+  background: rgba(255, 79, 160, 0.18);
+  border: 1px solid rgba(255, 79, 160, 0.34);
 }
 
 .exercise-row {
@@ -381,29 +513,30 @@ h3 {
   gap: 12px;
   padding: 14px;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.065);
 }
 
 .exercise-row input {
   width: 22px;
   height: 22px;
-  accent-color: #ff4fa0;
+  accent-color: var(--pink);
 }
 
 .exercise-row span {
-  font-weight: 800;
+  color: white;
+  font-weight: 900;
 }
 
 .input,
 .textarea {
   width: 100%;
   margin-top: 12px;
+  border: 1px solid var(--line);
+  border-radius: 17px;
   padding: 15px;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.07);
   color: white;
   outline: none;
+  background: rgba(255, 255, 255, 0.075);
 }
 
 .textarea {
@@ -417,7 +550,7 @@ h3 {
 
 .input::placeholder,
 .textarea::placeholder {
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.42);
   text-transform: capitalize;
 }
 
@@ -425,8 +558,8 @@ h3 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  margin-top: 18px;
+  gap: 14px;
+  margin-top: 16px;
 }
 
 .counter button {
@@ -434,65 +567,146 @@ h3 {
   height: 54px;
   border: 0;
   border-radius: 18px;
-  background: linear-gradient(135deg, #ff4fa0, #ff7a9c);
   color: white;
+  background: linear-gradient(135deg, var(--pink), var(--pink-2));
   font-size: 26px;
-  font-weight: 900;
+  font-weight: 950;
 }
 
 .counter strong {
-  font-size: 30px;
-}
-
-.photo-grid {
-  display: grid;
-  gap: 16px;
+  font-size: 28px;
 }
 
 .file {
   width: 100%;
   margin-top: 14px;
   padding: 14px;
-  border-radius: 16px;
-  border: 1px dashed rgba(255, 255, 255, 0.22);
+  border-radius: 17px;
+  border: 1px dashed rgba(255, 255, 255, 0.24);
+  color: rgba(255, 255, 255, 0.76);
   background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.75);
 }
 
 .progress-photo {
   width: 100%;
-  max-height: 420px;
+  max-height: 430px;
   object-fit: cover;
   display: block;
   margin-top: 14px;
-  border-radius: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  border: 1px solid var(--line);
 }
 
 .meal-suggestion {
   padding: 15px;
-  border-radius: 18px;
+  border-radius: 19px;
   margin-top: 12px;
   background:
-    radial-gradient(circle at top right, rgba(255, 79, 160, 0.12), transparent 35%),
-    rgba(255, 255, 255, 0.06);
+    radial-gradient(circle at 90% 0%, rgba(255, 79, 160, 0.13), transparent 36%),
+    rgba(255, 255, 255, 0.065);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .meal-suggestion strong {
   display: block;
-  font-size: 16px;
   margin-bottom: 5px;
+  font-size: 16px;
 }
 
 .meal-suggestion p {
   margin-bottom: 5px;
-  color: white;
 }
 
 .meal-suggestion span {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.62);
+}
+
+.calendar-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.calendar-list button {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 15px;
+  color: white;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.calendar-list button.active {
+  border-color: rgba(255, 79, 160, 0.36);
+  background:
+    radial-gradient(circle at 90% 0%, rgba(255, 79, 160, 0.22), transparent 36%),
+    rgba(255, 255, 255, 0.095);
+}
+
+.calendar-list strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.calendar-list span {
+  display: block;
+  font-size: 13px;
+}
+
+.coach-card {
+  border-radius: 20px;
+  padding: 16px;
+  margin-top: 12px;
+}
+
+.coach-card strong {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 16px;
+}
+
+.coach-card p {
+  margin-bottom: 7px;
+}
+
+.reward-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  border-radius: 21px;
+  padding: 16px;
+  margin-top: 12px;
+}
+
+.reward-card.unlocked {
+  border-color: rgba(117, 240, 178, 0.35);
+  background:
+    radial-gradient(circle at 90% 0%, rgba(117, 240, 178, 0.18), transparent 38%),
+    rgba(255, 255, 255, 0.08);
+}
+
+.reward-card p {
+  margin-bottom: 4px;
+  color: var(--pink-2);
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.reward-card h3 {
+  margin-bottom: 5px;
+}
+
+.reward-card strong {
+  color: var(--green);
+  font-size: 22px;
+}
+
+.weekly-summary {
+  margin-bottom: 10px;
 }
 
 .bottom-nav {
@@ -500,24 +714,26 @@ h3 {
   left: 50%;
   bottom: 14px;
   transform: translateX(-50%);
-  width: min(430px, calc(100% - 24px));
+  width: min(480px, calc(100% - 24px));
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 4px;
+  gap: 5px;
   padding: 8px;
-  border-radius: 26px;
-  background: rgba(10, 8, 13, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(28px);
-  box-shadow: 0 12px 60px rgba(0, 0, 0, 0.42);
+  border-radius: 28px;
+  background: rgba(8, 6, 11, 0.9);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(30px) saturate(140%);
+  -webkit-backdrop-filter: blur(30px) saturate(140%);
+  box-shadow: 0 16px 70px rgba(0, 0, 0, 0.52);
+  z-index: 50;
 }
 
 .bottom-nav button {
   border: 0;
-  border-radius: 18px;
-  background: transparent;
+  border-radius: 19px;
+  padding: 9px 2px;
   color: rgba(255, 255, 255, 0.55);
-  padding: 9px 3px;
+  background: transparent;
 }
 
 .bottom-nav button span {
@@ -529,20 +745,24 @@ h3 {
   display: block;
   margin-top: 3px;
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 900;
 }
 
 .bottom-nav button.active {
-  background: linear-gradient(135deg, #ff4fa0, #ff7a9c);
   color: white;
+  background: linear-gradient(135deg, var(--pink), var(--pink-2));
 }
 
-@media (min-width: 700px) {
+@media (min-width: 760px) {
   .screen {
-    width: min(520px, 100%);
+    width: min(560px, 100%);
   }
 
   .workout-card {
-    height: 285px;
+    height: 300px;
+  }
+
+  .exercise-image {
+    height: 220px;
   }
 }

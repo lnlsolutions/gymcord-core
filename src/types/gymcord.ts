@@ -45,57 +45,33 @@ export interface ProgressPhotos {
 
 export interface DailyLog {
   date: string;
-
   completedExercises: Record<string, boolean>;
-
   weights: Record<string, string>;
-
-  notes: string;
-
+  notes: Record<string, string>;
   protein: number;
-
   calories: number;
-
   water: number;
-
   sleep: number;
-
   steps: number;
-
   mood: number;
-
   energy: number;
-
   ingredients: string;
-
   mealPhoto: string;
-
   measurements: Measurements;
-
   photos: ProgressPhotos;
 }
 
 export interface Profile {
   id: string;
-
   name: string;
-
   age: number;
-
   gender: string;
-
   height: string;
-
   currentWeight: string;
-
   goalWeight: string;
-
   activityLevel: string;
-
   goal: string;
-
   startDate: string;
-
   profilePhoto: string;
 }
 

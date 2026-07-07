@@ -1,81 +1,146 @@
-import type { DailyLog, Profile, Page } from "../../types/gymcord";
+import type { DailyLog, Page, Profile } from "../../types/gymcord";
 
-function Card({ label, value }: { label: string; value: string }) {
+function StatCard({
+  title,
+  value,
+  subtitle,
+}: {
+  title: string;
+  value: string;
+  subtitle: string;
+}) {
   return (
     <div className="card">
-      <p>{label}</p>
+      <p>{title}</p>
       <strong>{value}</strong>
+      <span>{subtitle}</span>
     </div>
   );
 }
 
 export function Dashboard({
   profile,
-  workoutPct,
-  weeklyCompletion,
   dayLog,
   score,
-  selectedDate,
+  workoutCompletion,
   setPage,
 }: {
   profile: Profile;
-  workoutPct: number;
-  weeklyCompletion: number;
   dayLog: DailyLog;
   score: number;
-  selectedDate: string;
+  workoutCompletion: number;
   setPage: (page: Page) => void;
 }) {
   return (
     <section className="page">
+
       <div className="hero-card">
-        <p className="pill">{selectedDate}</p>
+
+        <p className="pill">Today's Goal</p>
+
         <h2>{profile.goal}</h2>
+
         <p>
-          Track today. Review any day. Build proof of progress through training,
-          meals, photos, and consistency.
+          Every workout, meal, photo and measurement moves you closer to your
+          transformation.
         </p>
-        <button onClick={() => setPage("train")}>Start Training</button>
+
+        <button onClick={() => setPage("train")}>
+          Start Today's Workout
+        </button>
+
       </div>
 
       <div className="grid">
-        <Card label="Today" value={`${workoutPct}%`} />
-        <Card label="7-Day Avg" value={`${weeklyCompletion}%`} />
-        <Card label="Protein" value={`${dayLog.protein}g`} />
-        <Card label="Score" value={`${score}%`} />
-      </div>
 
-      <div className={score >= 85 ? "panel reward-ready" : "panel"}>
-        <h3>{score >= 85 ? "Reward Eligible 🎁" : "Reward Progress"}</h3>
-        <p>
-          {score >= 85
-            ? "You reached the beta reward threshold."
-            : "Reach 85% score to unlock reward eligibility."}
-        </p>
-        <span>
-          Rewards may include a free month, Starbucks, Amazon, prepaid debit, or
-          gym perks.
-        </span>
+        <StatCard
+          title="Transformation"
+          value={`${score}%`}
+          subtitle="AI Score"
+        />
+
+        <StatCard
+          title="Workout"
+          value={`${workoutCompletion}%`}
+          subtitle="Completed"
+        />
+
+        <StatCard
+          title="Protein"
+          value={`${dayLog.protein}g`}
+          subtitle="Today's Intake"
+        />
+
+        <StatCard
+          title="Water"
+          value={`${dayLog.water}/8`}
+          subtitle="Hydration"
+        />
+
       </div>
 
       <div className="panel">
-        <h3>Today’s Data</h3>
-        <p>Workout completion: {workoutPct}%</p>
-        <p>Protein: {dayLog.protein}g</p>
-        <p>Water: {dayLog.water} / 8</p>
-        <p>Calories: {dayLog.calories || "Not logged"}</p>
+
+        <h3>Today's Checklist</h3>
+
+        <div className="habit-list">
+
+          <div className="habit-item">
+            <span>🏋 Workout</span>
+            <strong>{workoutCompletion}%</strong>
+          </div>
+
+          <div className="habit-item">
+            <span>🍽 Protein</span>
+            <strong>{dayLog.protein}g</strong>
+          </div>
+
+          <div className="habit-item">
+            <span>💧 Water</span>
+            <strong>{dayLog.water}/8</strong>
+          </div>
+
+          <div className="habit-item">
+            <span>📸 Progress Photo</span>
+            <strong>{dayLog.photos.front ? "✓" : "—"}</strong>
+          </div>
+
+          <div className="habit-item">
+            <span>⚖ Weight Logged</span>
+            <strong>
+              {dayLog.measurements.weight ? "✓" : "—"}
+            </strong>
+          </div>
+
+        </div>
+
       </div>
 
       <div className="panel">
-        <h3>AI Coach Focus</h3>
+
+        <h3>AI Coach</h3>
+
         <p>
-          {workoutPct < 50
-            ? "Complete today’s workout first. Training consistency has the biggest impact."
-            : dayLog.protein < 100
-            ? "Protein is your next priority. Aim closer to 100–130g today."
-            : "Great work. Keep your meals, water, and photos updated."}
+          {score >= 90
+            ? "Excellent consistency. Continue progressing your lifts this week."
+            : score >= 75
+            ? "You're close. Increase protein and complete today's workout."
+            : "Focus on today's workout and nutrition before worrying about anything else."}
         </p>
+
       </div>
+
+      <div className="panel reward-ready">
+
+        <h3>Reward Progress</h3>
+
+        <p>
+          Rewards unlock through verified consistency, nutrition,
+          measurements and real progress—not simply opening the app.
+        </p>
+
+      </div>
+
     </section>
   );
 }

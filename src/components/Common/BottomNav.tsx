@@ -1,6 +1,6 @@
 import type { Page } from "../../types/gymcord";
 
-const nav: { id: Page; label: string; icon: string }[] = [
+const navItems: { id: Page; label: string; icon: string }[] = [
   { id: "home", label: "Home", icon: "🏠" },
   { id: "train", label: "Train", icon: "🏋️" },
   { id: "meals", label: "Meals", icon: "🍽️" },
@@ -17,7 +17,7 @@ export function BottomNav({
 }) {
   return (
     <nav className="bottom-nav">
-      {nav.map((item) => (
+      {navItems.map((item) => (
         <button
           key={item.id}
           className={page === item.id ? "active" : ""}

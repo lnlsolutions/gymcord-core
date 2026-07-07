@@ -26,6 +26,9 @@ import { Coach } from "./components/Coach/Coach";
 export default function App() {
   const [page, setPage] = useState<Page>("home");
   const [selectedDate, setSelectedDate] = useState(todayKey());
+  const [profileComplete, setProfileComplete] = useState(() =>
+    saved("gc.profileComplete", false)
+  );
 
   const [profile, setProfile] = useState<Profile>(() =>
     saved("gc.profile", createEmptyProfile())
@@ -51,6 +54,10 @@ export default function App() {
   useEffect(() => {
     save("gc.profile", profile);
   }, [profile]);
+
+  useEffect(() => {
+    save("gc.profileComplete", profileComplete);
+  }, [profileComplete]);
 
   useEffect(() => {
     save("gc.dailyLogs", logs);
@@ -79,7 +86,7 @@ export default function App() {
     return Math.round(total / dates.length);
   }, [logs, totalExercises]);
 
-  if (!profile.name || !profile.goal) {
+  if (!profileComplete) {
     return (
       <div className="app">
         <main className="screen">
@@ -146,13 +153,14 @@ export default function App() {
 
               <button
                 className="primary-button"
-                onClick={() =>
-                  setProfile({
-                    ...profile,
-                    name: profile.name || "Beta Tester",
-                    goal: profile.goal || "Build strength and consistency",
-                  })
-                }
+                onClick={() => {
+                  if (!profile.name.trim() || !profile.goal.trim()) {
+                    alert("Please add your name and goal first.");
+                    return;
+                  }
+
+                  setProfileComplete(true);
+                }}
               >
                 Enter GymCord
               </button>
@@ -181,13 +189,9 @@ export default function App() {
         />
       )}
 
-      {page === "train" && (
-        <Train dayLog={dayLog} updateDay={updateDay} />
-      )}
+      {page === "train" && <Train dayLog={dayLog} updateDay={updateDay} />}
 
-      {page === "meals" && (
-        <Meals dayLog={dayLog} updateDay={updateDay} />
-      )}
+      {page === "meals" && <Meals dayLog={dayLog} updateDay={updateDay} />}
 
       {page === "progress" && (
         <Progress
@@ -199,9 +203,7 @@ export default function App() {
         />
       )}
 
-      {page === "coach" && (
-        <Coach profile={profile} dayLog={dayLog} />
-      )}
+      {page === "coach" && <Coach profile={profile} dayLog={dayLog} />}
 
       <div className="panel weekly-summary">
         <h3>7-Day Average</h3>

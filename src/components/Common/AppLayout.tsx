@@ -19,9 +19,12 @@ export function AppLayout({
         <header className="topbar">
           <div>
             <p className="eyebrow">GymCord Beta</p>
-            <h1>{profile.name}</h1>
+            <h1>{profile.name || "GymCord"}</h1>
           </div>
-          <div className="avatar">GC</div>
+
+          <div className="avatar">
+            {profile.name ? profile.name.slice(0, 2).toUpperCase() : "GC"}
+          </div>
         </header>
 
         {children}

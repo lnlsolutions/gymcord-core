@@ -55,7 +55,7 @@ export function createEmptyDay(date: string): DailyLog {
     date,
     completedExercises: {},
     weights: {},
-    notes: "",
+    notes: {},
     protein: 0,
     calories: 0,
     water: 4,
@@ -65,8 +65,8 @@ export function createEmptyDay(date: string): DailyLog {
     energy: 3,
     ingredients: "",
     mealPhoto: "",
-    measurements: emptyMeasurements,
-    photos: emptyPhotos,
+    measurements: { ...emptyMeasurements },
+    photos: { ...emptyPhotos },
   };
 }
 

@@ -46,8 +46,9 @@ import { DeveloperAnalytics } from "./components/Dev/DeveloperAnalytics";
 import { DeveloperDataFlow } from "./components/Dev/DeveloperDataFlow";
 import { DeveloperOnboardingFlow } from "./components/Dev/DeveloperOnboardingFlow";
 import { DeveloperPersistence } from "./components/Dev/DeveloperPersistence";
+import { DeveloperDashboard } from "./components/Dev/DeveloperDashboard";
 import { TrainerOS } from "./components/Trainer/TrainerOS";
-import { dailyActivityRepository } from "./repositories/DailyActivityRepository";
+import { dashboardRepository } from "./repositories/DashboardRepository";
 import { onboardingRepository } from "./services/OnboardingRepository";
 import { telemetryService, AnalyticsEventNames } from "./core/analytics";
 
@@ -128,7 +129,7 @@ function GymCordApp() {
 
   useEffect(() => {
     save(appConfig.storageKeys.profile, profile);
-    if (persistenceHydrated.current) void dailyActivityRepository.saveProfile(auth.session, profile);
+    if (persistenceHydrated.current) void dashboardRepository.saveProfile(auth.session, profile);
   }, [auth.session, profile]);
 
   useEffect(() => {
@@ -145,7 +146,7 @@ function GymCordApp() {
 
   useEffect(() => {
     let active = true;
-    dailyActivityRepository.load(auth.session)
+    dashboardRepository.load(auth.session)
       .then((state) => {
         if (!active) return;
         setProfile(state.profile);
@@ -195,7 +196,7 @@ function GymCordApp() {
 
   useEffect(() => {
     if (!persistenceHydrated.current) return;
-    void dailyActivityRepository.saveDailyLog(auth.session, dayLog, mission, xp, streak);
+    void dashboardRepository.saveDailyLog(auth.session, dayLog, mission, xp, streak);
   }, [auth.session, dayLog, mission, streak, xp]);
 
   const achievements = useMemo(() => buildAchievements(missionHistory, streak), [missionHistory, streak]);
@@ -462,6 +463,14 @@ export default function App() {
     return (
       <AuthProvider>
         <DeveloperPersistence />
+      </AuthProvider>
+    );
+  }
+
+  if (window.location.pathname === "/dev/dashboard") {
+    return (
+      <AuthProvider>
+        <DeveloperDashboard />
       </AuthProvider>
     );
   }

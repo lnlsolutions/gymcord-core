@@ -15,24 +15,25 @@ Build 021 moves daily activity data behind repository calls while keeping the ex
   - `/missions` -> `missions`
   - `/workoutSessions` -> `workout_sessions`
   - `/exerciseLogs` -> `exercise_logs`
-- UI components do not import or call Supabase directly. Screens update app state, and `DailyActivityRepository` persists the resulting profile, daily log, mission, XP, and streak snapshots.
+- UI components do not import or call Supabase directly. Screens update app state, and `DailyActivityRepository` persists the resulting profile, daily log, workout, exercise, nutrition, progress, mission, XP, and streak snapshots.
+- Supabase writes use schema-compatible upserts so repeated autosaves update the same daily rows instead of creating duplicates.
 
 ## Persisted activity
 
 The persistence layer stores and reloads:
 
-- profile details for the current user
-- daily logs
-- workout completion and exercise completion in daily log snapshots
-- weights and exercise notes in daily log snapshots
-- nutrition logs, including calories, protein, ingredients, and meal photo path
-- measurements
+- current profile details for the authenticated user
+- daily logs through normalized repository data plus a local aggregate cache
+- workout completion in `workout_sessions`
+- exercise completion, weights, and notes in `exercise_logs`
+- nutrition logs, including calories, protein, ingredients, water, sleep, steps, mood, energy, and meal photo path
+- measurements and measurement metadata
 - progress photo metadata
 - XP events
 - streak snapshots
 - mission state
 
-Because the current Supabase schema stores many daily activity concepts in normalized tables instead of a single `daily_logs` table, the repository writes schema-compatible rows for nutrition, measurements, photos, XP, and streaks. The aggregate daily-log cache is retained for mock mode and local startup resilience.
+Because the current Supabase schema stores many daily activity concepts in normalized tables instead of a single `daily_logs` table, the repository writes schema-compatible rows for workouts, exercise logs, nutrition, measurements, photos, missions, XP, and streaks. Mock mode also writes the aggregate `/dailyLogs` collection. The aggregate local cache remains available for startup resilience and for data that cannot be read because a table, RLS policy, or environment variable is missing.
 
 ## Startup loading
 
@@ -41,16 +42,16 @@ On authenticated app startup, `GymCordApp` asks `DailyActivityRepository` to loa
 1. current user context from the auth session
 2. organization context from the auth session/bootstrap service
 3. profile data from `member_profiles` with local cache fallback
-4. daily logs from repository/local cache
-5. mission state from persisted mission snapshots
-6. XP history from persisted XP snapshots
-7. streak history from persisted streak snapshots
+4. daily logs from mock `/dailyLogs` or reconstructed Supabase records (`nutrition_logs`, `measurements`, `progress_photos`, `workout_sessions`, and `exercise_logs`)
+5. mission state from `missions` or persisted mission snapshots
+6. XP history from `xp_events` or persisted XP snapshots
+7. streak history from `streaks` or persisted streak snapshots
 
-If a Supabase table is unavailable, RLS blocks a read, or required environment variables are absent, the repository catches the error and falls back to cached mock/local data where possible. The most recent save outcome is stored as the last save status for developer inspection.
+If a Supabase table is unavailable, RLS blocks a read/write, or required environment variables are absent, the repository catches the error and falls back to cached mock/local data where possible. The most recent save outcome is stored as the last save status for developer inspection.
 
 ## Offline queue
 
-Writes are marked as queueable. The API client adds failed non-GET writes to the offline queue when the browser is offline. The developer page shows the queue length via `offlineEngine.getQueue()`.
+Writes are marked as queueable for providers that support queued requests. The shared offline engine remains the single source for queue diagnostics, and the developer page shows the queue length via `offlineEngine.getQueue()`.
 
 ## Developer diagnostics
 

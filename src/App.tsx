@@ -35,9 +35,13 @@ import { Meals } from "./components/Meals/Meals";
 import { Progress } from "./components/Progress/Progress";
 import { Coach } from "./components/Coach/Coach";
 import { Onboarding } from "./components/Onboarding";
+import { OrganizationSettings } from "./components/Settings/OrganizationSettings";
+import { organizationService } from "./services/OrganizationService";
+import { TenantContext } from "./lib/tenant";
 
 function GymCordApp() {
   const [page, setPage] = useState<Page>("home");
+  const [tenant, setTenant] = useState<TenantContext | null>(null);
   const [selectedDate, setSelectedDate] = useState(todayKey());
   const [profileComplete, setProfileComplete] = useState(() =>
     saved(appConfig.storageKeys.profileComplete, false)
@@ -58,6 +62,10 @@ function GymCordApp() {
   );
 
   const dayLog = logs[selectedDate] || createEmptyDay(selectedDate);
+
+  useEffect(() => {
+    void organizationService.bootstrap().then(setTenant);
+  }, []);
 
   function updateDay(patch: Partial<DailyLog>) {
     setLogs({
@@ -182,7 +190,7 @@ function GymCordApp() {
 
   return (
     <AppContextProvider>
-    <AppLayout profile={profile} page={page} setPage={setPage}>
+    <AppLayout profile={profile} organization={tenant?.organization} page={page} setPage={setPage}>
       <DateStrip
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
@@ -224,6 +232,18 @@ function GymCordApp() {
       )}
 
       {page === "coach" && <Coach profile={profile} dayLog={dayLog} mission={mission} xp={xp} streak={streak} nextAchievement={nextAchievement} atlasInsights={atlasInsights} atlasMemory={atlasMemory} atlasContext={atlasContext} conversation={conversation} onRememberConversation={(entry) => setConversation([entry, ...conversation])} />}
+
+      {page === "settings" && tenant && (
+        <OrganizationSettings
+          organization={tenant.organization}
+          role={tenant.role}
+          onChange={(organization) => {
+            void organizationService.updateOrganization(organization).then((updated) => {
+              setTenant(new TenantContext(updated, tenant.role));
+            });
+          }}
+        />
+      )}
 
     </AppLayout>
     </AppContextProvider>

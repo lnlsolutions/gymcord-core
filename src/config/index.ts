@@ -1,6 +1,34 @@
+export type AppEnvironment = "development" | "staging" | "production";
+export type BackendKind = "mock" | "supabase" | "firebase" | "rest";
+
+const mode = import.meta.env.MODE;
+const environment: AppEnvironment = mode === "production" ? "production" : mode === "staging" ? "staging" : "development";
+
+const defaultEndpoints: Record<AppEnvironment, { apiBaseUrl: string }> = {
+  development: { apiBaseUrl: "http://localhost:5173/api/" },
+  staging: { apiBaseUrl: "https://staging-api.gymcord.app/" },
+  production: { apiBaseUrl: "https://api.gymcord.app/" },
+};
+
 export const appConfig = {
   appName: import.meta.env.VITE_APP_NAME ?? "GymCord",
-  environment: import.meta.env.MODE,
+  environment,
+  backend: {
+    provider: (import.meta.env.VITE_BACKEND_PROVIDER ?? "mock") as BackendKind,
+    endpoints: {
+      apiBaseUrl: import.meta.env.VITE_API_BASE_URL ?? defaultEndpoints[environment].apiBaseUrl,
+      organizations: import.meta.env.VITE_ORGANIZATIONS_ENDPOINT ?? "/organizations",
+    },
+    supabase: {
+      url: import.meta.env.VITE_SUPABASE_URL,
+      anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+    },
+    firebase: {
+      projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    },
+    retryAttempts: Number(import.meta.env.VITE_API_RETRY_ATTEMPTS ?? 2),
+    timeoutMs: Number(import.meta.env.VITE_API_TIMEOUT_MS ?? 10000),
+  },
   storageKeys: {
     profile: import.meta.env.VITE_STORAGE_PROFILE_KEY ?? "gc.profile",
     profileComplete: import.meta.env.VITE_STORAGE_PROFILE_COMPLETE_KEY ?? "gc.profileComplete",

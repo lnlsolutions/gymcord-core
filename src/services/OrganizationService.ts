@@ -1,10 +1,11 @@
-import { OrganizationRepository, defaultOrganization } from "../repositories/OrganizationRepository";
-import { TenantContext } from "../lib/tenant";
+import { createBackendProvider } from "../api/client";
 import { ThemeEngine } from "../lib/engines/themeEngine";
+import { TenantContext } from "../lib/tenant";
+import { OrganizationRepository, defaultOrganization } from "../repositories/OrganizationRepository";
 import type { Organization } from "../types/domain";
 
 export class OrganizationService {
-  constructor(private readonly repository = new OrganizationRepository()) {}
+  constructor(private readonly repository = new OrganizationRepository(createBackendProvider())) {}
 
   async bootstrap(location: Location = window.location): Promise<TenantContext> {
     const result = await this.repository.list();

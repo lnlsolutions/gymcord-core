@@ -19,6 +19,7 @@ import { buildXpSnapshot } from "./lib/engines/xpEngine";
 import { buildStreakSnapshot } from "./lib/engines/streakEngine";
 import { buildAchievements, getNextAchievement } from "./lib/engines/achievementEngine";
 import { buildAtlasInsights } from "./lib/engines/atlasEngine";
+import { buildTransformationSnapshot } from "./lib/engines/transformationEngine";
 
 import { AppLayout } from "./components/Common/AppLayout";
 import { DateStrip } from "./components/Common/DateStrip";
@@ -105,7 +106,18 @@ export default function App() {
   const streak = useMemo(() => buildStreakSnapshot(logs, totalExercises, selectedDate), [logs, selectedDate, totalExercises]);
   const achievements = useMemo(() => buildAchievements(missionHistory, streak), [missionHistory, streak]);
   const nextAchievement = getNextAchievement(achievements);
-  const atlasInsights = buildAtlasInsights(mission, xp, streak, nextAchievement);
+  const transformation = useMemo(() => buildTransformationSnapshot({
+    logs,
+    startDate: profile.startDate || selectedDate,
+    currentDate: selectedDate,
+    totalExercises,
+    score: transformationScore,
+    mission,
+    xp,
+    streak,
+  }), [logs, mission, profile.startDate, selectedDate, streak, totalExercises, transformationScore, xp]);
+
+  const atlasInsights = buildAtlasInsights(mission, xp, streak, nextAchievement, transformation);
 
   const weeklyCompletion = useMemo(() => {
     const dates = getLastSevenDays();
@@ -166,6 +178,7 @@ export default function App() {
           streak={streak}
           nextAchievement={nextAchievement}
           atlasInsights={atlasInsights}
+          transformation={transformation}
           setPage={setPage}
         />
       )}
@@ -181,6 +194,7 @@ export default function App() {
           setSelectedDate={setSelectedDate}
           dayLog={dayLog}
           updateDay={updateDay}
+          transformation={transformation}
         />
       )}
 

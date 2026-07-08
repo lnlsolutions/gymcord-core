@@ -1,8 +1,10 @@
 import type { ReactNode } from "react";
 import { Activity, Award, Bot, CalendarDays, CheckCircle2, ChevronRight, Flame, Moon, Salad, Sparkles } from "lucide-react";
-import type { Achievement, AtlasInsight, DailyLog, Mission, Page, Profile, StreakSnapshot, XpSnapshot } from "../../types/gymcord";
+import type { Achievement, AtlasInsight, DailyLog, Mission, Page, Profile, StreakSnapshot, TransformationSnapshot, XpSnapshot } from "../../types/gymcord";
 import type { WorkoutDay } from "../../types/gymcord";
 import { getLastSevenDays, shortDate } from "../../lib/storage";
+import { MomentumRing } from "../Transformation/MomentumRing";
+import { TransformationTimeline } from "../Transformation/TransformationTimeline";
 
 interface DashboardProps {
   profile: Profile;
@@ -17,6 +19,7 @@ interface DashboardProps {
   streak: StreakSnapshot;
   nextAchievement: Achievement;
   atlasInsights: AtlasInsight[];
+  transformation: TransformationSnapshot;
   setPage: (page: Page) => void;
 }
 
@@ -28,7 +31,7 @@ function ProgressBar({ value }: { value: number }) {
   return <div className="progress-track" aria-label={`${value}% complete`}><span style={{ width: `${Math.min(100, Math.max(0, value))}%` }} /></div>;
 }
 
-export function Dashboard({ profile, dayLog, score, workoutCompletion, weeklyCompletion, todayWorkout, logs, mission, xp, streak, nextAchievement, atlasInsights, setPage }: DashboardProps) {
+export function Dashboard({ profile, dayLog, score, workoutCompletion, weeklyCompletion, todayWorkout, logs, mission, xp, streak, nextAchievement, atlasInsights, transformation, setPage }: DashboardProps) {
   const firstName = profile.name.split(" ")[0] || "Athlete";
   const recoveryScore = Math.round(((dayLog.sleep / 8) * 55 + (dayLog.energy / 5) * 25 + (dayLog.mood / 5) * 20));
   const nutritionProgress = Math.min(100, Math.round((dayLog.protein / 130) * 65 + (dayLog.water / 8) * 35));
@@ -54,10 +57,13 @@ export function Dashboard({ profile, dayLog, score, workoutCompletion, weeklyCom
         <div className="mission-score"><strong>{mission.completionPercentage}%</strong><span>{mission.earnedXp}/{mission.xpReward} XP</span></div>
       </div>
 
-      <article className="panel premium-card xp-panel">
-        <div className="card-heading"><div><p className="eyebrow">Level Badge</p><h3>Level {xp.currentLevel}</h3></div><strong>{xp.currentXp}/{xp.xpNeededForNextLevel} XP</strong></div>
-        <ProgressBar value={xp.progressPercentage} />
-      </article>
+      <MomentumRing snapshot={transformation.momentum} />
+
+      <div className="prediction-callouts">
+        {transformation.prediction.messages.map((message) => <div key={message}>{message}</div>)}
+      </div>
+
+      <TransformationTimeline snapshot={transformation} />
 
       <div className="mission-task-list">
         {mission.tasks.map((task) => <article className={`mission-task ${task.completed ? "complete" : ""}`} key={task.id}>

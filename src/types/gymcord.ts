@@ -148,3 +148,75 @@ export interface AtlasInsight {
   message: string;
   priority: "High" | "Medium" | "Low";
 }
+
+export interface ProgressChartPoint {
+  date: string;
+  weight: number | null;
+  mood: number;
+  energy: number;
+  recovery: number;
+}
+
+export interface ProgressSnapshot {
+  startDate: string;
+  currentDate: string;
+  dayNumber: number;
+  startWeight: number;
+  currentWeight: number;
+  estimatedBodyFat: number;
+  strengthProgress: number;
+  workoutCompletion: number;
+  consistency: number;
+  nutrition: number;
+  recovery: number;
+  missionCompletion: number;
+  chartData: ProgressChartPoint[];
+}
+
+export interface PredictionInput {
+  consistency: number;
+  workoutCompletion: number;
+  nutrition: number;
+  recovery: number;
+  streak: number;
+  currentMomentum: number;
+  loggedDays: number;
+}
+
+export interface PredictionSnapshot {
+  momentum: number;
+  projected30DayWeightChange: number;
+  projected90DayWeightChange: number;
+  projectedYearWeightChange: number;
+  percentile: number;
+  confidence: number;
+  messages: string[];
+}
+
+export interface MomentumSnapshot {
+  momentum: number;
+  xpPercentage: number;
+  level: number;
+  streak: number;
+  missionPercentage: number;
+}
+
+export interface TransformationMilestone {
+  label: string;
+  date: string;
+  weight: number;
+  bodyFat: number;
+  strengthProgress: number;
+  workoutCompletion: number;
+  consistency: number;
+  xpGrowth: number;
+  missionCompletion: number;
+  atlasConfidenceScore: number;
+}
+
+export interface TransformationSnapshot {
+  progress: ProgressSnapshot;
+  momentum: MomentumSnapshot;
+  prediction: PredictionSnapshot;
+  milestones: TransformationMilestone[];
+}

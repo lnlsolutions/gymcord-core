@@ -923,3 +923,45 @@ select.input option { color: #170a16; }
   color: white;
   background: rgba(255, 77, 109, 0.18);
 }
+
+/* Sprint Gamma transformation engine */
+.momentum-ring-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 18px;
+  margin-top: 16px;
+  border: 1px solid rgba(255, 122, 184, 0.22);
+  border-radius: 34px;
+  padding: 20px;
+  background: radial-gradient(circle at 18% 16%, rgba(117, 240, 178, 0.18), transparent 30%), rgba(255,255,255,.08);
+  box-shadow: var(--shadow);
+}
+.momentum-ring-shell { position: relative; width: 200px; max-width: 48vw; aspect-ratio: 1; }
+.momentum-ring-shell svg { width: 100%; height: 100%; transform: rotate(-90deg); filter: drop-shadow(0 0 28px rgba(255,79,160,.28)); }
+.ring-bg, .ring-progress { fill: none; stroke-width: 14; }
+.ring-bg { stroke: rgba(255,255,255,.09); }
+.ring-progress { stroke: url(#unused); stroke: #75f0b2; stroke-linecap: round; transition: stroke-dashoffset .8s ease; animation: ring-pulse 2.4s ease-in-out infinite; }
+.ring-core { position: absolute; inset: 32px; display: grid; place-items: center; align-content: center; border-radius: 999px; background: rgba(0,0,0,.24); text-align: center; }
+.ring-core span, .ring-core small { color: var(--muted); font-size: 11px; font-weight: 950; text-transform: uppercase; letter-spacing: .12em; }
+.ring-core strong { font-size: clamp(38px, 10vw, 56px); line-height: .9; }
+.ring-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.ring-stat-grid span { min-height: 82px; display: grid; place-items: center; border-radius: 22px; color: var(--muted); background: rgba(255,255,255,.065); font-size: 11px; font-weight: 900; text-transform: uppercase; }
+.ring-stat-grid strong { display: block; color: white; font-size: 24px; }
+.prediction-callouts { display: grid; gap: 10px; margin-top: 14px; }
+.prediction-callouts div { padding: 14px 16px; border: 1px solid rgba(117,240,178,.24); border-radius: 20px; color: #dfffee; background: rgba(117,240,178,.09); font-weight: 850; }
+.transformation-timeline strong { color: var(--green); }
+.timeline-chart { margin-top: 16px; padding: 10px; border-radius: 22px; background: rgba(0,0,0,.18); }
+.milestone-grid { display: grid; grid-template-columns: repeat(5, minmax(132px, 1fr)); gap: 10px; margin-top: 14px; overflow-x: auto; padding-bottom: 4px; }
+.milestone-card { min-height: 154px; padding: 14px; border-radius: 20px; background: rgba(255,255,255,.065); }
+.milestone-card strong, .milestone-card span, .milestone-card small { display: block; }
+.milestone-card span, .milestone-card small { margin-top: 7px; color: var(--muted); font-size: 12px; font-weight: 750; }
+.mini-bars { display: flex; align-items: end; gap: 5px; height: 52px; margin-top: 12px; }
+.mini-bars i { width: 100%; min-height: 8px; border-radius: 999px 999px 3px 3px; background: linear-gradient(180deg, var(--green), var(--pink)); }
+.chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+.measurement-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.measurement-grid label span { display: block; color: var(--muted); font-size: 11px; font-weight: 950; text-transform: uppercase; letter-spacing: .12em; }
+.photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.photo-grid .panel { margin-top: 16px; }
+@keyframes ring-pulse { 0%,100% { filter: drop-shadow(0 0 8px rgba(117,240,178,.18)); } 50% { filter: drop-shadow(0 0 18px rgba(117,240,178,.42)); } }
+@media (max-width: 760px) { .momentum-ring-card, .chart-grid, .photo-grid { grid-template-columns: 1fr; } .momentum-ring-shell { margin: 0 auto; } .measurement-grid { grid-template-columns: 1fr; } }

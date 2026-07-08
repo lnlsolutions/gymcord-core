@@ -1,0 +1,3 @@
+import type { DailyLog, Profile } from "../../types/gymcord";
+import { DashboardPanel } from "./cardUtils";
+export function WeightCard({ profile, dayLog }: { profile: Profile; dayLog: DailyLog }) { const current = dayLog.measurements.weight || profile.currentWeight || "—"; return <DashboardPanel title="Weight tracker" eyebrow="Progress" action={<strong>{current}</strong>}><p className="muted-line">Goal weight: {profile.goalWeight || "not set"}</p><p className="muted-line">Progress photo reminder: {Object.values(dayLog.photos).some(Boolean) ? "photo logged today" : "capture front, side, and back when ready"}.</p></DashboardPanel>; }

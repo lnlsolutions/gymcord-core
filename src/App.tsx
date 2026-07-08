@@ -44,9 +44,12 @@ import { realtimeService } from "./services/realtime";
 import { DeveloperEvents } from "./components/Dev/DeveloperEvents";
 import { DeveloperAnalytics } from "./components/Dev/DeveloperAnalytics";
 import { DeveloperDataFlow } from "./components/Dev/DeveloperDataFlow";
+import { DeveloperOnboardingFlow } from "./components/Dev/DeveloperOnboardingFlow";
+import { onboardingRepository } from "./services/OnboardingRepository";
 import { telemetryService, AnalyticsEventNames } from "./core/analytics";
 
 function GymCordApp() {
+  const auth = useAuth();
   const [page, setPage] = useState<Page>("home");
   const [tenant, setTenant] = useState<TenantContext | null>(null);
   const [selectedDate, setSelectedDate] = useState(todayKey());
@@ -93,7 +96,14 @@ function GymCordApp() {
       }
     });
 
-    void organizationService.bootstrap().then(setTenant);
+    void organizationService.bootstrap().then((nextTenant) => {
+      const activeOrg = auth.session?.organization;
+      if (activeOrg) {
+        setTenant(new TenantContext({ ...nextTenant.organization, id: activeOrg.id, name: activeOrg.name, slug: activeOrg.slug }, nextTenant.role));
+      } else {
+        setTenant(nextTenant);
+      }
+    });
 
     return () => {
       unsubscribe();
@@ -252,10 +262,17 @@ function GymCordApp() {
           }
 
           setSavingProfile(true);
-          window.setTimeout(() => {
-            setProfileComplete(true);
-            setSavingProfile(false);
-          }, appConfig.onboarding.completionDelayMs);
+          void onboardingRepository.save(auth.session, profile, dayLog)
+            .then(() => {
+              window.setTimeout(() => {
+                setProfileComplete(true);
+                setSavingProfile(false);
+              }, appConfig.onboarding.completionDelayMs);
+            })
+            .catch((error: Error) => {
+              setOnboardingError(error.message);
+              setSavingProfile(false);
+            });
         }}
       />
       </AppContextProvider>
@@ -385,6 +402,14 @@ export default function App() {
     return (
       <AuthProvider>
         <DeveloperDataFlow />
+      </AuthProvider>
+    );
+  }
+
+  if (window.location.pathname === "/dev/onboarding-flow") {
+    return (
+      <AuthProvider>
+        <DeveloperOnboardingFlow />
       </AuthProvider>
     );
   }

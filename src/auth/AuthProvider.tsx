@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { AuthContext } from "./AuthContext";
 import { MockAuthService } from "./MockAuthService";
+import { SupabaseAuthService } from "./SupabaseAuthService";
+import { appConfig } from "../config";
 import { PermissionManager } from "./PermissionManager";
 import { RoleManager } from "./RoleManager";
 import { SessionManager } from "./SessionManager";
@@ -14,7 +16,7 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children, service, provider }: AuthProviderProps) {
-  const authService = useMemo(() => service ?? provider?.createService() ?? new MockAuthService(), [provider, service]);
+  const authService = useMemo(() => service ?? provider?.createService() ?? (appConfig.backend.provider === "supabase" ? new SupabaseAuthService(appConfig.backend.supabase.url, appConfig.backend.supabase.anonKey) : new MockAuthService()), [provider, service]);
   const [status, setStatus] = useState<AuthStatus>("loading");
   const [session, setSession] = useState<AuthSession | null>(null);
   const [error, setError] = useState("");

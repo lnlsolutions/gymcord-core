@@ -76,6 +76,7 @@ export interface SignInCredentials {
 export interface SignUpCredentials extends SignInCredentials {
   displayName: string;
   organizationName?: string;
+  role?: "member" | "trainer";
 }
 
 export interface ResetPasswordRequest {

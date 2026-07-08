@@ -14,12 +14,14 @@ export function Train({
   mission,
   xp,
   achievements,
+  onWorkoutCompleted,
 }: {
   dayLog: DailyLog;
   updateDay: (patch: Partial<DailyLog>) => void;
   mission: Mission;
   xp: XpSnapshot;
   achievements: Achievement[];
+  onWorkoutCompleted?: (event: { workout: WorkoutDay; dayLog: DailyLog; durationMinutes: number; xpEarned: number }) => void;
 }) {
   const [activeWorkout, setActiveWorkout] = useState<WorkoutDay | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -89,6 +91,17 @@ export function Train({
   const rest = buildRestTimer(timerDuration, timer, running, timerComplete);
   const exercise = session.activeExercise;
   const exerciseKey = getExerciseKey(activeWorkout.id, exercise.id);
+
+  function finishWorkout() {
+    setComplete(true);
+    onWorkoutCompleted?.({
+      workout: activeWorkout,
+      dayLog,
+      durationMinutes: elapsedMinutes,
+      xpEarned: completion.xpEarned,
+    });
+  }
+
   const isExerciseComplete = !!dayLog.completedExercises[exerciseKey];
 
   if (complete) {
@@ -124,7 +137,7 @@ export function Train({
           <p className="eyebrow">Workout Session</p>
           <h2>{activeWorkout.title}</h2>
         </div>
-        <button className="finish-workout-button" onClick={() => setComplete(true)}>Finish Workout</button>
+        <button className="finish-workout-button" onClick={finishWorkout}>Finish Workout</button>
       </div>
 
       <div className="session-progress-row">
@@ -179,7 +192,7 @@ export function Train({
 
       <div className="session-bottom-actions" aria-label="Workout session actions">
         <button className="session-exit-button" onClick={() => setActiveWorkout(null)}>Exit</button>
-        <button className="finish-workout-button" onClick={() => setComplete(true)}>Finish Workout</button>
+        <button className="finish-workout-button" onClick={finishWorkout}>Finish Workout</button>
       </div>
     </section>
   );

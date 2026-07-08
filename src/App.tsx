@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { appConfig } from "./config";
 import { AppContextProvider } from "./context/AppContext";
 import { AuthProvider, ForgotPasswordScreen, LoadingScreen, LoginScreen, ProtectedRoute, SignupScreen, useAuth } from "./auth";
@@ -38,6 +38,8 @@ import { Onboarding } from "./components/Onboarding";
 import { OrganizationSettings } from "./components/Settings/OrganizationSettings";
 import { organizationService } from "./services/OrganizationService";
 import { TenantContext } from "./lib/tenant";
+import { EventTypes } from "./core/events";
+import { realtimeService } from "./services/realtime";
 
 function GymCordApp() {
   const [page, setPage] = useState<Page>("home");
@@ -48,6 +50,10 @@ function GymCordApp() {
   );
   const [onboardingError, setOnboardingError] = useState("");
   const [savingProfile, setSavingProfile] = useState(false);
+  const previousMissionComplete = useRef(false);
+  const previousTotalXp = useRef(0);
+  const unlockedAchievementIds = useRef(new Set<string>());
+  const previousAtlasSignal = useRef("");
 
   const [profile, setProfile] = useState<Profile>(() =>
     saved(appConfig.storageKeys.profile, createEmptyProfile())
@@ -64,7 +70,20 @@ function GymCordApp() {
   const dayLog = logs[selectedDate] || createEmptyDay(selectedDate);
 
   useEffect(() => {
+    void realtimeService.connect();
+
+    const unsubscribe = realtimeService.subscribe("*", (event) => {
+      if (appConfig.environment === "development") {
+        console.debug("[GymCord Realtime] event received", event);
+      }
+    });
+
     void organizationService.bootstrap().then(setTenant);
+
+    return () => {
+      unsubscribe();
+      void realtimeService.disconnect();
+    };
   }, []);
 
   function updateDay(patch: Partial<DailyLog>) {
@@ -149,6 +168,41 @@ function GymCordApp() {
 
   const atlasInsights = buildAtlasInsights(mission, xp, streak, nextAchievement, transformation);
 
+  useEffect(() => {
+    if (!previousMissionComplete.current && mission.completed) {
+      void realtimeService.publish(EventTypes.MissionCompleted, { mission, completedAt: new Date().toISOString() }, "mission-engine");
+    }
+    previousMissionComplete.current = mission.completed;
+  }, [mission]);
+
+  useEffect(() => {
+    if (previousTotalXp.current > 0 && xp.totalXp > previousTotalXp.current) {
+      void realtimeService.publish(EventTypes.XpEarned, {
+        amount: xp.totalXp - previousTotalXp.current,
+        totalXp: xp.totalXp,
+        snapshot: xp,
+        reason: "xp-engine-recalculation",
+      }, "xp-engine");
+    }
+    previousTotalXp.current = xp.totalXp;
+  }, [xp]);
+
+  useEffect(() => {
+    achievements.filter((achievement) => achievement.unlocked).forEach((achievement) => {
+      if (unlockedAchievementIds.current.has(achievement.id)) return;
+      unlockedAchievementIds.current.add(achievement.id);
+      void realtimeService.publish(EventTypes.AchievementUnlocked, { achievement, unlockedAt: new Date().toISOString() }, "achievement-engine");
+    });
+  }, [achievements]);
+
+  useEffect(() => {
+    const atlasSignal = `${mission.id}:${mission.completionPercentage}:${atlasInsights.map((insight) => insight.message).join("|")}`;
+    if (previousAtlasSignal.current && previousAtlasSignal.current !== atlasSignal) {
+      void realtimeService.publish(EventTypes.AtlasUpdated, { insights: atlasInsights, mission, updatedAt: new Date().toISOString() }, "atlas-engine");
+    }
+    previousAtlasSignal.current = atlasSignal;
+  }, [atlasInsights, mission]);
+
   const weeklyCompletion = useMemo(() => {
     const dates = getLastSevenDays();
 
@@ -170,6 +224,7 @@ function GymCordApp() {
         onChange={(nextProfile) => {
           setOnboardingError("");
           setProfile(nextProfile);
+          void realtimeService.publish(EventTypes.MemberUpdated, { profile: nextProfile, updatedAt: new Date().toISOString() }, "member-engine");
         }}
         onSubmit={() => {
           if (!profile.name.trim() || !profile.goal.trim()) {
@@ -216,7 +271,15 @@ function GymCordApp() {
         />
       )}
 
-      {page === "train" && <Train dayLog={dayLog} updateDay={updateDay} mission={mission} xp={xp} achievements={achievements} />}
+      {page === "train" && <Train dayLog={dayLog} updateDay={updateDay} mission={mission} xp={xp} achievements={achievements} onWorkoutCompleted={({ workout, dayLog: completedDayLog, durationMinutes, xpEarned }) => {
+        void realtimeService.publish(EventTypes.WorkoutCompleted, {
+          workout,
+          dayLog: completedDayLog,
+          completedAt: new Date().toISOString(),
+          durationMinutes,
+          xpEarned,
+        }, "workout-engine");
+      }} />}
 
       {page === "meals" && <Meals dayLog={dayLog} updateDay={updateDay} />}
 
@@ -231,7 +294,22 @@ function GymCordApp() {
         />
       )}
 
-      {page === "coach" && <Coach profile={profile} dayLog={dayLog} mission={mission} xp={xp} streak={streak} nextAchievement={nextAchievement} atlasInsights={atlasInsights} atlasMemory={atlasMemory} atlasContext={atlasContext} conversation={conversation} onRememberConversation={(entry) => setConversation([entry, ...conversation])} />}
+      {page === "coach" && <Coach profile={profile} dayLog={dayLog} mission={mission} xp={xp} streak={streak} nextAchievement={nextAchievement} atlasInsights={atlasInsights} atlasMemory={atlasMemory} atlasContext={atlasContext} conversation={conversation} onRememberConversation={(entry) => {
+        setConversation([entry, ...conversation]);
+        void realtimeService.publish(EventTypes.MessageReceived, {
+          id: entry.id,
+          conversationId: profile.id,
+          senderId: profile.id,
+          message: entry.question,
+          receivedAt: entry.timestamp,
+        }, "atlas-conversation-engine");
+        void realtimeService.publish(EventTypes.NotificationCreated, {
+          id: `atlas-${entry.id}`,
+          title: "Atlas response ready",
+          body: entry.answer,
+          createdAt: entry.timestamp,
+        }, "notification-engine");
+      }} />}
 
       {page === "settings" && tenant && (
         <OrganizationSettings
@@ -240,6 +318,7 @@ function GymCordApp() {
           onChange={(organization) => {
             void organizationService.updateOrganization(organization).then((updated) => {
               setTenant(new TenantContext(updated, tenant.role));
+              void realtimeService.publish(EventTypes.OrganizationUpdated, { organization: updated, updatedAt: new Date().toISOString() }, "organization-engine");
             });
           }}
         />

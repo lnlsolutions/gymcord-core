@@ -1540,3 +1540,74 @@ body {
   width: fit-content;
   margin-top: 8px;
 }
+
+.dev-page {
+  min-height: 100vh;
+  padding: 32px;
+  color: #f8fafc;
+  background: radial-gradient(circle at top left, rgba(255, 79, 160, 0.18), transparent 32rem), #09090b;
+}
+
+.dev-header,
+.dev-card {
+  max-width: 980px;
+  margin: 0 auto 20px;
+}
+
+.dev-header h1 {
+  margin: 0;
+  font-size: clamp(2.25rem, 5vw, 4rem);
+}
+
+.dev-header p {
+  color: #cbd5e1;
+}
+
+.dev-card {
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  background: rgba(15, 23, 42, 0.82);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.24);
+}
+
+.dev-card h2 {
+  margin-top: 0;
+}
+
+.dev-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.dev-row {
+  display: grid;
+  gap: 4px;
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.dev-row strong,
+.eyebrow {
+  color: #ff7ab8;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+}
+
+.dev-row span {
+  font-size: 1rem;
+}
+
+.dev-row small,
+.dev-card pre {
+  color: #cbd5e1;
+}
+
+.dev-card pre {
+  overflow: auto;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.32);
+}

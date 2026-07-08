@@ -87,3 +87,64 @@ export interface CoachInsight {
   description: string;
   priority: "High" | "Medium" | "Low";
 }
+
+export interface MissionTask {
+  id: string;
+  title: string;
+  description: string;
+  xpReward: number;
+  completed: boolean;
+  progress: number;
+  target: number;
+  completionPercentage: number;
+}
+
+export interface Mission {
+  id: string;
+  date: string;
+  title: string;
+  description: string;
+  xpReward: number;
+  earnedXp: number;
+  completed: boolean;
+  progress: number;
+  target: number;
+  completionPercentage: number;
+  tasks: MissionTask[];
+}
+
+export interface XpSnapshot {
+  totalXp: number;
+  currentXp: number;
+  currentLevel: number;
+  xpNeededForNextLevel: number;
+  progressPercentage: number;
+}
+
+export interface StreakDay {
+  date: string;
+  active: boolean;
+  missed: boolean;
+}
+
+export interface StreakSnapshot {
+  currentStreak: number;
+  longestStreak: number;
+  weeklyCalendar: StreakDay[];
+  streakInDanger: boolean;
+}
+
+export interface Achievement {
+  id: string;
+  title: string;
+  description: string;
+  unlocked: boolean;
+  progress: number;
+  target: number;
+  completionPercentage: number;
+}
+
+export interface AtlasInsight {
+  message: string;
+  priority: "High" | "Medium" | "Low";
+}

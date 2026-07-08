@@ -838,3 +838,88 @@ select.input option { color: #170a16; }
 @keyframes rise-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 @media (min-width: 900px) { .screen { width: min(1120px, 100%); } .metric-grid, .dashboard-split { grid-template-columns: repeat(4, 1fr); } .dashboard-split { grid-template-columns: 1fr 1fr; gap: 16px; } .form-grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 430px) { .metric-grid, .form-grid { grid-template-columns: 1fr; } .daily-mission-card { grid-template-columns: 1fr; } }
+
+.xp-panel strong {
+  color: var(--green);
+  font-size: 14px;
+}
+
+.mission-task-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.mission-task {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.mission-task.complete {
+  border-color: rgba(117, 240, 178, 0.42);
+  background: rgba(117, 240, 178, 0.11);
+}
+
+.mission-task svg {
+  color: var(--pink-2);
+}
+
+.mission-task.complete svg {
+  color: var(--green);
+}
+
+.mission-task strong,
+.mission-task span,
+.mission-task em {
+  display: block;
+}
+
+.mission-task span,
+.muted-line {
+  color: var(--muted);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.mission-task em {
+  color: var(--green);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 950;
+}
+
+.streak-calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 7px;
+  margin: 12px 0;
+}
+
+.streak-calendar span {
+  display: grid;
+  min-height: 38px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 950;
+}
+
+.streak-calendar span.active {
+  color: #08120d;
+  background: var(--green);
+}
+
+.streak-calendar span.missed {
+  color: white;
+  background: rgba(255, 77, 109, 0.18);
+}

@@ -119,12 +119,12 @@ export function Train({
   return (
     <section className="workout-session">
       <div className="session-topbar">
-        <button onClick={() => setActiveWorkout(null)}>←</button>
-        <div>
+        <button className="session-exit-button" onClick={() => setActiveWorkout(null)} aria-label="Exit workout session">Exit</button>
+        <div className="session-title">
           <p className="eyebrow">Workout Session</p>
           <h2>{activeWorkout.title}</h2>
         </div>
-        <button onClick={() => setComplete(true)}>Finish</button>
+        <button className="finish-workout-button" onClick={() => setComplete(true)}>Finish Workout</button>
       </div>
 
       <div className="session-progress-row">
@@ -176,6 +176,11 @@ export function Train({
       </div>
 
       <div className="pr-strip">{records.filter((record) => record.isNew).map((record) => <span key={record.type}>✨ New PR: {record.title} {record.value}{record.unit}</span>)}</div>
+
+      <div className="session-bottom-actions" aria-label="Workout session actions">
+        <button className="session-exit-button" onClick={() => setActiveWorkout(null)}>Exit</button>
+        <button className="finish-workout-button" onClick={() => setComplete(true)}>Finish Workout</button>
+      </div>
     </section>
   );
 }

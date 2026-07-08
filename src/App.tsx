@@ -183,7 +183,7 @@ export default function App() {
         />
       )}
 
-      {page === "train" && <Train dayLog={dayLog} updateDay={updateDay} />}
+      {page === "train" && <Train dayLog={dayLog} updateDay={updateDay} mission={mission} xp={xp} achievements={achievements} />}
 
       {page === "meals" && <Meals dayLog={dayLog} updateDay={updateDay} />}
 

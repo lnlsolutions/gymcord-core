@@ -45,6 +45,8 @@ import { DeveloperEvents } from "./components/Dev/DeveloperEvents";
 import { DeveloperAnalytics } from "./components/Dev/DeveloperAnalytics";
 import { DeveloperDataFlow } from "./components/Dev/DeveloperDataFlow";
 import { DeveloperOnboardingFlow } from "./components/Dev/DeveloperOnboardingFlow";
+import { DeveloperPersistence } from "./components/Dev/DeveloperPersistence";
+import { dailyActivityRepository } from "./repositories/DailyActivityRepository";
 import { onboardingRepository } from "./services/OnboardingRepository";
 import { telemetryService, AnalyticsEventNames } from "./core/analytics";
 
@@ -62,6 +64,7 @@ function GymCordApp() {
   const previousTotalXp = useRef(0);
   const unlockedAchievementIds = useRef(new Set<string>());
   const previousAtlasSignal = useRef("");
+  const persistenceHydrated = useRef(false);
 
   useEffect(() => {
     void telemetryService.initialize();
@@ -124,7 +127,8 @@ function GymCordApp() {
 
   useEffect(() => {
     save(appConfig.storageKeys.profile, profile);
-  }, [profile]);
+    if (persistenceHydrated.current) void dailyActivityRepository.saveProfile(auth.session, profile);
+  }, [auth.session, profile]);
 
   useEffect(() => {
     save(appConfig.storageKeys.profileComplete, profileComplete);
@@ -137,6 +141,23 @@ function GymCordApp() {
   useEffect(() => {
     AtlasStore.saveConversation(conversation);
   }, [conversation]);
+
+  useEffect(() => {
+    let active = true;
+    dailyActivityRepository.load(auth.session)
+      .then((state) => {
+        if (!active) return;
+        setProfile(state.profile);
+        setLogs(state.logs);
+        persistenceHydrated.current = true;
+      })
+      .catch((error: Error) => {
+        console.warn(`[GymCord Persistence] startup load skipped: ${error.message}`);
+        persistenceHydrated.current = true;
+      });
+    return () => { active = false; };
+  }, [auth.session]);
+
 
   const totalExercises = workouts.reduce(
     (sum, workout) => sum + workout.exercises.length,
@@ -170,6 +191,12 @@ function GymCordApp() {
 
   const xp = useMemo(() => buildXpSnapshot(logs, missionHistory), [logs, missionHistory]);
   const streak = useMemo(() => buildStreakSnapshot(logs, totalExercises, selectedDate), [logs, selectedDate, totalExercises]);
+
+  useEffect(() => {
+    if (!persistenceHydrated.current) return;
+    void dailyActivityRepository.saveDailyLog(auth.session, dayLog, mission, xp, streak);
+  }, [auth.session, dayLog, mission, streak, xp]);
+
   const achievements = useMemo(() => buildAchievements(missionHistory, streak), [missionHistory, streak]);
   const nextAchievement = getNextAchievement(achievements);
   const transformation = useMemo(() => buildTransformationSnapshot({
@@ -410,6 +437,14 @@ export default function App() {
     return (
       <AuthProvider>
         <DeveloperOnboardingFlow />
+      </AuthProvider>
+    );
+  }
+
+  if (window.location.pathname === "/dev/persistence") {
+    return (
+      <AuthProvider>
+        <DeveloperPersistence />
       </AuthProvider>
     );
   }

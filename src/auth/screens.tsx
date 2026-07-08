@@ -52,18 +52,20 @@ export function SignupScreen({ onModeChange }: { onModeChange: (mode: "login" | 
   const auth = useAuth();
   const [displayName, setDisplayName] = useState("");
   const [organizationName, setOrganizationName] = useState("");
+  const [role, setRole] = useState<"member" | "trainer">("member");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
-    void auth.signUp({ displayName, organizationName, email, password });
+    void auth.signUp({ displayName, organizationName, email, password, role });
   };
 
   return (
     <AuthShell eyebrow="Create account" title="Start your organization" subtitle="Users are created with an organization, brand, theme, settings, and member role.">
       <form className="auth-form" onSubmit={submit}>
         <label>Name<input value={displayName} onChange={(event) => setDisplayName(event.target.value)} required /></label>
+        <label>Role<select value={role} onChange={(event) => setRole(event.target.value as "member" | "trainer")}><option value="member">Member</option><option value="trainer">Trainer</option></select></label>
         <label>Organization<input value={organizationName} onChange={(event) => setOrganizationName(event.target.value)} placeholder="Optional" /></label>
         <label>Email<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} required /></label>
         <label>Password<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} required /></label>

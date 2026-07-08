@@ -9,6 +9,11 @@ export const EventTypes = {
   MessageReceived: "MessageReceived",
   NotificationCreated: "NotificationCreated",
   AtlasUpdated: "AtlasUpdated",
+  StreakAtRisk: "StreakAtRisk",
+  WorkoutMissed: "WorkoutMissed",
+  AtlasInsightGenerated: "AtlasInsightGenerated",
+  MemberJoined: "MemberJoined",
+  TrainerAssigned: "TrainerAssigned",
   MemberUpdated: "MemberUpdated",
   OrganizationUpdated: "OrganizationUpdated",
 } as const;
@@ -69,6 +74,34 @@ export interface AtlasUpdatedPayload {
   updatedAt: string;
 }
 
+export interface StreakAtRiskPayload {
+  memberId: string;
+  atRiskAt: string;
+  reason: string;
+}
+
+export interface WorkoutMissedPayload {
+  memberId: string;
+  workoutDate: string;
+  missedAt: string;
+}
+
+export interface AtlasInsightGeneratedPayload {
+  insights: AtlasInsight[];
+  generatedAt: string;
+}
+
+export interface MemberJoinedPayload {
+  profile: Profile;
+  joinedAt: string;
+}
+
+export interface TrainerAssignedPayload {
+  memberId: string;
+  trainerId: string;
+  assignedAt: string;
+}
+
 export interface MemberUpdatedPayload {
   profile: Profile;
   updatedAt: string;
@@ -87,6 +120,11 @@ export type GymCordEventMap = {
   [EventTypes.MessageReceived]: MessageReceivedPayload;
   [EventTypes.NotificationCreated]: NotificationCreatedPayload;
   [EventTypes.AtlasUpdated]: AtlasUpdatedPayload;
+  [EventTypes.StreakAtRisk]: StreakAtRiskPayload;
+  [EventTypes.WorkoutMissed]: WorkoutMissedPayload;
+  [EventTypes.AtlasInsightGenerated]: AtlasInsightGeneratedPayload;
+  [EventTypes.MemberJoined]: MemberJoinedPayload;
+  [EventTypes.TrainerAssigned]: TrainerAssignedPayload;
   [EventTypes.MemberUpdated]: MemberUpdatedPayload;
   [EventTypes.OrganizationUpdated]: OrganizationUpdatedPayload;
 };

@@ -39,7 +39,9 @@ import { OrganizationSettings } from "./components/Settings/OrganizationSettings
 import { organizationService } from "./services/OrganizationService";
 import { TenantContext } from "./lib/tenant";
 import { EventTypes } from "./core/events";
+import { notificationEngine } from "./core/automation";
 import { realtimeService } from "./services/realtime";
+import { DeveloperEvents } from "./components/Dev/DeveloperEvents";
 
 function GymCordApp() {
   const [page, setPage] = useState<Page>("home");
@@ -54,6 +56,11 @@ function GymCordApp() {
   const previousTotalXp = useRef(0);
   const unlockedAchievementIds = useRef(new Set<string>());
   const previousAtlasSignal = useRef("");
+
+  useEffect(() => {
+    notificationEngine.start();
+    return () => notificationEngine.stop();
+  }, []);
 
   const [profile, setProfile] = useState<Profile>(() =>
     saved(appConfig.storageKeys.profile, createEmptyProfile())
@@ -199,6 +206,7 @@ function GymCordApp() {
     const atlasSignal = `${mission.id}:${mission.completionPercentage}:${atlasInsights.map((insight) => insight.message).join("|")}`;
     if (previousAtlasSignal.current && previousAtlasSignal.current !== atlasSignal) {
       void realtimeService.publish(EventTypes.AtlasUpdated, { insights: atlasInsights, mission, updatedAt: new Date().toISOString() }, "atlas-engine");
+      void realtimeService.publish(EventTypes.AtlasInsightGenerated, { insights: atlasInsights, generatedAt: new Date().toISOString() }, "atlas-engine");
     }
     previousAtlasSignal.current = atlasSignal;
   }, [atlasInsights, mission]);
@@ -347,6 +355,11 @@ function AuthGate() {
 }
 
 export default function App() {
+  if (window.location.pathname === "/dev/events") {
+    notificationEngine.start();
+    return <DeveloperEvents />;
+  }
+
   return (
     <AuthProvider>
       <AuthGate />

@@ -1,6 +1,10 @@
 import type { AtlasConversationEntry, DailyLog } from "../types/gymcord";
-import type { Achievement, EntityId, Organization, ExerciseLog, MealLog, Mission, Notification, ProgressPhoto, User, WorkoutSession } from "../types/domain";
+import type { Achievement, EntityId, Organization, Trainer, ExerciseLog, MealLog, Mission, Notification, ProgressPhoto, User, WorkoutSession } from "../types/domain";
 import type { Repository, RepositoryResult } from "./base";
+
+export interface TrainerRepository extends Repository<Trainer, Omit<Trainer, "id" | "createdAt" | "updatedAt">> {
+  listByOrganization(organizationId: EntityId): Promise<RepositoryResult<Trainer[]>>;
+}
 
 export interface UserRepository extends Repository<User, Omit<User, "id" | "createdAt" | "updatedAt">> {
   findByEmail(email: string): Promise<RepositoryResult<User | null>>;

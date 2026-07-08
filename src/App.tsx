@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { DailyLog, Page, Profile } from "./types/gymcord";
+import type { AtlasConversationEntry, DailyLog, Page, Profile } from "./types/gymcord";
 
 import { workouts } from "./lib/program";
 import {
@@ -19,6 +19,9 @@ import { buildXpSnapshot } from "./lib/engines/xpEngine";
 import { buildStreakSnapshot } from "./lib/engines/streakEngine";
 import { buildAchievements, getNextAchievement } from "./lib/engines/achievementEngine";
 import { buildAtlasInsights } from "./lib/engines/atlasEngine";
+import { buildAtlasMemory } from "./lib/engines/memoryEngine";
+import { buildAtlasContext } from "./lib/engines/contextEngine";
+import { AtlasStore } from "./lib/atlasStore";
 import { buildTransformationSnapshot } from "./lib/engines/transformationEngine";
 
 import { AppLayout } from "./components/Common/AppLayout";
@@ -47,6 +50,10 @@ export default function App() {
     saved("gc.dailyLogs", {})
   );
 
+  const [conversation, setConversation] = useState<AtlasConversationEntry[]>(() =>
+    AtlasStore.loadConversation()
+  );
+
   const dayLog = logs[selectedDate] || createEmptyDay(selectedDate);
 
   function updateDay(patch: Partial<DailyLog>) {
@@ -71,6 +78,10 @@ export default function App() {
   useEffect(() => {
     save("gc.dailyLogs", logs);
   }, [logs]);
+
+  useEffect(() => {
+    AtlasStore.saveConversation(conversation);
+  }, [conversation]);
 
   const totalExercises = workouts.reduce(
     (sum, workout) => sum + workout.exercises.length,
@@ -116,6 +127,14 @@ export default function App() {
     xp,
     streak,
   }), [logs, mission, profile.startDate, selectedDate, streak, totalExercises, transformationScore, xp]);
+
+  const atlasMemory = useMemo(() => buildAtlasMemory({ profile, logs, mission, nextAchievement }), [logs, mission, nextAchievement, profile]);
+
+  useEffect(() => {
+    AtlasStore.saveMemory(atlasMemory);
+  }, [atlasMemory]);
+
+  const atlasContext = useMemo(() => buildAtlasContext({ memory: atlasMemory, dayLog, mission, streak, todayWorkout, transformation }), [atlasMemory, dayLog, mission, streak, todayWorkout, transformation]);
 
   const atlasInsights = buildAtlasInsights(mission, xp, streak, nextAchievement, transformation);
 
@@ -198,7 +217,7 @@ export default function App() {
         />
       )}
 
-      {page === "coach" && <Coach profile={profile} dayLog={dayLog} mission={mission} xp={xp} streak={streak} nextAchievement={nextAchievement} atlasInsights={atlasInsights} />}
+      {page === "coach" && <Coach profile={profile} dayLog={dayLog} mission={mission} xp={xp} streak={streak} nextAchievement={nextAchievement} atlasInsights={atlasInsights} atlasMemory={atlasMemory} atlasContext={atlasContext} conversation={conversation} onRememberConversation={(entry) => setConversation([entry, ...conversation])} />}
 
     </AppLayout>
   );

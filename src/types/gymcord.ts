@@ -220,3 +220,67 @@ export interface TransformationSnapshot {
   prediction: PredictionSnapshot;
   milestones: TransformationMilestone[];
 }
+
+export interface MemoryWorkoutEntry {
+  date: string;
+  completedExercises: string[];
+  totalVolume: number;
+  notes: string[];
+}
+
+export interface NutritionMemoryEntry {
+  date: string;
+  protein: number;
+  calories: number;
+  water: number;
+}
+
+export interface SleepMemoryEntry {
+  date: string;
+  sleep: number;
+}
+
+export interface RecoveryMemoryEntry {
+  date: string;
+  mood: number;
+  energy: number;
+  sleep: number;
+}
+
+export interface PrMemoryEntry {
+  exercise: string;
+  value: string;
+  date: string;
+}
+
+export interface AtlasMemory {
+  name: string;
+  goal: string;
+  injuries: string[];
+  favoriteExercises: string[];
+  workoutHistory: MemoryWorkoutEntry[];
+  nutritionHistory: NutritionMemoryEntry[];
+  sleepHistory: SleepMemoryEntry[];
+  recoveryHistory: RecoveryMemoryEntry[];
+  prHistory: PrMemoryEntry[];
+  missionSnapshot?: Mission;
+}
+
+export interface AtlasContext {
+  greeting: string;
+  todayFocus: string;
+  recoveryStatus: string;
+  biggestOpportunity: string;
+  lastWorkoutSummary: string;
+  currentStreak: number;
+  missionStatus: string;
+  coachingMessages: string[];
+}
+
+export interface AtlasConversationEntry {
+  id: string;
+  question: string;
+  answer: string;
+  timestamp: string;
+  category: "training" | "nutrition" | "recovery" | "progress" | "general";
+}

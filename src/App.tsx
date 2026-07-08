@@ -46,6 +46,7 @@ import { DeveloperAnalytics } from "./components/Dev/DeveloperAnalytics";
 import { DeveloperDataFlow } from "./components/Dev/DeveloperDataFlow";
 import { DeveloperOnboardingFlow } from "./components/Dev/DeveloperOnboardingFlow";
 import { DeveloperPersistence } from "./components/Dev/DeveloperPersistence";
+import { TrainerOS } from "./components/Trainer/TrainerOS";
 import { dailyActivityRepository } from "./repositories/DailyActivityRepository";
 import { onboardingRepository } from "./services/OnboardingRepository";
 import { telemetryService, AnalyticsEventNames } from "./core/analytics";
@@ -437,6 +438,22 @@ export default function App() {
     return (
       <AuthProvider>
         <DeveloperOnboardingFlow />
+      </AuthProvider>
+    );
+  }
+
+  if (window.location.pathname === "/trainer") {
+    return (
+      <AuthProvider>
+        <TrainerOS />
+      </AuthProvider>
+    );
+  }
+
+  if (window.location.pathname === "/dev/trainer-os") {
+    return (
+      <AuthProvider>
+        <TrainerOS developer />
       </AuthProvider>
     );
   }

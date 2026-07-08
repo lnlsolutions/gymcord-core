@@ -42,6 +42,8 @@ import { EventTypes } from "./core/events";
 import { notificationEngine } from "./core/automation";
 import { realtimeService } from "./services/realtime";
 import { DeveloperEvents } from "./components/Dev/DeveloperEvents";
+import { DeveloperAnalytics } from "./components/Dev/DeveloperAnalytics";
+import { telemetryService, AnalyticsEventNames } from "./core/analytics";
 
 function GymCordApp() {
   const [page, setPage] = useState<Page>("home");
@@ -58,6 +60,7 @@ function GymCordApp() {
   const previousAtlasSignal = useRef("");
 
   useEffect(() => {
+    void telemetryService.initialize();
     notificationEngine.start();
     return () => notificationEngine.stop();
   }, []);
@@ -80,6 +83,10 @@ function GymCordApp() {
     void realtimeService.connect();
 
     const unsubscribe = realtimeService.subscribe("*", (event) => {
+      const startedAt = performance.now();
+      const analyticsEventName = event.type === EventTypes.TrainerAssigned ? AnalyticsEventNames.TrainerAdded : event.type === EventTypes.MemberJoined ? AnalyticsEventNames.MemberJoined : event.type;
+      telemetryService.track(analyticsEventName, { eventId: event.id, source: event.source }, "realtime-service");
+      telemetryService.performance.trackEventProcessing(event.type, performance.now() - startedAt);
       if (appConfig.environment === "development") {
         console.debug("[GymCord Realtime] event received", event);
       }
@@ -177,6 +184,7 @@ function GymCordApp() {
 
   useEffect(() => {
     if (!previousMissionComplete.current && mission.completed) {
+      telemetryService.track(AnalyticsEventNames.MissionCompleted, { missionId: mission.id, completionPercentage: mission.completionPercentage }, "mission-engine");
       void realtimeService.publish(EventTypes.MissionCompleted, { mission, completedAt: new Date().toISOString() }, "mission-engine");
     }
     previousMissionComplete.current = mission.completed;
@@ -184,6 +192,7 @@ function GymCordApp() {
 
   useEffect(() => {
     if (previousTotalXp.current > 0 && xp.totalXp > previousTotalXp.current) {
+      telemetryService.track(AnalyticsEventNames.XpEarned, { amount: xp.totalXp - previousTotalXp.current, totalXp: xp.totalXp }, "xp-engine");
       void realtimeService.publish(EventTypes.XpEarned, {
         amount: xp.totalXp - previousTotalXp.current,
         totalXp: xp.totalXp,
@@ -198,6 +207,7 @@ function GymCordApp() {
     achievements.filter((achievement) => achievement.unlocked).forEach((achievement) => {
       if (unlockedAchievementIds.current.has(achievement.id)) return;
       unlockedAchievementIds.current.add(achievement.id);
+      telemetryService.track(AnalyticsEventNames.AchievementUnlocked, { achievementId: achievement.id, title: achievement.title }, "achievement-engine");
       void realtimeService.publish(EventTypes.AchievementUnlocked, { achievement, unlockedAt: new Date().toISOString() }, "achievement-engine");
     });
   }, [achievements]);
@@ -279,7 +289,10 @@ function GymCordApp() {
         />
       )}
 
-      {page === "train" && <Train dayLog={dayLog} updateDay={updateDay} mission={mission} xp={xp} achievements={achievements} onWorkoutCompleted={({ workout, dayLog: completedDayLog, durationMinutes, xpEarned }) => {
+      {page === "train" && <Train dayLog={dayLog} updateDay={updateDay} mission={mission} xp={xp} achievements={achievements} onWorkoutStarted={(workout) => {
+        telemetryService.track(AnalyticsEventNames.WorkoutStarted, { workoutId: workout.id, title: workout.title }, "workout-engine");
+      }} onWorkoutCompleted={({ workout, dayLog: completedDayLog, durationMinutes, xpEarned }) => {
+        telemetryService.track(AnalyticsEventNames.WorkoutCompleted, { workoutId: workout.id, title: workout.title, durationMinutes, xpEarned }, "workout-engine");
         void realtimeService.publish(EventTypes.WorkoutCompleted, {
           workout,
           dayLog: completedDayLog,
@@ -289,7 +302,7 @@ function GymCordApp() {
         }, "workout-engine");
       }} />}
 
-      {page === "meals" && <Meals dayLog={dayLog} updateDay={updateDay} />}
+      {page === "meals" && <Meals dayLog={dayLog} updateDay={(patch) => { updateDay(patch); telemetryService.track(AnalyticsEventNames.MealLogged, { fields: Object.keys(patch) }, "meal-engine"); }} />}
 
       {page === "progress" && (
         <Progress
@@ -297,13 +310,14 @@ function GymCordApp() {
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
           dayLog={dayLog}
-          updateDay={updateDay}
+          updateDay={(patch) => { updateDay(patch); if (patch.photos) telemetryService.track(AnalyticsEventNames.ProgressPhotoAdded, { date: selectedDate }, "progress-engine"); }}
           transformation={transformation}
         />
       )}
 
       {page === "coach" && <Coach profile={profile} dayLog={dayLog} mission={mission} xp={xp} streak={streak} nextAchievement={nextAchievement} atlasInsights={atlasInsights} atlasMemory={atlasMemory} atlasContext={atlasContext} conversation={conversation} onRememberConversation={(entry) => {
         setConversation([entry, ...conversation]);
+        telemetryService.track(AnalyticsEventNames.AtlasConversation, { conversationId: profile.id, messageLength: entry.question.length }, "atlas-conversation-engine");
         void realtimeService.publish(EventTypes.MessageReceived, {
           id: entry.id,
           conversationId: profile.id,
@@ -326,6 +340,7 @@ function GymCordApp() {
           onChange={(organization) => {
             void organizationService.updateOrganization(organization).then((updated) => {
               setTenant(new TenantContext(updated, tenant.role));
+              telemetryService.track(AnalyticsEventNames.OrganizationCreated, { organizationId: updated.id, name: updated.name }, "organization-engine");
               void realtimeService.publish(EventTypes.OrganizationUpdated, { organization: updated, updatedAt: new Date().toISOString() }, "organization-engine");
             });
           }}
@@ -355,6 +370,11 @@ function AuthGate() {
 }
 
 export default function App() {
+  if (window.location.pathname === "/dev/analytics") {
+    void telemetryService.initialize();
+    return <DeveloperAnalytics />;
+  }
+
   if (window.location.pathname === "/dev/events") {
     notificationEngine.start();
     return <DeveloperEvents />;

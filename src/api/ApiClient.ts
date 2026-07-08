@@ -1,3 +1,4 @@
+import { telemetryService } from "../core/analytics";
 import { offlineEngine } from "../services/sync";
 import { ApiError, type ApiClientOptions, type ApiRequest, type ApiResponse, type HttpMethod } from "./types";
 import { RequestBuilder } from "./RequestBuilder";
@@ -38,14 +39,18 @@ export class ApiClient {
       const abort = () => controller.abort();
       prepared.signal?.addEventListener("abort", abort, { once: true });
       try {
+        const requestStartedAt = performance.now();
         this.options.logger?.("api:request", { provider: this.options.provider.name, path: prepared.path, method: prepared.method, attempt });
         let response = await this.options.provider.request<TResponse>({ ...prepared, signal: controller.signal });
         for (const middleware of this.options.middleware ?? []) response = await (middleware.onResponse?.(response, prepared) ?? response);
+        telemetryService.performance.trackApiLatency(prepared.path, performance.now() - requestStartedAt, String(response.status));
         return response;
       } catch (unknownError) {
         const apiError = unknownError instanceof ApiError ? unknownError : new ApiError("Request failed.", 500, "REQUEST_FAILED", unknownError);
         if (prepared.queuedWhenOffline && !navigator.onLine && prepared.method !== "GET") {
+          const syncStartedAt = performance.now();
           offlineEngine.queueWrite({ entity: prepared.path, operation: prepared.method === "DELETE" ? "delete" : prepared.method === "POST" ? "create" : "update", payload: prepared.body });
+          telemetryService.performance.trackOfflineSync(performance.now() - syncStartedAt);
           return { data: undefined as TResponse, status: 202, headers: {}, source: "cache" };
         }
         if (attempt < prepared.retryAttempts && (apiError.status >= 500 || apiError.code === "TIMEOUT")) continue;

@@ -47,6 +47,7 @@ import { DeveloperDataFlow } from "./components/Dev/DeveloperDataFlow";
 import { DeveloperOnboardingFlow } from "./components/Dev/DeveloperOnboardingFlow";
 import { DeveloperPersistence } from "./components/Dev/DeveloperPersistence";
 import { DeveloperDashboard } from "./components/Dev/DeveloperDashboard";
+import { DeveloperWorkout } from "./components/Dev/DeveloperWorkout";
 import { TrainerOS } from "./components/Trainer/TrainerOS";
 import { dashboardRepository } from "./repositories/DashboardRepository";
 import { onboardingRepository } from "./services/OnboardingRepository";
@@ -471,6 +472,14 @@ export default function App() {
     return (
       <AuthProvider>
         <DeveloperDashboard />
+      </AuthProvider>
+    );
+  }
+
+  if (window.location.pathname === "/dev/workout") {
+    return (
+      <AuthProvider>
+        <DeveloperWorkout />
       </AuthProvider>
     );
   }

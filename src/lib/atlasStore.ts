@@ -1,8 +1,9 @@
+import { appConfig } from "../config";
 import type { AtlasConversationEntry, AtlasMemory } from "../types/gymcord";
 import { saved, save } from "./storage";
 
-const MEMORY_KEY = "gc.atlasMemory";
-const CONVERSATION_KEY = "gc.atlasConversation";
+const MEMORY_KEY = appConfig.storageKeys.atlasMemory;
+const CONVERSATION_KEY = appConfig.storageKeys.atlasConversation;
 
 export const AtlasStore = {
   loadMemory(fallback: AtlasMemory) {

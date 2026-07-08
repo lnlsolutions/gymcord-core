@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import { appConfig } from "./config";
+import { AppContextProvider } from "./context/AppContext";
 import type { AtlasConversationEntry, DailyLog, Page, Profile } from "./types/gymcord";
 
 import { workouts } from "./lib/program";
@@ -37,17 +39,17 @@ export default function App() {
   const [page, setPage] = useState<Page>("home");
   const [selectedDate, setSelectedDate] = useState(todayKey());
   const [profileComplete, setProfileComplete] = useState(() =>
-    saved("gc.profileComplete", false)
+    saved(appConfig.storageKeys.profileComplete, false)
   );
   const [onboardingError, setOnboardingError] = useState("");
   const [savingProfile, setSavingProfile] = useState(false);
 
   const [profile, setProfile] = useState<Profile>(() =>
-    saved("gc.profile", createEmptyProfile())
+    saved(appConfig.storageKeys.profile, createEmptyProfile())
   );
 
   const [logs, setLogs] = useState<Record<string, DailyLog>>(() =>
-    saved("gc.dailyLogs", {})
+    saved(appConfig.storageKeys.dailyLogs, {})
   );
 
   const [conversation, setConversation] = useState<AtlasConversationEntry[]>(() =>
@@ -68,15 +70,15 @@ export default function App() {
   }
 
   useEffect(() => {
-    save("gc.profile", profile);
+    save(appConfig.storageKeys.profile, profile);
   }, [profile]);
 
   useEffect(() => {
-    save("gc.profileComplete", profileComplete);
+    save(appConfig.storageKeys.profileComplete, profileComplete);
   }, [profileComplete]);
 
   useEffect(() => {
-    save("gc.dailyLogs", logs);
+    save(appConfig.storageKeys.dailyLogs, logs);
   }, [logs]);
 
   useEffect(() => {
@@ -151,7 +153,8 @@ export default function App() {
 
   if (!profileComplete) {
     return (
-      <Onboarding
+      <AppContextProvider>
+        <Onboarding
         profile={profile}
         error={onboardingError}
         saving={savingProfile}
@@ -169,13 +172,15 @@ export default function App() {
           window.setTimeout(() => {
             setProfileComplete(true);
             setSavingProfile(false);
-          }, 350);
+          }, appConfig.onboarding.completionDelayMs);
         }}
       />
+      </AppContextProvider>
     );
   }
 
   return (
+    <AppContextProvider>
     <AppLayout profile={profile} page={page} setPage={setPage}>
       <DateStrip
         selectedDate={selectedDate}
@@ -220,5 +225,6 @@ export default function App() {
       {page === "coach" && <Coach profile={profile} dayLog={dayLog} mission={mission} xp={xp} streak={streak} nextAchievement={nextAchievement} atlasInsights={atlasInsights} atlasMemory={atlasMemory} atlasContext={atlasContext} conversation={conversation} onRememberConversation={(entry) => setConversation([entry, ...conversation])} />}
 
     </AppLayout>
+    </AppContextProvider>
   );
 }

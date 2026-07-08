@@ -46,6 +46,8 @@ import { DeveloperAnalytics } from "./components/Dev/DeveloperAnalytics";
 import { DeveloperDataFlow } from "./components/Dev/DeveloperDataFlow";
 import { DeveloperOnboardingFlow } from "./components/Dev/DeveloperOnboardingFlow";
 import { DeveloperPersistence } from "./components/Dev/DeveloperPersistence";
+import { DeveloperTrainerOS } from "./components/Dev/DeveloperTrainerOS";
+import { TrainerWorkspace } from "./components/Trainer/TrainerWorkspace";
 import { dailyActivityRepository } from "./repositories/DailyActivityRepository";
 import { onboardingRepository } from "./services/OnboardingRepository";
 import { telemetryService, AnalyticsEventNames } from "./core/analytics";
@@ -445,6 +447,24 @@ export default function App() {
     return (
       <AuthProvider>
         <DeveloperPersistence />
+      </AuthProvider>
+    );
+  }
+
+  if (window.location.pathname === "/dev/trainer-os") {
+    return (
+      <AuthProvider>
+        <DeveloperTrainerOS />
+      </AuthProvider>
+    );
+  }
+
+  if (window.location.pathname === "/trainer") {
+    return (
+      <AuthProvider>
+        <ProtectedRoute permissions={["dashboard:view"]}>
+          <TrainerWorkspace />
+        </ProtectedRoute>
       </AuthProvider>
     );
   }

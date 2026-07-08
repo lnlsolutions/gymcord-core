@@ -21,6 +21,11 @@ const tables = [
   "notifications",
   "atlas_memory",
   "atlas_conversations",
+  "trainer_assignments",
+  "trainer_client_details",
+  "workout_assignments",
+  "trainer_notes",
+  "client_risk_flags",
 ] as const;
 
 export type SupabaseTableName = (typeof tables)[number];
@@ -49,6 +54,11 @@ const pathAliases: Record<string, SupabaseTableName> = {
   notifications: "notifications",
   atlasMemory: "atlas_memory",
   atlasConversations: "atlas_conversations",
+  trainerAssignments: "trainer_assignments",
+  trainerClientDetails: "trainer_client_details",
+  workoutAssignments: "workout_assignments",
+  trainerNotes: "trainer_notes",
+  clientRiskFlags: "client_risk_flags",
 };
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {

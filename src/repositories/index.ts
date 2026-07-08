@@ -5,3 +5,4 @@ export { TrainerRepository, trainerRepository } from "./TrainerRepository";
 
 export { DashboardRepository, dashboardRepository } from "./DashboardRepository";
 export type { DashboardRepositoryState } from "./DashboardRepository";
+export { NutritionRepository, nutritionRepository } from "./NutritionRepository";

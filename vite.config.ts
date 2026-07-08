@@ -19,4 +19,16 @@ export default defineConfig({
     sourcemap: false,
     chunkSizeWarningLimit: 1200,
   },
+
+  test: {
+    environment: "jsdom",
+    globals: true,
+    setupFiles: "./src/test/setup.ts",
+    css: true,
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json", "html"],
+      reportsDirectory: "coverage",
+    },
+  },
 });

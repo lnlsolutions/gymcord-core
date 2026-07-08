@@ -47,3 +47,6 @@ export const appConfig = {
 } as const;
 
 export type AppConfig = typeof appConfig;
+
+export { databaseConfig, databaseConfigByEnvironment } from "./database";
+export type { DatabaseProviderConfig, DatabaseProviderKind } from "./database";

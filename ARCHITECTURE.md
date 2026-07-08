@@ -77,3 +77,15 @@ To add a production backend:
 5. Add server conflict payloads to `ConflictResolution` and route manual conflicts into product workflows.
 
 Because components depend on app state and repositories rather than vendor SDKs, the UI can remain stable while backend infrastructure evolves.
+
+## Production Authentication Architecture
+
+Sprint 008 adds `src/auth` as the production authentication boundary. The app now mounts through `AuthProvider`, which accepts either a concrete `AuthService` or a `FutureAuthProvider` factory so Supabase, Firebase, OIDC, or custom identity implementations can be plugged in later without changing app screens. The included `MockAuthService` provides persistent login, logout, password reset flow, session restore, refresh-token architecture, and token-set abstraction for local development.
+
+Authorization is split into focused managers:
+
+- `RoleManager` defines the supported roles: Member, Trainer, Gym Manager, Gym Owner, Admin, and Super Admin.
+- `PermissionManager` maps roles to route, component, and administrative permissions.
+- `ProtectedRoute`, `Can`, `useRole`, and `usePermission` provide route protection, component protection, permission hooks, and role middleware seams.
+
+Authenticated users belong to organizations with gyms, trainers, members, brand, theme, and settings metadata on the auth session. The current UI is preserved behind the protected app shell while login, signup, forgot-password, loading, and unauthorized screens cover the authentication lifecycle.

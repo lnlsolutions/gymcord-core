@@ -1611,3 +1611,13 @@ body {
   border-radius: 16px;
   background: rgba(0, 0, 0, 0.32);
 }
+
+.member-dashboard { display: grid; gap: 16px; }
+.member-dashboard-hero { margin-bottom: 0; }
+.dashboard-refresh-status { margin: -4px 0 0; }
+.member-dashboard-grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
+.member-dashboard-card { padding: 18px; border-radius: 26px; }
+.dashboard-stat-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; align-items: end; margin: 10px 0 14px; }
+.dashboard-stat-row strong { display: block; font-size: 24px; letter-spacing: -0.04em; }
+.dashboard-stat-row span { color: var(--muted); font-size: 12px; font-weight: 800; text-transform: uppercase; }
+@media (min-width: 760px) { .screen { width: min(920px, 100%); } .member-dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

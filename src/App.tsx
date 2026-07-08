@@ -29,7 +29,7 @@ import { buildTransformationSnapshot } from "./lib/engines/transformationEngine"
 
 import { AppLayout } from "./components/Common/AppLayout";
 import { DateStrip } from "./components/Common/DateStrip";
-import { Dashboard } from "./components/Dashboard/Dashboard";
+import { MemberDashboard } from "./components/dashboard/MemberDashboard";
 import { Train } from "./components/Workout/Train";
 import { Meals } from "./components/Meals/Meals";
 import { Progress } from "./components/Progress/Progress";
@@ -46,6 +46,7 @@ import { DeveloperAnalytics } from "./components/Dev/DeveloperAnalytics";
 import { DeveloperDataFlow } from "./components/Dev/DeveloperDataFlow";
 import { DeveloperOnboardingFlow } from "./components/Dev/DeveloperOnboardingFlow";
 import { DeveloperPersistence } from "./components/Dev/DeveloperPersistence";
+import { DeveloperDashboard } from "./components/Dev/DeveloperDashboard";
 import { TrainerOS } from "./components/Trainer/TrainerOS";
 import { dailyActivityRepository } from "./repositories/DailyActivityRepository";
 import { onboardingRepository } from "./services/OnboardingRepository";
@@ -317,22 +318,7 @@ function GymCordApp() {
       />
 
       {page === "home" && (
-        <Dashboard
-          profile={profile}
-          dayLog={dayLog}
-          score={transformationScore}
-          workoutCompletion={workoutCompletion}
-          weeklyCompletion={weeklyCompletion}
-          todayWorkout={todayWorkout}
-          logs={logs}
-          mission={mission}
-          xp={xp}
-          streak={streak}
-          nextAchievement={nextAchievement}
-          atlasInsights={atlasInsights}
-          transformation={transformation}
-          setPage={setPage}
-        />
+        <MemberDashboard selectedDate={selectedDate} setPage={setPage} />
       )}
 
       {page === "train" && <Train dayLog={dayLog} updateDay={updateDay} mission={mission} xp={xp} achievements={achievements} onWorkoutStarted={(workout) => {
@@ -454,6 +440,15 @@ export default function App() {
     return (
       <AuthProvider>
         <TrainerOS developer />
+      </AuthProvider>
+    );
+  }
+
+
+  if (window.location.pathname === "/dev/dashboard") {
+    return (
+      <AuthProvider>
+        <DeveloperDashboard />
       </AuthProvider>
     );
   }

@@ -14,9 +14,6 @@ const defaultEndpoints: Record<AppEnvironment, { apiBaseUrl: string }> = {
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (backendProvider === "supabase" && (!supabaseUrl || !supabaseAnonKey)) {
-  throw new Error("VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are required when VITE_BACKEND_PROVIDER=supabase.");
-}
 
 export const appConfig = {
   appName: import.meta.env.VITE_APP_NAME ?? "GymCord",

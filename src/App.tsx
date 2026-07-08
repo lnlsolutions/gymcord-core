@@ -43,6 +43,7 @@ import { notificationEngine } from "./core/automation";
 import { realtimeService } from "./services/realtime";
 import { DeveloperEvents } from "./components/Dev/DeveloperEvents";
 import { DeveloperAnalytics } from "./components/Dev/DeveloperAnalytics";
+import { DeveloperDatabase } from "./components/Dev/DeveloperDatabase";
 import { telemetryService, AnalyticsEventNames } from "./core/analytics";
 
 function GymCordApp() {
@@ -378,6 +379,10 @@ export default function App() {
   if (window.location.pathname === "/dev/events") {
     notificationEngine.start();
     return <DeveloperEvents />;
+  }
+
+  if (window.location.pathname === "/dev/database") {
+    return <DeveloperDatabase />;
   }
 
   return (

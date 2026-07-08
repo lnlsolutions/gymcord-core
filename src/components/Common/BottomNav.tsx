@@ -6,6 +6,7 @@ const navItems: { id: Page; label: string; icon: string }[] = [
   { id: "meals", label: "Meals", icon: "🍽️" },
   { id: "progress", label: "Progress", icon: "📅" },
   { id: "coach", label: "Coach", icon: "🤖" },
+  { id: "settings", label: "Settings", icon: "⚙️" },
 ];
 
 export function BottomNav({

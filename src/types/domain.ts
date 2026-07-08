@@ -1,7 +1,7 @@
 export type EntityId = string;
 export type IsoDateString = string;
 export type IsoDateTimeString = string;
-export type MembershipRole = "owner" | "admin" | "trainer" | "member";
+export type MembershipRole = "owner" | "admin" | "manager" | "trainer" | "member" | "guest";
 export type MembershipStatus = "active" | "invited" | "paused" | "cancelled";
 export type NotificationChannel = "in_app" | "email" | "push" | "sms";
 export type NotificationStatus = "queued" | "sent" | "read" | "failed";
@@ -38,12 +38,52 @@ export interface Gym extends AuditMetadata {
   timezone: string;
 }
 
+export interface OrganizationBrand {
+  appName: string;
+  logoUrl?: string;
+  primaryColor: string;
+  secondaryColor: string;
+  accentColor: string;
+  typography: string;
+}
+
+export interface OrganizationTheme {
+  mode: "dark" | "light" | "system";
+  radius: "compact" | "rounded" | "pill";
+}
+
+export interface OrganizationBilling {
+  provider: "manual" | "stripe" | "app_store";
+  status: "trialing" | "active" | "past_due" | "cancelled";
+  customerId?: string;
+}
+
+export interface OrganizationSettings {
+  allowMemberSignup: boolean;
+  requireTrainerApproval: boolean;
+  timezone: string;
+}
+
+export interface OrganizationRouting {
+  subdomains: string[];
+  customDomains: string[];
+}
+
 export interface Organization extends AuditMetadata {
   id: EntityId;
   name: string;
   slug: string;
   ownerUserId: EntityId;
   defaultGymId?: EntityId;
+  brand: OrganizationBrand;
+  theme: OrganizationTheme;
+  memberIds: EntityId[];
+  trainerIds: EntityId[];
+  gymIds: EntityId[];
+  planIds: EntityId[];
+  billing: OrganizationBilling;
+  settings: OrganizationSettings;
+  routing: OrganizationRouting;
 }
 
 export interface Membership extends AuditMetadata {

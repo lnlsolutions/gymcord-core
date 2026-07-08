@@ -48,8 +48,10 @@ import { DeveloperOnboardingFlow } from "./components/Dev/DeveloperOnboardingFlo
 import { DeveloperPersistence } from "./components/Dev/DeveloperPersistence";
 import { DeveloperDashboard } from "./components/Dev/DeveloperDashboard";
 import { DeveloperWorkout } from "./components/Dev/DeveloperWorkout";
+import { DeveloperNutrition } from "./components/Dev/DeveloperNutrition";
 import { TrainerOS } from "./components/Trainer/TrainerOS";
 import { dashboardRepository } from "./repositories/DashboardRepository";
+import { nutritionRepository } from "./repositories/NutritionRepository";
 import { onboardingRepository } from "./services/OnboardingRepository";
 import { telemetryService, AnalyticsEventNames } from "./core/analytics";
 
@@ -117,14 +119,18 @@ function GymCordApp() {
     };
   }, []);
 
+  function getUpdatedDay(patch: Partial<DailyLog>) {
+    return {
+      ...createEmptyDay(selectedDate),
+      ...dayLog,
+      ...patch,
+    };
+  }
+
   function updateDay(patch: Partial<DailyLog>) {
     setLogs({
       ...logs,
-      [selectedDate]: {
-        ...createEmptyDay(selectedDate),
-        ...dayLog,
-        ...patch,
-      },
+      [selectedDate]: getUpdatedDay(patch),
     });
   }
 
@@ -350,7 +356,12 @@ function GymCordApp() {
         }, "workout-engine");
       }} />}
 
-      {page === "meals" && <Meals dayLog={dayLog} updateDay={(patch) => { updateDay(patch); telemetryService.track(AnalyticsEventNames.MealLogged, { fields: Object.keys(patch) }, "meal-engine"); }} />}
+      {page === "meals" && <Meals dayLog={dayLog} updateDay={(patch) => {
+        const nextLog = getUpdatedDay(patch);
+        updateDay(patch);
+        telemetryService.track(AnalyticsEventNames.MealLogged, { fields: Object.keys(patch) }, "meal-engine");
+        void nutritionRepository.saveNutritionLog(auth.session, nextLog, mission, xp, streak);
+      }} />}
 
       {page === "progress" && (
         <Progress
@@ -480,6 +491,14 @@ export default function App() {
     return (
       <AuthProvider>
         <DeveloperWorkout />
+      </AuthProvider>
+    );
+  }
+
+  if (window.location.pathname === "/dev/nutrition") {
+    return (
+      <AuthProvider>
+        <DeveloperNutrition />
       </AuthProvider>
     );
   }

@@ -67,3 +67,15 @@ Open `/dev/persistence` to inspect:
 - offline queue state
 
 This route is read-only from the UI perspective; it loads repository state and displays a JSON snapshot of the loaded daily logs.
+
+
+## Build 021 revision validation (2026-07-08)
+
+- Branch review: the available local history is based on `Merge pull request #25` followed by the live data persistence merge. No `Trainer OS` files or labels are present in the working tree search results, so this revision keeps the scope to live data persistence. No remote is configured in this checkout, so PR #28 retargeting must be completed in GitHub if the hosted PR base differs from latest approved `main`.
+- Lockfile: `package-lock.json` is present at the repository root.
+- Dependency install: `npm ci` was attempted, but the npm registry returned `E403 Forbidden` while fetching `@testing-library/jest-dom`; dependencies therefore could not be installed in this environment.
+- Build and test: `npm run build` and `npm run test` were attempted after the blocked install. Build could not resolve React, Vite, Supabase, and related types because `node_modules` is absent; tests could not start because `vitest` is unavailable.
+- Developer route: `/dev/persistence` is registered in `App.tsx` and renders `DeveloperPersistence`, which loads through `DailyActivityRepository` and displays provider, user, organization, daily logs, mission, XP, streak, last save, and offline queue diagnostics.
+- Mock persistence: mock mode remains the default provider. `DailyActivityRepository.saveDailyLog` writes daily logs, missions, XP events, and streak snapshots to local browser storage before any provider write, and `loadDailyLogs` falls back to local daily logs.
+- Supabase persistence: Supabase mode uses backend provider repository paths such as `/memberProfiles`, `/nutritionLogs`, `/measurements`, `/progressPhotos`, `/xpEvents`, `/streaks`, and `/dailyLogs`; UI screens do not create Supabase clients or call Supabase APIs directly.
+- UI scope: Build 021 does not redesign the production member UI. The only UI surface added for this validation is the developer diagnostics route.

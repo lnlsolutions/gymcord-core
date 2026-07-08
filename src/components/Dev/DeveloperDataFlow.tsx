@@ -6,7 +6,7 @@ import { OrganizationRepository } from "../../repositories/OrganizationRepositor
 import { realtimeService } from "../../services/realtime";
 import { keyValueStorage } from "../../services/storage";
 import { EventTypes } from "../../core/events";
-import { supabaseTableMap } from "../../api/providers/SupabaseProvider";
+import { supabaseTableMap } from "../../api/supabaseTableMap";
 
 interface CheckRow {
   label: string;

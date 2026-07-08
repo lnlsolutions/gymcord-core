@@ -3,6 +3,7 @@ export type BackendKind = "mock" | "supabase" | "firebase" | "rest";
 
 const mode = import.meta.env.MODE;
 const environment: AppEnvironment = mode === "production" ? "production" : mode === "staging" ? "staging" : "development";
+const backendProvider = (import.meta.env.VITE_BACKEND_PROVIDER ?? "mock") as BackendKind;
 
 const defaultEndpoints: Record<AppEnvironment, { apiBaseUrl: string }> = {
   development: { apiBaseUrl: "http://localhost:5173/api/" },
@@ -10,18 +11,25 @@ const defaultEndpoints: Record<AppEnvironment, { apiBaseUrl: string }> = {
   production: { apiBaseUrl: "https://api.gymcord.app/" },
 };
 
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+if (backendProvider === "supabase" && (!supabaseUrl || !supabaseAnonKey)) {
+  throw new Error("VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are required when VITE_BACKEND_PROVIDER=supabase.");
+}
+
 export const appConfig = {
   appName: import.meta.env.VITE_APP_NAME ?? "GymCord",
   environment,
   backend: {
-    provider: (import.meta.env.VITE_BACKEND_PROVIDER ?? "mock") as BackendKind,
+    provider: backendProvider,
     endpoints: {
       apiBaseUrl: import.meta.env.VITE_API_BASE_URL ?? defaultEndpoints[environment].apiBaseUrl,
       organizations: import.meta.env.VITE_ORGANIZATIONS_ENDPOINT ?? "/organizations",
     },
     supabase: {
-      url: import.meta.env.VITE_SUPABASE_URL,
-      anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+      url: supabaseUrl,
+      anonKey: supabaseAnonKey,
     },
     firebase: {
       projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,

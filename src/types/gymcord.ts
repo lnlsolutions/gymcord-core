@@ -4,7 +4,8 @@ export type Page =
   | "meals"
   | "progress"
   | "coach"
-  | "settings";
+  | "settings"
+  | "nutrition";
 
 export interface Exercise {
   id: string;

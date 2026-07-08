@@ -31,7 +31,7 @@ import { AppLayout } from "./components/Common/AppLayout";
 import { DateStrip } from "./components/Common/DateStrip";
 import { Dashboard } from "./components/Dashboard/Dashboard";
 import { Train } from "./components/Workout/Train";
-import { Meals } from "./components/Meals/Meals";
+import { NutritionExperience } from "./components/nutrition/NutritionExperience";
 import { Progress } from "./components/Progress/Progress";
 import { Coach } from "./components/Coach/Coach";
 import { Onboarding } from "./components/Onboarding";
@@ -48,6 +48,7 @@ import { DeveloperOnboardingFlow } from "./components/Dev/DeveloperOnboardingFlo
 import { DeveloperPersistence } from "./components/Dev/DeveloperPersistence";
 import { DeveloperDashboard } from "./components/Dev/DeveloperDashboard";
 import { DeveloperWorkout } from "./components/Dev/DeveloperWorkout";
+import { DeveloperNutrition } from "./components/Dev/DeveloperNutrition";
 import { TrainerOS } from "./components/Trainer/TrainerOS";
 import { dashboardRepository } from "./repositories/DashboardRepository";
 import { onboardingRepository } from "./services/OnboardingRepository";
@@ -350,7 +351,9 @@ function GymCordApp() {
         }, "workout-engine");
       }} />}
 
-      {page === "meals" && <Meals dayLog={dayLog} updateDay={(patch) => { updateDay(patch); telemetryService.track(AnalyticsEventNames.MealLogged, { fields: Object.keys(patch) }, "meal-engine"); }} />}
+      {page === "meals" && <NutritionExperience initialLog={dayLog} date={selectedDate} />}
+
+      {page === "nutrition" && <NutritionExperience initialLog={dayLog} date={selectedDate} />}
 
       {page === "progress" && (
         <Progress
@@ -480,6 +483,14 @@ export default function App() {
     return (
       <AuthProvider>
         <DeveloperWorkout />
+      </AuthProvider>
+    );
+  }
+
+  if (window.location.pathname === "/dev/nutrition") {
+    return (
+      <AuthProvider>
+        <DeveloperNutrition />
       </AuthProvider>
     );
   }

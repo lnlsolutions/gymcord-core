@@ -1,3 +1,4 @@
+import { keyValueStorage } from "../services/storage";
 import type { DailyLog, Profile } from "../types/gymcord";
 
 export function todayKey() {
@@ -5,16 +6,11 @@ export function todayKey() {
 }
 
 export function saved<T>(key: string, fallback: T): T {
-  try {
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : fallback;
-  } catch {
-    return fallback;
-  }
+  return keyValueStorage.get(key, fallback);
 }
 
 export function save<T>(key: string, value: T) {
-  localStorage.setItem(key, JSON.stringify(value));
+  keyValueStorage.set(key, value);
 }
 
 export function getLastSevenDays() {

@@ -1,0 +1,138 @@
+export type EntityId = string;
+export type IsoDateString = string;
+export type IsoDateTimeString = string;
+export type MembershipRole = "owner" | "admin" | "trainer" | "member";
+export type MembershipStatus = "active" | "invited" | "paused" | "cancelled";
+export type NotificationChannel = "in_app" | "email" | "push" | "sms";
+export type NotificationStatus = "queued" | "sent" | "read" | "failed";
+export type MessageStatus = "draft" | "sent" | "delivered" | "read";
+
+export interface AuditMetadata {
+  createdAt: IsoDateTimeString;
+  updatedAt: IsoDateTimeString;
+  deletedAt?: IsoDateTimeString;
+}
+
+export interface User extends AuditMetadata {
+  id: EntityId;
+  email: string;
+  displayName: string;
+  avatarUrl?: string;
+  timezone: string;
+  locale: string;
+}
+
+export interface Trainer extends AuditMetadata {
+  id: EntityId;
+  userId: EntityId;
+  organizationIds: EntityId[];
+  specialties: string[];
+  bio?: string;
+}
+
+export interface Gym extends AuditMetadata {
+  id: EntityId;
+  organizationId: EntityId;
+  name: string;
+  address?: string;
+  timezone: string;
+}
+
+export interface Organization extends AuditMetadata {
+  id: EntityId;
+  name: string;
+  slug: string;
+  ownerUserId: EntityId;
+  defaultGymId?: EntityId;
+}
+
+export interface Membership extends AuditMetadata {
+  id: EntityId;
+  organizationId: EntityId;
+  userId: EntityId;
+  role: MembershipRole;
+  status: MembershipStatus;
+  gymId?: EntityId;
+}
+
+export interface WorkoutSession extends AuditMetadata {
+  id: EntityId;
+  userId: EntityId;
+  organizationId?: EntityId;
+  workoutId?: EntityId;
+  scheduledFor: IsoDateString;
+  startedAt?: IsoDateTimeString;
+  completedAt?: IsoDateTimeString;
+  notes?: string;
+}
+
+export interface ExerciseLog extends AuditMetadata {
+  id: EntityId;
+  sessionId: EntityId;
+  exerciseId: EntityId;
+  sets: Array<{ reps: number; weight?: number; durationSeconds?: number; completed: boolean }>;
+  notes?: string;
+}
+
+export interface MealLog extends AuditMetadata {
+  id: EntityId;
+  userId: EntityId;
+  organizationId?: EntityId;
+  loggedFor: IsoDateString;
+  proteinGrams: number;
+  calories: number;
+  waterServings: number;
+  photoUrl?: string;
+  ingredients?: string;
+}
+
+export interface ProgressPhoto extends AuditMetadata {
+  id: EntityId;
+  userId: EntityId;
+  organizationId?: EntityId;
+  takenOn: IsoDateString;
+  angle: "front" | "side" | "back" | "other";
+  imageUrl: string;
+}
+
+export interface Message extends AuditMetadata {
+  id: EntityId;
+  organizationId?: EntityId;
+  senderUserId: EntityId;
+  recipientUserIds: EntityId[];
+  body: string;
+  status: MessageStatus;
+}
+
+export interface Notification extends AuditMetadata {
+  id: EntityId;
+  userId: EntityId;
+  organizationId?: EntityId;
+  title: string;
+  body: string;
+  channel: NotificationChannel;
+  status: NotificationStatus;
+  readAt?: IsoDateTimeString;
+}
+
+export interface Achievement extends AuditMetadata {
+  id: EntityId;
+  userId: EntityId;
+  code: string;
+  title: string;
+  description: string;
+  unlockedAt?: IsoDateTimeString;
+  progress: number;
+  target: number;
+}
+
+export interface Mission extends AuditMetadata {
+  id: EntityId;
+  userId: EntityId;
+  organizationId?: EntityId;
+  date: IsoDateString;
+  title: string;
+  description: string;
+  xpReward: number;
+  completedAt?: IsoDateTimeString;
+}

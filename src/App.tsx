@@ -22,6 +22,7 @@ import { Train } from "./components/Workout/Train";
 import { Meals } from "./components/Meals/Meals";
 import { Progress } from "./components/Progress/Progress";
 import { Coach } from "./components/Coach/Coach";
+import { Onboarding } from "./components/Onboarding";
 
 export default function App() {
   const [page, setPage] = useState<Page>("home");
@@ -29,6 +30,8 @@ export default function App() {
   const [profileComplete, setProfileComplete] = useState(() =>
     saved("gc.profileComplete", false)
   );
+  const [onboardingError, setOnboardingError] = useState("");
+  const [savingProfile, setSavingProfile] = useState(false);
 
   const [profile, setProfile] = useState<Profile>(() =>
     saved("gc.profile", createEmptyProfile())
@@ -75,6 +78,8 @@ export default function App() {
     [dayLog, workoutCompletion]
   );
 
+  const todayWorkout = workouts[new Date(selectedDate + "T00:00:00").getDay() % workouts.length];
+
   const weeklyCompletion = useMemo(() => {
     const dates = getLastSevenDays();
 
@@ -88,86 +93,27 @@ export default function App() {
 
   if (!profileComplete) {
     return (
-      <div className="app">
-        <main className="screen">
-          <section className="page">
-            <div className="hero-card">
-              <p className="pill">GymCord Beta</p>
-              <h2>Start your transformation.</h2>
-              <p>
-                Create your profile to track workouts, meals, photos,
-                measurements, AI score, and reward eligibility.
-              </p>
-            </div>
+      <Onboarding
+        profile={profile}
+        error={onboardingError}
+        saving={savingProfile}
+        onChange={(nextProfile) => {
+          setOnboardingError("");
+          setProfile(nextProfile);
+        }}
+        onSubmit={() => {
+          if (!profile.name.trim() || !profile.goal.trim()) {
+            setOnboardingError("Add your name and primary goal to personalize Mission Control.");
+            return;
+          }
 
-            <div className="panel">
-              <h3>Create Profile</h3>
-
-              <input
-                className="input"
-                placeholder="Your name"
-                value={profile.name}
-                onChange={(event) =>
-                  setProfile({
-                    ...profile,
-                    name: event.target.value,
-                  })
-                }
-              />
-
-              <input
-                className="input"
-                placeholder="Main goal"
-                value={profile.goal}
-                onChange={(event) =>
-                  setProfile({
-                    ...profile,
-                    goal: event.target.value,
-                  })
-                }
-              />
-
-              <input
-                className="input"
-                placeholder="Current weight"
-                value={profile.currentWeight}
-                onChange={(event) =>
-                  setProfile({
-                    ...profile,
-                    currentWeight: event.target.value,
-                  })
-                }
-              />
-
-              <input
-                className="input"
-                placeholder="Goal weight"
-                value={profile.goalWeight}
-                onChange={(event) =>
-                  setProfile({
-                    ...profile,
-                    goalWeight: event.target.value,
-                  })
-                }
-              />
-
-              <button
-                className="primary-button"
-                onClick={() => {
-                  if (!profile.name.trim() || !profile.goal.trim()) {
-                    alert("Please add your name and goal first.");
-                    return;
-                  }
-
-                  setProfileComplete(true);
-                }}
-              >
-                Enter GymCord
-              </button>
-            </div>
-          </section>
-        </main>
-      </div>
+          setSavingProfile(true);
+          window.setTimeout(() => {
+            setProfileComplete(true);
+            setSavingProfile(false);
+          }, 350);
+        }}
+      />
     );
   }
 
@@ -185,6 +131,9 @@ export default function App() {
           dayLog={dayLog}
           score={transformationScore}
           workoutCompletion={workoutCompletion}
+          weeklyCompletion={weeklyCompletion}
+          todayWorkout={todayWorkout}
+          logs={logs}
           setPage={setPage}
         />
       )}
@@ -205,10 +154,6 @@ export default function App() {
 
       {page === "coach" && <Coach profile={profile} dayLog={dayLog} />}
 
-      <div className="panel weekly-summary">
-        <h3>7-Day Average</h3>
-        <p>{weeklyCompletion}% workout completion across the last 7 days.</p>
-      </div>
     </AppLayout>
   );
 }

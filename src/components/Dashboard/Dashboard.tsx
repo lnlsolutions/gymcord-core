@@ -1,146 +1,91 @@
+import type { ReactNode } from "react";
+import { Activity, Bot, CalendarDays, ChevronRight, Flame, Moon, Salad, Sparkles, Trophy } from "lucide-react";
 import type { DailyLog, Page, Profile } from "../../types/gymcord";
+import type { WorkoutDay } from "../../types/gymcord";
+import { getLastSevenDays, shortDate } from "../../lib/storage";
 
-function StatCard({
-  title,
-  value,
-  subtitle,
-}: {
-  title: string;
-  value: string;
-  subtitle: string;
-}) {
-  return (
-    <div className="card">
-      <p>{title}</p>
-      <strong>{value}</strong>
-      <span>{subtitle}</span>
-    </div>
-  );
-}
-
-export function Dashboard({
-  profile,
-  dayLog,
-  score,
-  workoutCompletion,
-  setPage,
-}: {
+interface DashboardProps {
   profile: Profile;
   dayLog: DailyLog;
   score: number;
   workoutCompletion: number;
+  weeklyCompletion: number;
+  todayWorkout: WorkoutDay;
+  logs: Record<string, DailyLog>;
   setPage: (page: Page) => void;
-}) {
+}
+
+function MetricCard({ icon, label, value, detail }: { icon: ReactNode; label: string; value: string; detail: string }) {
+  return <article className="metric-card"><div className="metric-icon">{icon}</div><p>{label}</p><strong>{value}</strong><span>{detail}</span></article>;
+}
+
+function ProgressBar({ value }: { value: number }) {
+  return <div className="progress-track" aria-label={`${value}% complete`}><span style={{ width: `${Math.min(100, Math.max(0, value))}%` }} /></div>;
+}
+
+export function Dashboard({ profile, dayLog, score, workoutCompletion, weeklyCompletion, todayWorkout, logs, setPage }: DashboardProps) {
+  const firstName = profile.name.split(" ")[0] || "Athlete";
+  const recoveryScore = Math.round(((dayLog.sleep / 8) * 55 + (dayLog.energy / 5) * 25 + (dayLog.mood / 5) * 20));
+  const nutritionProgress = Math.min(100, Math.round((dayLog.protein / 130) * 65 + (dayLog.water / 8) * 35));
+  const completedThisWeek = getLastSevenDays().filter((date) => Object.values(logs[date]?.completedExercises || {}).some(Boolean));
+
   return (
-    <section className="page">
-
-      <div className="hero-card">
-
-        <p className="pill">Today's Goal</p>
-
-        <h2>{profile.goal}</h2>
-
-        <p>
-          Every workout, meal, photo and measurement moves you closer to your
-          transformation.
-        </p>
-
-        <button onClick={() => setPage("train")}>
-          Start Today's Workout
-        </button>
-
-      </div>
-
-      <div className="grid">
-
-        <StatCard
-          title="Transformation"
-          value={`${score}%`}
-          subtitle="AI Score"
-        />
-
-        <StatCard
-          title="Workout"
-          value={`${workoutCompletion}%`}
-          subtitle="Completed"
-        />
-
-        <StatCard
-          title="Protein"
-          value={`${dayLog.protein}g`}
-          subtitle="Today's Intake"
-        />
-
-        <StatCard
-          title="Water"
-          value={`${dayLog.water}/8`}
-          subtitle="Hydration"
-        />
-
-      </div>
-
-      <div className="panel">
-
-        <h3>Today's Checklist</h3>
-
-        <div className="habit-list">
-
-          <div className="habit-item">
-            <span>🏋 Workout</span>
-            <strong>{workoutCompletion}%</strong>
-          </div>
-
-          <div className="habit-item">
-            <span>🍽 Protein</span>
-            <strong>{dayLog.protein}g</strong>
-          </div>
-
-          <div className="habit-item">
-            <span>💧 Water</span>
-            <strong>{dayLog.water}/8</strong>
-          </div>
-
-          <div className="habit-item">
-            <span>📸 Progress Photo</span>
-            <strong>{dayLog.photos.front ? "✓" : "—"}</strong>
-          </div>
-
-          <div className="habit-item">
-            <span>⚖ Weight Logged</span>
-            <strong>
-              {dayLog.measurements.weight ? "✓" : "—"}
-            </strong>
-          </div>
-
+    <section className="page mission-control">
+      <div className="mission-hero">
+        <div>
+          <p className="pill"><Sparkles size={14} /> Mission Control</p>
+          <h2>Welcome back, {firstName}.</h2>
+          <p>Your operating dashboard for training, nutrition, recovery, and progress momentum.</p>
         </div>
-
+        <button onClick={() => setPage("train")}>Start workout <ChevronRight size={18} /></button>
       </div>
 
-      <div className="panel">
-
-        <h3>AI Coach</h3>
-
-        <p>
-          {score >= 90
-            ? "Excellent consistency. Continue progressing your lifts this week."
-            : score >= 75
-            ? "You're close. Increase protein and complete today's workout."
-            : "Focus on today's workout and nutrition before worrying about anything else."}
-        </p>
-
+      <div className="daily-mission-card">
+        <div>
+          <p className="eyebrow">Daily Mission</p>
+          <h3>{profile.goal || "Build a stronger body"}</h3>
+          <span>Complete the workout, hit 130g protein, drink 8 waters, and log recovery.</span>
+        </div>
+        <div className="mission-score"><strong>{score}</strong><span>Momentum</span></div>
       </div>
 
-      <div className="panel reward-ready">
-
-        <h3>Reward Progress</h3>
-
-        <p>
-          Rewards unlock through verified consistency, nutrition,
-          measurements and real progress—not simply opening the app.
-        </p>
-
+      <div className="metric-grid">
+        <MetricCard icon={<Flame size={20} />} label="Momentum Score" value={`${score}%`} detail={score >= 80 ? "Investor-demo ready day" : "Two actions from green"} />
+        <MetricCard icon={<Salad size={20} />} label="Nutrition" value={`${nutritionProgress}%`} detail={`${dayLog.protein}g protein · ${dayLog.water}/8 water`} />
+        <MetricCard icon={<Moon size={20} />} label="Recovery" value={`${Math.min(100, recoveryScore)}%`} detail={`${dayLog.sleep || 0}h sleep · Energy ${dayLog.energy}/5`} />
+        <MetricCard icon={<Activity size={20} />} label="Weekly Activity" value={`${weeklyCompletion}%`} detail={`${completedThisWeek.length}/7 days trained`} />
       </div>
 
+      <article className="panel premium-card workout-summary-card">
+        <div className="card-heading"><div><p className="eyebrow">Today's Workout</p><h3>{todayWorkout.title}</h3></div><span>{todayWorkout.duration} min</span></div>
+        <p>{todayWorkout.focus}</p>
+        <ProgressBar value={workoutCompletion} />
+        <button className="secondary-button" onClick={() => setPage("train")}>Open session</button>
+      </article>
+
+      <div className="dashboard-split">
+        <article className="panel premium-card">
+          <div className="card-heading"><h3><CalendarDays size={20} /> Upcoming Schedule</h3></div>
+          <div className="schedule-list">
+            {getLastSevenDays().slice(4).map((date, index) => <div key={date}><strong>{shortDate(date)}</strong><span>{index === 0 ? todayWorkout.title : index === 1 ? "Glutes & Hamstrings" : "Recovery + mobility"}</span></div>)}
+          </div>
+        </article>
+
+        <article className="panel premium-card">
+          <div className="card-heading"><h3><Trophy size={20} /> Recent Achievements</h3></div>
+          <div className="achievement-list">
+            <span>{dayLog.mealPhoto ? "Meal photo verified" : "Meal photo ready"}</span>
+            <span>{workoutCompletion > 0 ? "Workout streak started" : "Workout queued"}</span>
+            <span>{dayLog.measurements.weight ? "Measurement logged" : "Baseline pending"}</span>
+          </div>
+        </article>
+      </div>
+
+      <button className="atlas-entry-card" onClick={() => setPage("coach")}>
+        <div className="atlas-orb"><Bot size={24} /></div>
+        <div><p className="eyebrow">Atlas AI Assistant</p><h3>Ask Atlas what to do next.</h3><span>Personalized coaching architecture for workouts, meals, recovery, and retention.</span></div>
+        <ChevronRight size={22} />
+      </button>
     </section>
   );
 }

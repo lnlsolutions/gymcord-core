@@ -1505,3 +1505,38 @@ body {
 }
 
 .muted { color: var(--muted); }
+
+.dev-events-page .screen {
+  padding-bottom: 32px;
+}
+
+.dev-panel {
+  margin-bottom: 16px;
+}
+
+.dev-panel h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
+.dev-row {
+  display: grid;
+  gap: 4px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.dev-row:first-of-type {
+  border-top: 0;
+}
+
+.dev-row span,
+.dev-row small,
+.muted {
+  color: #94a3b8;
+}
+
+.dev-row .primary {
+  width: fit-content;
+  margin-top: 8px;
+}

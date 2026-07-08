@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { appConfig } from "./config";
 import { AppContextProvider } from "./context/AppContext";
+import { AuthProvider, ForgotPasswordScreen, LoadingScreen, LoginScreen, ProtectedRoute, SignupScreen, useAuth } from "./auth";
 import type { AtlasConversationEntry, DailyLog, Page, Profile } from "./types/gymcord";
 
 import { workouts } from "./lib/program";
@@ -35,7 +36,7 @@ import { Progress } from "./components/Progress/Progress";
 import { Coach } from "./components/Coach/Coach";
 import { Onboarding } from "./components/Onboarding";
 
-export default function App() {
+function GymCordApp() {
   const [page, setPage] = useState<Page>("home");
   const [selectedDate, setSelectedDate] = useState(todayKey());
   const [profileComplete, setProfileComplete] = useState(() =>
@@ -226,5 +227,30 @@ export default function App() {
 
     </AppLayout>
     </AppContextProvider>
+  );
+}
+
+
+function AuthGate() {
+  const auth = useAuth();
+  const [mode, setMode] = useState<"login" | "signup" | "forgot">("login");
+
+  if (auth.status === "loading") return <LoadingScreen />;
+  if (!auth.isAuthenticated && mode === "signup") return <SignupScreen onModeChange={setMode} />;
+  if (!auth.isAuthenticated && mode === "forgot") return <ForgotPasswordScreen onModeChange={setMode} />;
+  if (!auth.isAuthenticated) return <LoginScreen onModeChange={setMode} />;
+
+  return (
+    <ProtectedRoute permissions={["dashboard:view"]}>
+      <GymCordApp />
+    </ProtectedRoute>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AuthGate />
+    </AuthProvider>
   );
 }

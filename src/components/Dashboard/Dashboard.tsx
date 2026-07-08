@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import { Activity, Bot, CalendarDays, ChevronRight, Flame, Moon, Salad, Sparkles, Trophy } from "lucide-react";
-import type { DailyLog, Page, Profile } from "../../types/gymcord";
+import { Activity, Award, Bot, CalendarDays, CheckCircle2, ChevronRight, Flame, Moon, Salad, Sparkles } from "lucide-react";
+import type { Achievement, AtlasInsight, DailyLog, Mission, Page, Profile, StreakSnapshot, XpSnapshot } from "../../types/gymcord";
 import type { WorkoutDay } from "../../types/gymcord";
 import { getLastSevenDays, shortDate } from "../../lib/storage";
 
@@ -12,6 +12,11 @@ interface DashboardProps {
   weeklyCompletion: number;
   todayWorkout: WorkoutDay;
   logs: Record<string, DailyLog>;
+  mission: Mission;
+  xp: XpSnapshot;
+  streak: StreakSnapshot;
+  nextAchievement: Achievement;
+  atlasInsights: AtlasInsight[];
   setPage: (page: Page) => void;
 }
 
@@ -23,7 +28,7 @@ function ProgressBar({ value }: { value: number }) {
   return <div className="progress-track" aria-label={`${value}% complete`}><span style={{ width: `${Math.min(100, Math.max(0, value))}%` }} /></div>;
 }
 
-export function Dashboard({ profile, dayLog, score, workoutCompletion, weeklyCompletion, todayWorkout, logs, setPage }: DashboardProps) {
+export function Dashboard({ profile, dayLog, score, workoutCompletion, weeklyCompletion, todayWorkout, logs, mission, xp, streak, nextAchievement, atlasInsights, setPage }: DashboardProps) {
   const firstName = profile.name.split(" ")[0] || "Athlete";
   const recoveryScore = Math.round(((dayLog.sleep / 8) * 55 + (dayLog.energy / 5) * 25 + (dayLog.mood / 5) * 20));
   const nutritionProgress = Math.min(100, Math.round((dayLog.protein / 130) * 65 + (dayLog.water / 8) * 35));
@@ -43,10 +48,23 @@ export function Dashboard({ profile, dayLog, score, workoutCompletion, weeklyCom
       <div className="daily-mission-card">
         <div>
           <p className="eyebrow">Daily Mission</p>
-          <h3>{profile.goal || "Build a stronger body"}</h3>
-          <span>Complete the workout, hit 130g protein, drink 8 waters, and log recovery.</span>
+          <h3>{mission.title}: {profile.goal || "Build a stronger body"}</h3>
+          <span>{mission.description}</span>
         </div>
-        <div className="mission-score"><strong>{score}</strong><span>Momentum</span></div>
+        <div className="mission-score"><strong>{mission.completionPercentage}%</strong><span>{mission.earnedXp}/{mission.xpReward} XP</span></div>
+      </div>
+
+      <article className="panel premium-card xp-panel">
+        <div className="card-heading"><div><p className="eyebrow">Level Badge</p><h3>Level {xp.currentLevel}</h3></div><strong>{xp.currentXp}/{xp.xpNeededForNextLevel} XP</strong></div>
+        <ProgressBar value={xp.progressPercentage} />
+      </article>
+
+      <div className="mission-task-list">
+        {mission.tasks.map((task) => <article className={`mission-task ${task.completed ? "complete" : ""}`} key={task.id}>
+          <CheckCircle2 size={18} />
+          <div><strong>{task.title}</strong><span>{task.description}</span><ProgressBar value={task.completionPercentage} /></div>
+          <em>{task.completionPercentage}%</em>
+        </article>)}
       </div>
 
       <div className="metric-grid">
@@ -72,18 +90,26 @@ export function Dashboard({ profile, dayLog, score, workoutCompletion, weeklyCom
         </article>
 
         <article className="panel premium-card">
-          <div className="card-heading"><h3><Trophy size={20} /> Recent Achievements</h3></div>
+          <div className="card-heading"><h3><Flame size={20} /> Streak</h3><strong>{streak.currentStreak} days</strong></div>
+          <div className="streak-calendar">
+            {streak.weeklyCalendar.map((day) => <span key={day.date} className={day.active ? "active" : day.missed ? "missed" : ""}>{shortDate(day.date).split(" ")[0]}</span>)}
+          </div>
+          <p className="muted-line">Longest streak: {streak.longestStreak} days</p>
+        </article>
+
+        <article className="panel premium-card">
+          <div className="card-heading"><h3><Award size={20} /> Next Achievement</h3></div>
           <div className="achievement-list">
-            <span>{dayLog.mealPhoto ? "Meal photo verified" : "Meal photo ready"}</span>
-            <span>{workoutCompletion > 0 ? "Workout streak started" : "Workout queued"}</span>
-            <span>{dayLog.measurements.weight ? "Measurement logged" : "Baseline pending"}</span>
+            <span>{nextAchievement.unlocked ? "Unlocked" : "Locked"}: {nextAchievement.title}</span>
+            <span>{nextAchievement.description}</span>
+            <span>{nextAchievement.progress}/{nextAchievement.target} · {nextAchievement.completionPercentage}%</span>
           </div>
         </article>
       </div>
 
       <button className="atlas-entry-card" onClick={() => setPage("coach")}>
         <div className="atlas-orb"><Bot size={24} /></div>
-        <div><p className="eyebrow">Atlas AI Assistant</p><h3>Ask Atlas what to do next.</h3><span>Personalized coaching architecture for workouts, meals, recovery, and retention.</span></div>
+        <div><p className="eyebrow">Atlas AI Assistant</p><h3>{atlasInsights[0]?.message || "Ask Atlas what to do next."}</h3><span>Contextual coaching powered by Mission, XP, Streak, and Achievement engines.</span></div>
         <ChevronRight size={22} />
       </button>
     </section>

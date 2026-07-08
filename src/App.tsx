@@ -14,6 +14,11 @@ import {
   calculateTransformationScore,
   calculateWorkoutCompletion,
 } from "./lib/scoring";
+import { buildDailyMission } from "./lib/engines/missionEngine";
+import { buildXpSnapshot } from "./lib/engines/xpEngine";
+import { buildStreakSnapshot } from "./lib/engines/streakEngine";
+import { buildAchievements, getNextAchievement } from "./lib/engines/achievementEngine";
+import { buildAtlasInsights } from "./lib/engines/atlasEngine";
 
 import { AppLayout } from "./components/Common/AppLayout";
 import { DateStrip } from "./components/Common/DateStrip";
@@ -80,6 +85,28 @@ export default function App() {
 
   const todayWorkout = workouts[new Date(selectedDate + "T00:00:00").getDay() % workouts.length];
 
+  const missionHistory = useMemo(() => {
+    const dates = Array.from(new Set([...getLastSevenDays(), selectedDate, ...Object.keys(logs)])).sort();
+
+    return dates.map((date) => {
+      const log = logs[date] || createEmptyDay(date);
+      const workout = workouts[new Date(date + "T00:00:00").getDay() % workouts.length];
+
+      return buildDailyMission({ dayLog: log, todayWorkout: workout, totalExercises });
+    });
+  }, [logs, selectedDate, totalExercises]);
+
+  const mission = useMemo(
+    () => buildDailyMission({ dayLog, todayWorkout, totalExercises }),
+    [dayLog, todayWorkout, totalExercises]
+  );
+
+  const xp = useMemo(() => buildXpSnapshot(logs, missionHistory), [logs, missionHistory]);
+  const streak = useMemo(() => buildStreakSnapshot(logs, totalExercises, selectedDate), [logs, selectedDate, totalExercises]);
+  const achievements = useMemo(() => buildAchievements(missionHistory, streak), [missionHistory, streak]);
+  const nextAchievement = getNextAchievement(achievements);
+  const atlasInsights = buildAtlasInsights(mission, xp, streak, nextAchievement);
+
   const weeklyCompletion = useMemo(() => {
     const dates = getLastSevenDays();
 
@@ -134,6 +161,11 @@ export default function App() {
           weeklyCompletion={weeklyCompletion}
           todayWorkout={todayWorkout}
           logs={logs}
+          mission={mission}
+          xp={xp}
+          streak={streak}
+          nextAchievement={nextAchievement}
+          atlasInsights={atlasInsights}
           setPage={setPage}
         />
       )}
@@ -152,7 +184,7 @@ export default function App() {
         />
       )}
 
-      {page === "coach" && <Coach profile={profile} dayLog={dayLog} />}
+      {page === "coach" && <Coach profile={profile} dayLog={dayLog} mission={mission} xp={xp} streak={streak} nextAchievement={nextAchievement} atlasInsights={atlasInsights} />}
 
     </AppLayout>
   );

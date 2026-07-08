@@ -30,7 +30,7 @@ import { buildTransformationSnapshot } from "./lib/engines/transformationEngine"
 import { AppLayout } from "./components/Common/AppLayout";
 import { DateStrip } from "./components/Common/DateStrip";
 import { Dashboard } from "./components/Dashboard/Dashboard";
-import { Train } from "./components/Workout/Train";
+import { WorkoutExperience } from "./components/workout/WorkoutExperience";
 import { Meals } from "./components/Meals/Meals";
 import { Progress } from "./components/Progress/Progress";
 import { Coach } from "./components/Coach/Coach";
@@ -47,6 +47,7 @@ import { DeveloperDataFlow } from "./components/Dev/DeveloperDataFlow";
 import { DeveloperOnboardingFlow } from "./components/Dev/DeveloperOnboardingFlow";
 import { DeveloperPersistence } from "./components/Dev/DeveloperPersistence";
 import { DeveloperDashboard } from "./components/Dev/DeveloperDashboard";
+import { DeveloperWorkout } from "./components/Dev/DeveloperWorkout";
 import { TrainerOS } from "./components/Trainer/TrainerOS";
 import { dashboardRepository } from "./repositories/DashboardRepository";
 import { onboardingRepository } from "./services/OnboardingRepository";
@@ -336,17 +337,10 @@ function GymCordApp() {
         />
       )}
 
-      {page === "train" && <Train dayLog={dayLog} updateDay={updateDay} mission={mission} xp={xp} achievements={achievements} onWorkoutStarted={(workout) => {
-        telemetryService.track(AnalyticsEventNames.WorkoutStarted, { workoutId: workout.id, title: workout.title }, "workout-engine");
-      }} onWorkoutCompleted={({ workout, dayLog: completedDayLog, durationMinutes, xpEarned }) => {
-        telemetryService.track(AnalyticsEventNames.WorkoutCompleted, { workoutId: workout.id, title: workout.title, durationMinutes, xpEarned }, "workout-engine");
-        void realtimeService.publish(EventTypes.WorkoutCompleted, {
-          workout,
-          dayLog: completedDayLog,
-          completedAt: new Date().toISOString(),
-          durationMinutes,
-          xpEarned,
-        }, "workout-engine");
+      {page === "train" && <WorkoutExperience session={auth.session} workout={todayWorkout} dayLog={dayLog} logs={logs} totalExercises={totalExercises} mission={mission} xp={xp} streak={streak} onSave={(log) => {
+        updateDay(log);
+        telemetryService.track(AnalyticsEventNames.WorkoutCompleted, { workoutId: todayWorkout.id, title: todayWorkout.title }, "workout-engine");
+        void realtimeService.publish(EventTypes.WorkoutCompleted, { workout: todayWorkout, dayLog: log, completedAt: new Date().toISOString(), durationMinutes: todayWorkout.duration, xpEarned: mission.earnedXp }, "workout-engine");
       }} />}
 
       {page === "meals" && <Meals dayLog={dayLog} updateDay={(patch) => { updateDay(patch); telemetryService.track(AnalyticsEventNames.MealLogged, { fields: Object.keys(patch) }, "meal-engine"); }} />}
@@ -471,6 +465,14 @@ export default function App() {
     return (
       <AuthProvider>
         <DeveloperDashboard />
+      </AuthProvider>
+    );
+  }
+
+  if (window.location.pathname === "/dev/workout") {
+    return (
+      <AuthProvider>
+        <DeveloperWorkout />
       </AuthProvider>
     );
   }

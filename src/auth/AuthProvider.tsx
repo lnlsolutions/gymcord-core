@@ -4,6 +4,7 @@ import { MockAuthService } from "./MockAuthService";
 import { PermissionManager } from "./PermissionManager";
 import { RoleManager } from "./RoleManager";
 import { SessionManager } from "./SessionManager";
+import { telemetryService, AnalyticsEventNames } from "../core/analytics";
 import type { AuthRole, AuthService, AuthSession, AuthStatus, FutureAuthProvider, Permission, SignInCredentials, SignUpCredentials } from "./types";
 
 interface AuthProviderProps {
@@ -68,7 +69,9 @@ export function AuthProvider({ children, service, provider }: AuthProviderProps)
       setError("");
       setStatus("loading");
       try {
-        setSession(await authService.signIn(credentials));
+        const nextSession = await authService.signIn(credentials);
+        setSession(nextSession);
+        telemetryService.track(AnalyticsEventNames.Login, { userId: nextSession.user.id, email: credentials.email }, "auth-provider");
         setStatus("authenticated");
       } catch (signInError) {
         setError(signInError instanceof Error ? signInError.message : "Unable to sign in.");
@@ -79,7 +82,11 @@ export function AuthProvider({ children, service, provider }: AuthProviderProps)
       setError("");
       setStatus("loading");
       try {
-        setSession(await authService.signUp(credentials));
+        const nextSession = await authService.signUp(credentials);
+        setSession(nextSession);
+        telemetryService.track(AnalyticsEventNames.Signup, { userId: nextSession.user.id, email: credentials.email, organizationName: credentials.organizationName }, "auth-provider");
+        telemetryService.track(AnalyticsEventNames.OrganizationCreated, { organizationName: credentials.organizationName || "GymCord" }, "auth-provider");
+        telemetryService.track(AnalyticsEventNames.MemberJoined, { userId: nextSession.user.id }, "auth-provider");
         setStatus("authenticated");
       } catch (signUpError) {
         setError(signUpError instanceof Error ? signUpError.message : "Unable to create account.");

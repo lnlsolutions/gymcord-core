@@ -15,6 +15,7 @@ export function Train({
   xp,
   achievements,
   onWorkoutCompleted,
+  onWorkoutStarted,
 }: {
   dayLog: DailyLog;
   updateDay: (patch: Partial<DailyLog>) => void;
@@ -22,6 +23,7 @@ export function Train({
   xp: XpSnapshot;
   achievements: Achievement[];
   onWorkoutCompleted?: (event: { workout: WorkoutDay; dayLog: DailyLog; durationMinutes: number; xpEarned: number }) => void;
+  onWorkoutStarted?: (workout: WorkoutDay) => void;
 }) {
   const [activeWorkout, setActiveWorkout] = useState<WorkoutDay | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -64,6 +66,7 @@ export function Train({
     setActiveIndex(0);
     setComplete(false);
     setStartedAt(Date.now());
+    onWorkoutStarted?.(workout);
   }
 
   if (!activeWorkout) {

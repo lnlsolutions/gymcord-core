@@ -3,7 +3,8 @@ export type Page =
   | "train"
   | "meals"
   | "progress"
-  | "coach";
+  | "coach"
+  | "settings";
 
 export interface Exercise {
   id: string;

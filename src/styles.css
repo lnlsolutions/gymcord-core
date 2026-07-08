@@ -1318,3 +1318,16 @@ select.input option { color: #170a16; }
   .session-topbar { align-items: flex-start; }
   .session-topbar h2 { font-size: clamp(20px, 7vw, 32px); }
 }
+
+/* Sprint Epsilon Atlas Memory V1 */
+.atlas-dashboard {
+  background: radial-gradient(circle at 92% 6%, rgba(117,240,178,.22), transparent 32%), rgba(255,255,255,.08);
+}
+.atlas-dashboard h2 { margin: 12px 0 16px; font-size: clamp(34px, 8vw, 52px); }
+.atlas-status-grid, .memory-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.atlas-status-grid div, .memory-grid div, .conversation-memory { padding: 14px; border: 1px solid var(--line); border-radius: 18px; background: rgba(255,255,255,.065); }
+.atlas-status-grid span, .memory-grid strong, .conversation-memory strong { display: block; color: var(--green); font-size: 11px; font-weight: 950; text-transform: uppercase; letter-spacing: .1em; }
+.atlas-status-grid strong, .memory-grid span, .conversation-memory span { display: block; margin-top: 6px; color: white; font-size: 13px; font-weight: 800; line-height: 1.45; }
+.memory-grid { margin-top: 14px; }
+.conversation-memory p { margin: 6px 0; color: white; font-size: 13px; }
+@media (max-width: 560px) { .atlas-status-grid, .memory-grid { grid-template-columns: 1fr; } }

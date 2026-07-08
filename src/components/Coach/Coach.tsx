@@ -1,25 +1,48 @@
-import type { Achievement, AtlasInsight, DailyLog, Mission, Profile, StreakSnapshot, XpSnapshot } from "../../types/gymcord";
-import { calculateTransformationScore, getCoachInsights, getRewards, calculateWorkoutCompletion } from "../../lib/scoring";
-import { workouts } from "../../lib/program";
+import type { Achievement, AtlasContext, AtlasConversationEntry, AtlasInsight, AtlasMemory, DailyLog, Mission, Profile, StreakSnapshot, XpSnapshot } from "../../types/gymcord";
 import { RewardCard } from "./RewardCard";
 import { AtlasConversation } from "./AtlasConversation";
+import { getRewards } from "../../lib/scoring";
 
-export function Coach({ profile, dayLog, mission, xp, streak, nextAchievement, atlasInsights }: { profile: Profile; dayLog: DailyLog; mission: Mission; xp: XpSnapshot; streak: StreakSnapshot; nextAchievement: Achievement; atlasInsights: AtlasInsight[] }) {
-  const totalExercises = workouts.reduce((sum, day) => sum + day.exercises.length, 0);
-  const completion = calculateWorkoutCompletion(dayLog, totalExercises);
-  const score = calculateTransformationScore(dayLog, completion);
-  const insights = getCoachInsights(dayLog, completion, score);
-  const rewards = getRewards(score);
+export function Coach({ profile, dayLog, mission, xp, streak, nextAchievement, atlasInsights, atlasMemory, atlasContext, conversation, onRememberConversation }: { profile: Profile; dayLog: DailyLog; mission: Mission; xp: XpSnapshot; streak: StreakSnapshot; nextAchievement: Achievement; atlasInsights: AtlasInsight[]; atlasMemory: AtlasMemory; atlasContext: AtlasContext; conversation: AtlasConversationEntry[]; onRememberConversation: (entry: AtlasConversationEntry) => void }) {
+  const rewards = getRewards(Math.round((mission.completionPercentage + dayLog.mood * 20 + dayLog.energy * 20) / 3));
 
   return (
     <>
-      <AtlasConversation profile={profile} dayLog={dayLog} />
+      <AtlasConversation profile={profile} atlasContext={atlasContext} conversation={conversation} onRememberConversation={onRememberConversation} />
       <section className="page">
-        <div className="panel reward-ready center"><div className="big-emoji">🤖</div><h2>Level {xp.currentLevel}</h2><p>{mission.completionPercentage}% Mission · {streak.currentStreak} day streak</p></div>
-        <div className="panel"><h3>Atlas Coaching</h3>{atlasInsights.map((item) => <div key={item.message} className="coach-card"><strong>{item.priority} Priority</strong><p>{item.message}</p></div>)}</div>
+        <div className="atlas-dashboard panel">
+          <p className="pill">Persistent Coach</p>
+          <h2>{atlasContext.greeting}</h2>
+          <div className="atlas-status-grid">
+            <div><span>Today's focus</span><strong>{atlasContext.todayFocus}</strong></div>
+            <div><span>Recovery status</span><strong>{atlasContext.recoveryStatus}</strong></div>
+            <div><span>Biggest opportunity</span><strong>{atlasContext.biggestOpportunity}</strong></div>
+            <div><span>Last workout</span><strong>{atlasContext.lastWorkoutSummary}</strong></div>
+            <div><span>Current streak</span><strong>{atlasContext.currentStreak} days</strong></div>
+            <div><span>Mission status</span><strong>{atlasContext.missionStatus}</strong></div>
+          </div>
+        </div>
+
+        <div className="panel memory-grid-panel">
+          <h3>Atlas Memory</h3>
+          <div className="memory-grid">
+            <div><strong>Name</strong><span>{atlasMemory.name || "Not set"}</span></div>
+            <div><strong>Goal</strong><span>{atlasMemory.goal || "Not set"}</span></div>
+            <div><strong>Injuries</strong><span>{atlasMemory.injuries.length ? atlasMemory.injuries.join(" · ") : "No injury notes captured"}</span></div>
+            <div><strong>Favorite exercises</strong><span>{atlasMemory.favoriteExercises.length ? atlasMemory.favoriteExercises.join(" · ") : "Complete workouts to build favorites"}</span></div>
+            <div><strong>Workout history</strong><span>{atlasMemory.workoutHistory.length} logged sessions</span></div>
+            <div><strong>Nutrition history</strong><span>{atlasMemory.nutritionHistory.length} daily entries</span></div>
+            <div><strong>Sleep history</strong><span>{atlasMemory.sleepHistory.length} sleep entries</span></div>
+            <div><strong>Recovery history</strong><span>{atlasMemory.recoveryHistory.length} recovery entries</span></div>
+            <div><strong>PR history</strong><span>{atlasMemory.prHistory.length ? atlasMemory.prHistory.map((pr) => `${pr.exercise}: ${pr.value}`).join(" · ") : "No PRs yet"}</span></div>
+          </div>
+        </div>
+
+        <div className="panel"><h3>Dynamic Coaching</h3>{atlasContext.coachingMessages.map((message) => <div key={message} className="coach-card"><strong>Context Engine</strong><p>{message}</p></div>)}</div>
+        <div className="panel"><h3>Atlas Signals</h3>{atlasInsights.map((item) => <div key={item.message} className="coach-card"><strong>{item.priority} Priority</strong><p>{item.message}</p></div>)}</div>
         <div className="panel"><h3>Next Achievement</h3><div className="coach-card"><strong>{nextAchievement.title}</strong><p>{nextAchievement.description}</p><span>{nextAchievement.progress}/{nextAchievement.target} complete</span></div></div>
-        <div className="panel"><h3>Coach Insights</h3>{insights.map((item) => <div key={item.title} className="coach-card"><strong>{item.title}</strong><p>{item.description}</p><span>{item.priority} Priority</span></div>)}</div>
         <div className="panel"><h3>Reward Progress</h3>{rewards.map((reward) => <RewardCard key={reward.title} reward={reward} />)}</div>
+        <div className="panel xp-panel"><h3>Coach Level</h3><p>Level {xp.currentLevel}</p><strong>{xp.currentXp}/{xp.xpNeededForNextLevel} XP · {streak.currentStreak} day streak</strong></div>
       </section>
     </>
   );

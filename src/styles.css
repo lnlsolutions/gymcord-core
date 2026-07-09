@@ -1611,3 +1611,53 @@ body {
   border-radius: 16px;
   background: rgba(0, 0, 0, 0.32);
 }
+
+.app-shell-validation {
+  background: #0f172a;
+  color: #e2e8f0;
+  min-height: 100vh;
+  padding: 32px;
+}
+
+.app-shell-header,
+.shell-panel {
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid #334155;
+  border-radius: 24px;
+  margin-bottom: 20px;
+  padding: 24px;
+}
+
+.app-shell-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.app-shell-header span,
+.eyebrow {
+  color: #94a3b8;
+  display: block;
+}
+
+.mode-switcher,
+.module-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.mode-switcher button,
+.module-grid a {
+  background: #1e293b;
+  border: 1px solid #475569;
+  border-radius: 999px;
+  color: #e2e8f0;
+  padding: 10px 14px;
+  text-decoration: none;
+}
+
+.mode-switcher button.active {
+  background: #7c3aed;
+  border-color: #a78bfa;
+}

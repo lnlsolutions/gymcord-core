@@ -31,3 +31,5 @@ export type { TenancySnapshot, TenantRelationship, GymBranding, TenancySettings 
 
 export { AdminRepository, adminRepository } from "./AdminRepository";
 export type { AdminDashboard, AdminTenantContext, AdminImpersonationContext, WhiteLabelPreview } from "./AdminRepository";
+export { AppShellRepository, appShellRepository } from "./AppShellRepository";
+export type { AppShellMode, AppShellRoute, AppShellSnapshot } from "./AppShellRepository";

@@ -59,6 +59,7 @@ import { DeveloperBilling } from "./components/Dev/DeveloperBilling";
 import { DeveloperTenancy } from "./components/Dev/DeveloperTenancy";
 import { DeveloperAdmin } from "./components/Dev/DeveloperAdmin";
 import { AppShellValidation } from "./components/Dev/AppShellValidation";
+import { DeveloperQA } from "./components/Dev/DeveloperQA";
 import { TrainerDashboard } from "./components/Trainer/TrainerDashboard";
 import { dashboardRepository } from "./repositories/DashboardRepository";
 import { nutritionRepository } from "./repositories/NutritionRepository";
@@ -445,6 +446,16 @@ function AuthGate() {
 }
 
 export default function App() {
+  if (window.location.pathname === "/dev/qa") {
+    return (
+      <AuthProvider>
+        <ProtectedRoute permissions={["dashboard:view"]}>
+          <DeveloperQA />
+        </ProtectedRoute>
+      </AuthProvider>
+    );
+  }
+
   if (window.location.pathname === "/dev/app-shell") {
     return (
       <AuthProvider>

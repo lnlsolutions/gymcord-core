@@ -157,6 +157,56 @@ export interface Exercise extends AuditMetadata {
   status: ExerciseStatus;
 }
 
+
+export type CalendarEventStatus = "scheduled" | "cancelled" | "archived";
+export type CalendarEventKind = "program_milestone" | "trainer_appointment" | "member_check_in" | "workout_schedule" | "general";
+
+export interface CalendarReminder {
+  id: EntityId;
+  offsetMinutes: number;
+  channel: NotificationChannel;
+  message?: string;
+}
+
+export interface CalendarRecurringMetadata {
+  frequency: "daily" | "weekly" | "monthly";
+  interval: number;
+  count?: number;
+  until?: IsoDateString;
+  daysOfWeek?: number[];
+}
+
+export interface CalendarEvent extends AuditMetadata {
+  id: EntityId;
+  organizationId?: EntityId;
+  trainerId?: EntityId;
+  memberId?: EntityId;
+  title: string;
+  description?: string;
+  kind: CalendarEventKind;
+  startsAt: IsoDateTimeString;
+  endsAt: IsoDateTimeString;
+  timezone: string;
+  status: CalendarEventStatus;
+  sourceModule?: "program_builder" | "trainer_portal" | "member_check_ins" | "workout_schedules";
+  sourceId?: EntityId;
+  recurring?: CalendarRecurringMetadata;
+  reminders?: CalendarReminder[];
+}
+
+export type CalendarAvailabilityStatus = "available" | "blocked" | "archived";
+
+export interface CalendarAvailability extends AuditMetadata {
+  id: EntityId;
+  organizationId?: EntityId;
+  trainerId: EntityId;
+  startsAt: IsoDateTimeString;
+  endsAt: IsoDateTimeString;
+  timezone: string;
+  status: CalendarAvailabilityStatus;
+  recurring?: CalendarRecurringMetadata;
+}
+
 export interface WorkoutSession extends AuditMetadata {
   id: EntityId;
   userId: EntityId;

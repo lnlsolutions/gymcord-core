@@ -58,6 +58,7 @@ import { DeveloperCheckIns } from "./components/Dev/DeveloperCheckIns";
 import { DeveloperBilling } from "./components/Dev/DeveloperBilling";
 import { DeveloperTenancy } from "./components/Dev/DeveloperTenancy";
 import { DeveloperAdmin } from "./components/Dev/DeveloperAdmin";
+import { AppShellValidation } from "./components/Dev/AppShellValidation";
 import { TrainerDashboard } from "./components/Trainer/TrainerDashboard";
 import { dashboardRepository } from "./repositories/DashboardRepository";
 import { nutritionRepository } from "./repositories/NutritionRepository";
@@ -444,6 +445,16 @@ function AuthGate() {
 }
 
 export default function App() {
+  if (window.location.pathname === "/dev/app-shell") {
+    return (
+      <AuthProvider>
+        <ProtectedRoute permissions={["dashboard:view"]}>
+          <AppShellValidation />
+        </ProtectedRoute>
+      </AuthProvider>
+    );
+  }
+
   if (window.location.pathname === "/dev/analytics") {
     void telemetryService.initialize();
     return <DeveloperAnalytics />;

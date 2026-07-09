@@ -449,7 +449,7 @@ export default function App() {
   if (window.location.pathname === "/dev/qa") {
     return (
       <AuthProvider>
-        <ProtectedRoute permissions={["dashboard:view"]}>
+        <ProtectedRoute permissions={["dashboard:view"]} allowMockMode>
           <DeveloperQA />
         </ProtectedRoute>
       </AuthProvider>
@@ -459,7 +459,7 @@ export default function App() {
   if (window.location.pathname === "/dev/app-shell") {
     return (
       <AuthProvider>
-        <ProtectedRoute permissions={["dashboard:view"]}>
+        <ProtectedRoute permissions={["dashboard:view"]} allowMockMode>
           <AppShellValidation />
         </ProtectedRoute>
       </AuthProvider>

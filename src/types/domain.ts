@@ -207,6 +207,64 @@ export interface CalendarAvailability extends AuditMetadata {
   recurring?: CalendarRecurringMetadata;
 }
 
+
+export type ConversationStatus = "active" | "archived";
+export type ConversationKind = "direct" | "trainer_member" | "team_announcement" | "system";
+export type MessagingParticipantRole = "trainer" | "member" | "admin" | "system";
+export type MessagingDeliveryStatus = "queued" | "sent" | "delivered" | "read" | "failed";
+
+export interface MessagingParticipant {
+  userId: EntityId;
+  role: MessagingParticipantRole;
+  joinedAt: IsoDateTimeString;
+  lastReadAt?: IsoDateTimeString;
+}
+
+export interface MessagingAttachmentMetadata {
+  id: EntityId;
+  fileName: string;
+  mimeType: string;
+  sizeBytes: number;
+  storagePath?: string;
+  url?: string;
+}
+
+export interface MessagingModerationMetadata {
+  status: "pending" | "approved" | "flagged" | "blocked";
+  reviewedBy?: EntityId;
+  reviewedAt?: IsoDateTimeString;
+  reason?: string;
+  score?: number;
+}
+
+export interface MessagingConversation extends AuditMetadata {
+  id: EntityId;
+  organizationId?: EntityId;
+  title: string;
+  kind: ConversationKind;
+  participantIds: EntityId[];
+  participants: MessagingParticipant[];
+  status: ConversationStatus;
+  sourceModule?: "trainer_portal" | "member_app" | "team_announcements" | "system_messages" | "realtime_subscriptions";
+  sourceId?: EntityId;
+  lastMessageAt?: IsoDateTimeString;
+  archivedAt?: IsoDateTimeString;
+}
+
+export interface MessagingMessage extends AuditMetadata {
+  id: EntityId;
+  organizationId?: EntityId;
+  conversationId: EntityId;
+  senderId: EntityId;
+  body: string;
+  status: MessagingDeliveryStatus;
+  readBy: EntityId[];
+  editedAt?: IsoDateTimeString;
+  attachments: MessagingAttachmentMetadata[];
+  moderation?: MessagingModerationMetadata;
+  system?: boolean;
+}
+
 export interface WorkoutSession extends AuditMetadata {
   id: EntityId;
   userId: EntityId;

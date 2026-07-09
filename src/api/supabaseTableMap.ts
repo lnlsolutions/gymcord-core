@@ -15,6 +15,8 @@ const tables = [
   "nutrition_logs",
   "progress_photos",
   "measurements",
+  "messaging_conversations",
+  "messaging_messages",
   "messages",
   "notifications",
   "atlas_memory",

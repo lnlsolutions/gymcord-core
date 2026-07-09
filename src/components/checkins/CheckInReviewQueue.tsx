@@ -1,0 +1,2 @@
+import type { MemberCheckIn } from "../../repositories/CheckInRepository";
+export function CheckInReviewQueue({ checkIns, selectedId, onSelect }: { checkIns: MemberCheckIn[]; selectedId?: string; onSelect: (id: string) => void }) { return <section className="card"><h3>Trainer Review Queue</h3>{checkIns.map((item) => <button key={item.id} className="back-btn" type="button" onClick={() => onSelect(item.id)}>{item.id === selectedId ? "• " : ""}{item.weekOf} · {item.status} · workout {item.compliance.workoutPercent}%</button>)}</section>; }

@@ -1,0 +1,3 @@
+import { authEntryRepository } from "../../repositories/AuthEntryRepository";
+import { InviteCodePanel } from "./InviteCodePanel";
+export function AuthEntryPage() { const metadata = authEntryRepository.getMetadata(); return <main className="screen public-beta-screen"><section className="hero-card"><p className="pill">Production auth entry v1</p><h1>Choose how to continue.</h1><p>Beta-ready signup, login, reset, verification, social metadata, and invite preservation.</p><div className="button-row"><a className="primary-button" href="/auth/signup">Sign up</a><a className="primary-button" href="/auth/login">Log in</a></div></section><InviteCodePanel /><section className="panel"><h2>Provider metadata</h2><pre>{JSON.stringify(metadata, null, 2)}</pre></section></main>; }

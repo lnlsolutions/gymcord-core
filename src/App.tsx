@@ -55,6 +55,7 @@ import { DeveloperCalendar } from "./components/Dev/DeveloperCalendar";
 import { DeveloperMessaging } from "./components/Dev/DeveloperMessaging";
 import { DeveloperNotifications } from "./components/Dev/DeveloperNotifications";
 import { DeveloperCheckIns } from "./components/Dev/DeveloperCheckIns";
+import { DeveloperBilling } from "./components/Dev/DeveloperBilling";
 import { TrainerDashboard } from "./components/Trainer/TrainerDashboard";
 import { dashboardRepository } from "./repositories/DashboardRepository";
 import { nutritionRepository } from "./repositories/NutritionRepository";
@@ -535,6 +536,14 @@ export default function App() {
     return (
       <AuthProvider>
         <DeveloperCheckIns />
+      </AuthProvider>
+    );
+  }
+
+  if (window.location.pathname === "/dev/billing") {
+    return (
+      <AuthProvider>
+        <DeveloperBilling />
       </AuthProvider>
     );
   }

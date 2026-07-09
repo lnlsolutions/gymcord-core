@@ -1611,3 +1611,88 @@ body {
   border-radius: 16px;
   background: rgba(0, 0, 0, 0.32);
 }
+
+.calendar-scheduler,
+.dev-page {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 28px 18px 108px;
+}
+
+.calendar-grid,
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.calendar-panel,
+.calendar-day {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  border-radius: 24px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+
+.calendar-panel h2,
+.calendar-day strong {
+  margin-bottom: 10px;
+}
+
+.calendar-event-card {
+  width: 100%;
+  display: grid;
+  gap: 7px;
+  margin-top: 10px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  color: var(--text);
+  text-align: left;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.calendar-event-card.selected {
+  border-color: var(--pink-2);
+  box-shadow: var(--glow);
+}
+
+.calendar-row {
+  display: grid;
+  gap: 4px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.calendar-panel label {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.calendar-panel input,
+.calendar-panel select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.calendar-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.calendar-actions button {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 12px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.08);
+}

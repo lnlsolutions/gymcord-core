@@ -1,0 +1,4 @@
+import type { MemberCheckIn } from "../../repositories/CheckInRepository";
+import { CheckInReviewQueue } from "./CheckInReviewQueue";
+import { CheckInSummary } from "./CheckInSummary";
+export function CheckInDashboard({ checkIns, selectedId, onSelect }: { checkIns: MemberCheckIn[]; selectedId?: string; onSelect: (id: string) => void }) { const selected = checkIns.find((item) => item.id === selectedId) ?? checkIns[0]; return <main className="page"><section className="hero-card"><p className="eyebrow">AI Check-ins</p><h2>Weekly coaching loop</h2><p>Member check-ins, trainer review, Atlas metadata, compliance, risk flags, and follow-up actions.</p></section><CheckInReviewQueue checkIns={checkIns} selectedId={selected?.id} onSelect={onSelect} />{selected && <CheckInSummary checkIn={selected} />}</main>; }

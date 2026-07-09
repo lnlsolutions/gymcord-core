@@ -22,3 +22,6 @@ export type { CreateConversationInput, CreateMessageInput, EditMessageInput } fr
 
 export { NotificationRepository, notificationRepository } from "./NotificationRepository";
 export type { CreateNotificationInput, NotificationPreferences } from "./NotificationRepository";
+
+export { CheckInRepository, checkInRepository } from "./CheckInRepository";
+export type { MemberCheckIn, CreateCheckInInput, UpdateCheckInInput, CheckInStatus } from "./CheckInRepository";

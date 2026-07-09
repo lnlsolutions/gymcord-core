@@ -52,6 +52,7 @@ import { DeveloperNutrition } from "./components/Dev/DeveloperNutrition";
 import { TrainerOS } from "./components/Trainer/TrainerOS";
 import { dashboardRepository } from "./repositories/DashboardRepository";
 import { nutritionRepository } from "./repositories/NutritionRepository";
+import { progressExperienceRepository } from "./repositories/ProgressExperienceRepository";
 import { onboardingRepository } from "./services/OnboardingRepository";
 import { telemetryService, AnalyticsEventNames } from "./core/analytics";
 
@@ -369,7 +370,12 @@ function GymCordApp() {
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
           dayLog={dayLog}
-          updateDay={(patch) => { updateDay(patch); if (patch.photos) telemetryService.track(AnalyticsEventNames.ProgressPhotoAdded, { date: selectedDate }, "progress-engine"); }}
+          updateDay={(patch) => {
+            const nextLog = getUpdatedDay(patch);
+            updateDay(patch);
+            if (patch.photos) telemetryService.track(AnalyticsEventNames.ProgressPhotoAdded, { date: selectedDate }, "progress-engine");
+            void progressExperienceRepository.saveProgressLog(auth.session, nextLog, mission, xp, streak);
+          }}
           transformation={transformation}
         />
       )}
@@ -471,7 +477,7 @@ export default function App() {
     );
   }
 
-  if (window.location.pathname === "/dev/persistence") {
+  if (window.location.pathname === "/dev/persistence" || window.location.pathname === "/dev/progress") {
     return (
       <AuthProvider>
         <DeveloperPersistence />

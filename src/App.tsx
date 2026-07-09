@@ -61,6 +61,7 @@ import { DeveloperAdmin } from "./components/Dev/DeveloperAdmin";
 import { AppShellValidation } from "./components/Dev/AppShellValidation";
 import { DeveloperQA } from "./components/Dev/DeveloperQA";
 import { TrainerDashboard } from "./components/Trainer/TrainerDashboard";
+import { BetaDemo, DeveloperOnboarding, PublicLanding, PublicOnboarding } from "./components/PublicBeta";
 import { dashboardRepository } from "./repositories/DashboardRepository";
 import { nutritionRepository } from "./repositories/NutritionRepository";
 import { progressExperienceRepository } from "./repositories/ProgressExperienceRepository";
@@ -446,6 +447,17 @@ function AuthGate() {
 }
 
 export default function App() {
+  if (window.location.pathname === "/") return <PublicLanding />;
+  if (window.location.pathname === "/onboarding") return <PublicOnboarding />;
+  if (window.location.pathname === "/demo") return <BetaDemo />;
+  if (window.location.pathname === "/dev/onboarding") return <DeveloperOnboarding />;
+  if (window.location.pathname === "/app") {
+    return (
+      <AuthProvider>
+        <AuthGate />
+      </AuthProvider>
+    );
+  }
   if (window.location.pathname === "/dev/qa") {
     return (
       <AuthProvider>

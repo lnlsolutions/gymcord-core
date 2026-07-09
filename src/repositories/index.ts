@@ -36,3 +36,9 @@ export type { AppShellMode, AppShellRoute, AppShellSnapshot } from "./AppShellRe
 
 export { QARepository, qaRepository } from "./QARepository";
 export type { QAReadinessItem, QAReadinessSnapshot } from "./QARepository";
+export { universalOnboardingRepository, UniversalOnboardingRepository } from "./OnboardingRepository";
+export type { OnboardingPath, RelationshipMetadata, UniversalOnboardingState } from "./OnboardingRepository";
+export { landingRepository, LandingRepository } from "./LandingRepository";
+export type { LandingBranding, LandingExperience } from "./LandingRepository";
+export { invitationRepository, InvitationRepository } from "./InvitationRepository";
+export type { InvitationKind, InvitationRecord, InvitationStatus } from "./InvitationRepository";

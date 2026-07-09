@@ -28,3 +28,6 @@ export type { CreateCheckInInput, UpdateCheckInInput, ReviewCheckInInput } from 
 
 export { GymRepository, gymRepository, TenancyRepository, tenancyRepository } from "./TenancyRepository";
 export type { TenancySnapshot, TenantRelationship, GymBranding, TenancySettings } from "./TenancyRepository";
+
+export { AdminRepository, adminRepository } from "./AdminRepository";
+export type { AdminDashboard, AdminTenantContext, AdminImpersonationContext, WhiteLabelPreview } from "./AdminRepository";

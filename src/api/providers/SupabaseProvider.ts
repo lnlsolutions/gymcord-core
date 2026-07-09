@@ -36,6 +36,8 @@ const pathAliases: Record<string, SupabaseTableName> = {
   tenantRelationships: "tenant_relationships",
   tenantBranding: "tenant_branding",
   tenantSettings: "tenant_settings",
+  adminDashboards: "admin_dashboards",
+  adminAuditEvents: "admin_audit_events",
 };
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {

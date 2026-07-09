@@ -32,6 +32,8 @@ const tables = [
   "tenant_relationships",
   "tenant_branding",
   "tenant_settings",
+  "admin_dashboards",
+  "admin_audit_events",
 ] as const;
 
 export type SupabaseTableName = (typeof tables)[number];

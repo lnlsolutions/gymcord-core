@@ -38,8 +38,12 @@ export function Coach({ profile, dayLog, mission, xp, streak, nextAchievement, a
           </div>
         </div>
 
-        <div className="panel"><h3>Dynamic Coaching</h3>{atlasContext.coachingMessages.map((message) => <div key={message} className="coach-card"><strong>Context Engine</strong><p>{message}</p></div>)}</div>
-        <div className="panel"><h3>Atlas Signals</h3>{atlasInsights.map((item) => <div key={item.message} className="coach-card"><strong>{item.priority} Priority</strong><p>{item.message}</p></div>)}</div>
+        <div className="panel"><h3>Daily Coaching Prompts</h3>{atlasContext.coachingMessages.map((message) => <div key={message} className="coach-card"><strong>Context Engine</strong><p>{message}</p></div>)}</div>
+        <div className="panel"><h3>Workout Suggestions</h3><div className="coach-card"><strong>Next session</strong><p>{atlasContext.todayFocus}</p></div><div className="coach-card"><strong>Habit nudge</strong><p>Complete one training action today to protect your {streak.currentStreak} day streak.</p></div></div>
+        <div className="panel"><h3>Nutrition Suggestions</h3><div className="coach-card"><strong>Protein target</strong><p>Use today's meals to support {profile.goal || "your current goal"}; log protein and hydration before bed.</p></div></div>
+        <div className="panel"><h3>Progress Insights</h3>{atlasInsights.map((item) => <div key={item.message} className="coach-card"><strong>{item.priority} Priority</strong><p>{item.message}</p></div>)}</div>
+        <div className="panel"><h3>Goal Reminders</h3><div className="coach-card"><strong>{profile.goal || "Primary goal"}</strong><p>{atlasContext.missionStatus}</p></div></div>
+        <div className="panel"><h3>Safety Disclaimer</h3><p>Atlas provides general fitness and nutrition coaching, not medical advice. Stop if you feel pain, and consult a qualified professional for injuries, medical conditions, or diet restrictions.</p></div>
         <div className="panel"><h3>Next Achievement</h3><div className="coach-card"><strong>{nextAchievement.title}</strong><p>{nextAchievement.description}</p><span>{nextAchievement.progress}/{nextAchievement.target} complete</span></div></div>
         <div className="panel"><h3>Reward Progress</h3>{rewards.map((reward) => <RewardCard key={reward.title} reward={reward} />)}</div>
         <div className="panel xp-panel"><h3>Coach Level</h3><p>Level {xp.currentLevel}</p><strong>{xp.currentXp}/{xp.xpNeededForNextLevel} XP · {streak.currentStreak} day streak</strong></div>

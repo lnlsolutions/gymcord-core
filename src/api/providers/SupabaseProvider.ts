@@ -20,6 +20,7 @@ const pathAliases: Record<string, SupabaseTableName> = {
   progressPhotos: "progress_photos",
   measurements: "measurements",
   messages: "messages",
+  messageConversations: "message_conversations",
   notifications: "notifications",
   atlasMemory: "atlas_memory",
   atlasConversations: "atlas_conversations",

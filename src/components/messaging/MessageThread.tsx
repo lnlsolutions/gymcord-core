@@ -1,0 +1,4 @@
+import type { Message, MessageConversation } from "../../types/domain";
+import { MessageBubble } from "./MessageBubble";
+import { MessageComposer } from "./MessageComposer";
+export function MessageThread({ conversation, messages, currentUserId, onSend, onEdit }: { conversation?: MessageConversation; messages: Message[]; currentUserId: string; onSend: (body: string) => void; onEdit: (id: string, body: string) => void }) { if (!conversation) return <section className="panel"><h3>Select a conversation</h3></section>; return <section className="panel message-thread"><h3>{conversation.title}</h3><p className="muted">Realtime topic: {conversation.realtimeTopic}</p>{messages.map((message) => <MessageBubble key={message.id} message={message} currentUserId={currentUserId} onEdit={onEdit} />)}<MessageComposer onSend={onSend} /></section>; }

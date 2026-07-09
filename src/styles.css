@@ -1611,3 +1611,21 @@ body {
   border-radius: 16px;
   background: rgba(0, 0, 0, 0.32);
 }
+
+.messaging-grid { display: grid; grid-template-columns: minmax(240px, 0.9fr) minmax(280px, 1.4fr); gap: 16px; }
+.message-card { display: grid; gap: 8px; margin-top: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 20px; background: rgba(255,255,255,0.06); }
+.message-card.selected { outline: 2px solid rgba(255, 79, 160, 0.5); }
+.message-card button:first-child { text-align: left; color: var(--text); background: transparent; border: 0; }
+.message-card strong, .message-card span, .message-card em { display: block; }
+.message-card span, .message-card p, .muted { color: var(--muted); }
+.message-card em { color: var(--green); font-style: normal; font-weight: 900; }
+.ghost-button { border: 1px solid var(--line); border-radius: 14px; padding: 8px 10px; color: var(--text); background: rgba(255,255,255,0.08); }
+.message-thread { min-height: 420px; }
+.message-bubble { max-width: 82%; margin: 12px 0; padding: 14px; border-radius: 20px; background: rgba(255,255,255,0.08); border: 1px solid var(--line); }
+.message-bubble.own { margin-left: auto; background: linear-gradient(135deg, rgba(255,79,160,0.42), rgba(255,138,101,0.22)); }
+.message-bubble small { display: block; margin-bottom: 8px; color: var(--muted); font-weight: 800; }
+.message-composer { display: grid; gap: 10px; margin-top: 16px; }
+.message-composer textarea, .message-search input { width: 100%; min-height: 50px; color: white; background: rgba(255,255,255,0.08); border: 1px solid var(--line); border-radius: 18px; padding: 12px; }
+.message-composer button { border: 0; border-radius: 16px; padding: 12px; color: #160812; background: white; font-weight: 950; }
+.message-search { display: grid; gap: 8px; margin: 16px 0; color: var(--muted); font-weight: 900; }
+@media (max-width: 800px) { .messaging-grid { grid-template-columns: 1fr; } }

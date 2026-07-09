@@ -52,6 +52,7 @@ import { DeveloperAtlas } from "./components/Dev/DeveloperAtlas";
 import { DeveloperProgramBuilder } from "./components/Dev/DeveloperProgramBuilder";
 import { DeveloperExerciseLibrary } from "./components/Dev/DeveloperExerciseLibrary";
 import { DeveloperCalendar } from "./components/Dev/DeveloperCalendar";
+import { MessagingCenter } from "./components/messaging/MessagingCenter";
 import { TrainerDashboard } from "./components/Trainer/TrainerDashboard";
 import { dashboardRepository } from "./repositories/DashboardRepository";
 import { nutritionRepository } from "./repositories/NutritionRepository";
@@ -524,6 +525,14 @@ export default function App() {
     return (
       <AuthProvider>
         <DeveloperCalendar />
+      </AuthProvider>
+    );
+  }
+
+  if (window.location.pathname === "/dev/messaging") {
+    return (
+      <AuthProvider>
+        <MessagingCenter developer />
       </AuthProvider>
     );
   }

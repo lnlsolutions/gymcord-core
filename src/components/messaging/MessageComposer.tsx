@@ -1,0 +1,2 @@
+import { useState } from "react";
+export function MessageComposer({ label = "Send message", onSend }: { label?: string; onSend: (body: string) => void }) { const [body, setBody] = useState(""); return <form className="message-composer" onSubmit={(event) => { event.preventDefault(); if (!body.trim()) return; onSend(body); setBody(""); }}><textarea value={body} onChange={(e) => setBody(e.target.value)} placeholder={label} /><button type="submit">Send</button></form>; }

@@ -12,13 +12,14 @@ export function DeveloperQA() {
     <main className="app-shell-validation">
       <header className="app-shell-header">
         <div>
-          <p className="eyebrow">Build 040 beta QA validation</p>
+          <p className="eyebrow">Build 041 beta deploy preview QA</p>
           <h1>Deployment readiness score: {snapshot.score}%</h1>
-          <p>Provider: {snapshot.provider}</p>
+          <p>Provider: {snapshot.provider} · Deploy preview baseline: PR #66 · Click through the route matrix below for beta demo coverage.</p>
         </div>
       </header>
+      <section className="shell-panel beta-readiness-panel"><h2>Beta readiness</h2><div className="readiness-score">{snapshot.score}%</div><p>Ready for a guided clickable beta demo when route smoke tests, mock-mode auth guards, tenant branding, admin operations, billing metadata, and offline queue diagnostics remain pass/warning only.</p></section>
       <StatusList title="Smoke test checklist" items={snapshot.smokeTestChecklist} />
-      <section className="shell-panel"><h2>Route availability matrix</h2><ul>{snapshot.routeAvailability.map((route) => <li key={route.id}>{route.label}: {route.path} · {route.modes.join("/")} · mapping {route.guard.providerMapping}</li>)}</ul></section>
+      <section className="shell-panel"><h2>Route availability matrix</h2><div className="module-grid">{snapshot.routeAvailability.map((route) => <a key={route.id} href={route.path}>{route.label}<span>{route.path} · {route.modes.join("/")}</span></a>)}</div></section>
       <StatusList title="Provider diagnostics" items={snapshot.providerDiagnostics} />
       <StatusList title="Environment diagnostics" items={snapshot.environmentDiagnostics} />
       <StatusList title="Supabase readiness" items={snapshot.supabaseReadiness} />

@@ -18,6 +18,7 @@ const tables = [
   "notifications",
   "atlas_memory",
   "atlas_conversations",
+  "programs",
 ] as const;
 
 export type SupabaseTableName = (typeof tables)[number];

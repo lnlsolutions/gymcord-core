@@ -22,6 +22,7 @@ const pathAliases: Record<string, SupabaseTableName> = {
   notifications: "notifications",
   atlasMemory: "atlas_memory",
   atlasConversations: "atlas_conversations",
+  programs: "programs",
 };
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {

@@ -1611,3 +1611,47 @@ body {
   border-radius: 16px;
   background: rgba(0, 0, 0, 0.32);
 }
+
+.program-builder-shell,
+.trainer-os-shell,
+.dev-page {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 28px 18px 80px;
+}
+.panel-card,
+.dev-card {
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  padding: 22px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(24px) saturate(140%);
+}
+.two-columns { grid-template-columns: minmax(280px, 0.8fr) minmax(320px, 1.2fr); align-items: start; }
+.section-heading,
+.program-status-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+.program-actions { display: flex; gap: 10px; }
+.program-actions .primary-button,
+.section-heading .primary-button,
+.set-grid .primary-button { width: auto; margin-top: 0; }
+.program-card { border: 1px solid var(--line); border-radius: 22px; padding: 16px; margin-top: 12px; background: var(--panel-strong); }
+.program-card.selected { outline: 2px solid var(--pink); }
+.program-card > button:first-child { width: 100%; padding: 0; text-align: left; color: var(--text); background: transparent; border: 0; }
+.ghost-button { border: 1px solid var(--line); border-radius: 15px; padding: 10px 12px; color: var(--text); background: rgba(255,255,255,0.08); font-weight: 900; }
+.danger { color: var(--red); }
+.form-grid,
+.set-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.form-grid textarea { grid-column: 1 / -1; min-height: 86px; }
+.program-builder-shell input,
+.program-builder-shell select,
+.program-builder-shell textarea { width: 100%; border: 1px solid var(--line); border-radius: 16px; padding: 12px; color: var(--text); background: rgba(255,255,255,0.08); }
+.program-builder-shell select option { color: #160812; }
+.program-editor,
+.template-grid { display: grid; gap: 16px; margin-top: 16px; }
+.workout-day,
+.exercise-block { border: 1px solid var(--line); border-radius: 20px; padding: 14px; margin-top: 12px; background: rgba(0,0,0,0.14); }
+.exercise-block textarea { margin: 10px 0; min-height: 70px; }
+.check-list { margin: 0; padding-left: 18px; color: var(--muted); line-height: 1.8; }
+.assignment-row { display: block; color: var(--muted); margin-top: 8px; }
+@media (max-width: 860px) { .two-columns, .form-grid, .set-grid { grid-template-columns: 1fr; } .program-status-bar, .section-heading { align-items: stretch; flex-direction: column; } }

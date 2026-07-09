@@ -49,6 +49,7 @@ import { DeveloperDashboard } from "./components/Dev/DeveloperDashboard";
 import { DeveloperWorkout } from "./components/Dev/DeveloperWorkout";
 import { DeveloperNutrition } from "./components/Dev/DeveloperNutrition";
 import { DeveloperAtlas } from "./components/Dev/DeveloperAtlas";
+import { DeveloperProgramBuilder } from "./components/Dev/DeveloperProgramBuilder";
 import { TrainerDashboard } from "./components/Trainer/TrainerDashboard";
 import { dashboardRepository } from "./repositories/DashboardRepository";
 import { nutritionRepository } from "./repositories/NutritionRepository";
@@ -505,6 +506,14 @@ export default function App() {
     return (
       <AuthProvider>
         <DeveloperAtlas />
+      </AuthProvider>
+    );
+  }
+
+  if (window.location.pathname === "/dev/program-builder") {
+    return (
+      <AuthProvider>
+        <DeveloperProgramBuilder />
       </AuthProvider>
     );
   }

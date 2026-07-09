@@ -176,3 +176,75 @@ export interface Mission extends AuditMetadata {
   xpReward: number;
   completedAt?: IsoDateTimeString;
 }
+
+export type TrainerMemberStatus = "active" | "needs_attention" | "paused";
+export type TrainerAlertPriority = "High" | "Medium" | "Low";
+export type TrainerTaskStatus = "open" | "done";
+
+export interface TrainerMember extends AuditMetadata {
+  id: EntityId;
+  userId: EntityId;
+  organizationId: EntityId;
+  trainerId: EntityId;
+  name: string;
+  goal: string;
+  avatarUrl?: string;
+  status: TrainerMemberStatus;
+  currentProgramId?: EntityId;
+  workoutCompliance: number;
+  nutritionCompliance: number;
+  progressScore: number;
+  lastCheckInAt?: IsoDateTimeString;
+}
+
+export interface TrainerProgramAssignment extends AuditMetadata {
+  id: EntityId;
+  organizationId: EntityId;
+  trainerId: EntityId;
+  memberId: EntityId;
+  programId: EntityId;
+  programTitle: string;
+  startsOn: IsoDateString;
+  status: "active" | "queued" | "completed";
+}
+
+export interface TrainerCoachNote extends AuditMetadata {
+  id: EntityId;
+  organizationId: EntityId;
+  trainerId: EntityId;
+  memberId: EntityId;
+  body: string;
+  pinned: boolean;
+}
+
+export interface TrainerTask extends AuditMetadata {
+  id: EntityId;
+  organizationId: EntityId;
+  trainerId: EntityId;
+  memberId?: EntityId;
+  title: string;
+  dueOn: IsoDateString;
+  status: TrainerTaskStatus;
+}
+
+export interface TrainerAtlasAlert extends AuditMetadata {
+  id: EntityId;
+  organizationId: EntityId;
+  trainerId: EntityId;
+  memberId: EntityId;
+  title: string;
+  description: string;
+  priority: TrainerAlertPriority;
+  resolved: boolean;
+}
+
+export interface TrainerSummary {
+  trainerId: EntityId;
+  organizationId: EntityId;
+  activeMembers: number;
+  assignedPrograms: number;
+  averageWorkoutCompliance: number;
+  averageNutritionCompliance: number;
+  openAlerts: number;
+  openTasks: number;
+}

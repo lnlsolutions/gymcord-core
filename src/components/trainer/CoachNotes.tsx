@@ -1,0 +1,2 @@
+import type { TrainerCoachNote } from "../../types/domain";
+export function CoachNotes({ notes, onAdd }: { notes: TrainerCoachNote[]; onAdd: (body: string) => void }) { return <section className="panel premium-card"><p className="pill">Coach notes</p><h2>Latest notes</h2><ul className="check-list">{notes.map((note) => <li key={note.id}>{note.pinned ? "Pinned: " : ""}{note.body}</li>)}</ul><button className="primary-button" onClick={() => onAdd("Follow up on today’s compliance trend.")}>Add note</button></section>; }

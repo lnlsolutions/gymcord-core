@@ -6,3 +6,4 @@ export { DashboardRepository, dashboardRepository } from "./DashboardRepository"
 export type { DashboardRepositoryState } from "./DashboardRepository";
 export { NutritionRepository, nutritionRepository } from "./NutritionRepository";
 export { AtlasCoachRepository, atlasCoachRepository } from "./AtlasCoachRepository";
+export { MemberRepository, memberRepository } from "./MemberRepository";

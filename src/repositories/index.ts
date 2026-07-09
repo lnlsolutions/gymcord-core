@@ -6,3 +6,6 @@ export { TrainerRepository, trainerRepository } from "./TrainerRepository";
 export { DashboardRepository, dashboardRepository } from "./DashboardRepository";
 export type { DashboardRepositoryState } from "./DashboardRepository";
 export { NutritionRepository, nutritionRepository } from "./NutritionRepository";
+
+export { AtlasCoachRepository, atlasCoachRepository } from "./AtlasCoachRepository";
+export type { AtlasCoachState } from "./AtlasCoachRepository";

@@ -56,6 +56,7 @@ import { DeveloperMessaging } from "./components/Dev/DeveloperMessaging";
 import { DeveloperNotifications } from "./components/Dev/DeveloperNotifications";
 import { DeveloperCheckIns } from "./components/Dev/DeveloperCheckIns";
 import { DeveloperBilling } from "./components/Dev/DeveloperBilling";
+import { DeveloperTenancy } from "./components/Dev/DeveloperTenancy";
 import { TrainerDashboard } from "./components/Trainer/TrainerDashboard";
 import { dashboardRepository } from "./repositories/DashboardRepository";
 import { nutritionRepository } from "./repositories/NutritionRepository";
@@ -544,6 +545,14 @@ export default function App() {
     return (
       <AuthProvider>
         <DeveloperBilling />
+      </AuthProvider>
+    );
+  }
+
+  if (window.location.pathname === "/dev/tenancy") {
+    return (
+      <AuthProvider>
+        <DeveloperTenancy />
       </AuthProvider>
     );
   }

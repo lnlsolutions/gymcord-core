@@ -25,3 +25,6 @@ export type { CreateNotificationInput, NotificationPreferences } from "./Notific
 
 export { CheckInRepository, checkInRepository } from "./CheckInRepository";
 export type { CreateCheckInInput, UpdateCheckInInput, ReviewCheckInInput } from "./CheckInRepository";
+
+export { GymRepository, gymRepository, TenancyRepository, tenancyRepository } from "./TenancyRepository";
+export type { TenancySnapshot, TenantRelationship, GymBranding, TenancySettings } from "./TenancyRepository";

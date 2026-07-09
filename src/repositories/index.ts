@@ -1,5 +1,5 @@
 export type { ListResult, QueryOptions, Repository, RepositoryResult } from "./base";
-export type { AchievementRepository, AtlasRepository, MemberRepository as MemberRepositoryContract, MissionRepository, NotificationRepository, ProgressRepository, UserRepository, WorkoutRepository, ProgramRepository as ProgramRepositoryContract, TrainerRepository as TrainerRepositoryContract, OrganizationRepository as OrganizationRepositoryContract } from "./interfaces";
+export type { AchievementRepository, AtlasRepository, MemberRepository as MemberRepositoryContract, MissionRepository, ProgressRepository, UserRepository, WorkoutRepository, ProgramRepository as ProgramRepositoryContract, TrainerRepository as TrainerRepositoryContract, OrganizationRepository as OrganizationRepositoryContract } from "./interfaces";
 export { OrganizationRepository, defaultOrganization } from "./OrganizationRepository";
 export { TrainerRepository, trainerRepository } from "./TrainerRepository";
 export { MemberRepository, memberRepository } from "./MemberRepository";
@@ -19,3 +19,6 @@ export type { CreateCalendarEventInput, UpdateCalendarEventInput, CreateCalendar
 
 export { MessagingRepository, messagingRepository } from "./MessagingRepository";
 export type { CreateConversationInput, CreateMessageInput, EditMessageInput } from "./MessagingRepository";
+
+export { NotificationRepository, notificationRepository } from "./NotificationRepository";
+export type { CreateNotificationInput, NotificationPreferences } from "./NotificationRepository";

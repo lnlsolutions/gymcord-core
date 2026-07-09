@@ -49,7 +49,7 @@ import { DeveloperDashboard } from "./components/Dev/DeveloperDashboard";
 import { DeveloperWorkout } from "./components/Dev/DeveloperWorkout";
 import { DeveloperNutrition } from "./components/Dev/DeveloperNutrition";
 import { DeveloperAtlas } from "./components/Dev/DeveloperAtlas";
-import { TrainerOS } from "./components/Trainer/TrainerOS";
+import { TrainerDashboard } from "./components/Trainer/TrainerDashboard";
 import { dashboardRepository } from "./repositories/DashboardRepository";
 import { nutritionRepository } from "./repositories/NutritionRepository";
 import { progressExperienceRepository } from "./repositories/ProgressExperienceRepository";
@@ -464,15 +464,15 @@ export default function App() {
   if (window.location.pathname === "/trainer") {
     return (
       <AuthProvider>
-        <TrainerOS />
+        <TrainerDashboard />
       </AuthProvider>
     );
   }
 
-  if (window.location.pathname === "/dev/trainer-os") {
+  if (window.location.pathname === "/dev/trainer" || window.location.pathname === "/dev/trainer-os") {
     return (
       <AuthProvider>
-        <TrainerOS developer />
+        <TrainerDashboard developer />
       </AuthProvider>
     );
   }

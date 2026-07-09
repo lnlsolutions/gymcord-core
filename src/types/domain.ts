@@ -325,6 +325,83 @@ export interface Notification extends AuditMetadata {
   readAt?: IsoDateTimeString;
 }
 
+export type NotificationKind = "reminder" | "workout_reminder" | "nutrition_reminder" | "progress_reminder" | "trainer_message" | "program_assignment" | "calendar_event" | "system_alert";
+export type NotificationPriority = "low" | "normal" | "high" | "critical";
+export type NotificationLifecycleStatus = "unread" | "read" | "archived";
+
+export interface NotificationAction {
+  label: string;
+  href?: string;
+  actionId?: string;
+}
+
+export interface PushNotificationMetadata {
+  enabled: boolean;
+  title?: string;
+  body?: string;
+  deepLink?: string;
+  badgeCount?: number;
+  collapseKey?: string;
+  deviceTokens?: string[];
+  data?: Record<string, string>;
+}
+
+export interface MessageChannelMetadata {
+  enabled: boolean;
+  to?: string;
+  templateId?: string;
+  subject?: string;
+  body?: string;
+  variables?: Record<string, string>;
+  providerMessageId?: string;
+}
+
+export interface NotificationDeliveryMetadata {
+  push: PushNotificationMetadata;
+  email: MessageChannelMetadata;
+  sms: MessageChannelMetadata;
+}
+
+export interface ReminderSettingsSnapshot {
+  workout: boolean;
+  nutrition: boolean;
+  progress: boolean;
+  calendar: boolean;
+  quietHoursStart?: string;
+  quietHoursEnd?: string;
+  timezone: string;
+}
+
+export interface NotificationPreference extends AuditMetadata {
+  id: EntityId;
+  userId: EntityId;
+  organizationId?: EntityId;
+  channels: Record<NotificationChannel, boolean>;
+  reminders: ReminderSettingsSnapshot;
+  digestFrequency: "off" | "daily" | "weekly";
+}
+
+export interface AppNotification extends AuditMetadata {
+  id: EntityId;
+  userId: EntityId;
+  organizationId?: EntityId;
+  audience: "member" | "trainer" | "team" | "system";
+  kind: NotificationKind;
+  title: string;
+  body: string;
+  priority: NotificationPriority;
+  lifecycleStatus: NotificationLifecycleStatus;
+  channels: NotificationChannel[];
+  sourceModule?: "member_app" | "trainer_portal" | "calendar" | "messaging" | "program_builder" | "nutrition" | "progress" | "workout" | "system";
+  sourceId?: EntityId;
+  scheduledFor?: IsoDateTimeString;
+  deliveredAt?: IsoDateTimeString;
+  readAt?: IsoDateTimeString;
+  archivedAt?: IsoDateTimeString;
+  actions: NotificationAction[];
+  delivery: NotificationDeliveryMetadata;
+}
+
 export interface Achievement extends AuditMetadata {
   id: EntityId;
   userId: EntityId;

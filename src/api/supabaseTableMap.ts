@@ -19,6 +19,7 @@ const tables = [
   "messaging_messages",
   "messages",
   "notifications",
+  "notification_preferences",
   "atlas_memory",
   "atlas_conversations",
   "calendar_events",

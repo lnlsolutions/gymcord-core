@@ -24,7 +24,6 @@ import { buildAchievements, getNextAchievement } from "./lib/engines/achievement
 import { buildAtlasInsights } from "./lib/engines/atlasEngine";
 import { buildAtlasMemory } from "./lib/engines/memoryEngine";
 import { buildAtlasContext } from "./lib/engines/contextEngine";
-import { AtlasStore } from "./lib/atlasStore";
 import { buildTransformationSnapshot } from "./lib/engines/transformationEngine";
 
 import { AppLayout } from "./components/Common/AppLayout";
@@ -33,7 +32,7 @@ import { Dashboard } from "./components/Dashboard/Dashboard";
 import { Train } from "./components/Workout/Train";
 import { Meals } from "./components/Meals/Meals";
 import { Progress } from "./components/Progress/Progress";
-import { Coach } from "./components/Coach/Coach";
+import { AtlasCoach } from "./components/atlas/AtlasCoach";
 import { Onboarding } from "./components/Onboarding";
 import { OrganizationSettings } from "./components/Settings/OrganizationSettings";
 import { organizationService } from "./services/OrganizationService";
@@ -49,10 +48,12 @@ import { DeveloperPersistence } from "./components/Dev/DeveloperPersistence";
 import { DeveloperDashboard } from "./components/Dev/DeveloperDashboard";
 import { DeveloperWorkout } from "./components/Dev/DeveloperWorkout";
 import { DeveloperNutrition } from "./components/Dev/DeveloperNutrition";
+import { DeveloperAtlas } from "./components/Dev/DeveloperAtlas";
 import { TrainerOS } from "./components/Trainer/TrainerOS";
 import { dashboardRepository } from "./repositories/DashboardRepository";
 import { nutritionRepository } from "./repositories/NutritionRepository";
 import { progressExperienceRepository } from "./repositories/ProgressExperienceRepository";
+import { atlasCoachRepository } from "./repositories/AtlasCoachRepository";
 import { onboardingRepository } from "./services/OnboardingRepository";
 import { telemetryService, AnalyticsEventNames } from "./core/analytics";
 
@@ -86,9 +87,7 @@ function GymCordApp() {
     saved(appConfig.storageKeys.dailyLogs, {})
   );
 
-  const [conversation, setConversation] = useState<AtlasConversationEntry[]>(() =>
-    AtlasStore.loadConversation()
-  );
+  const [conversation, setConversation] = useState<AtlasConversationEntry[]>([]);
 
   const dayLog = logs[selectedDate] || createEmptyDay(selectedDate);
 
@@ -149,10 +148,6 @@ function GymCordApp() {
   }, [logs]);
 
   useEffect(() => {
-    AtlasStore.saveConversation(conversation);
-  }, [conversation]);
-
-  useEffect(() => {
     let active = true;
     dashboardRepository.load(auth.session)
       .then((state) => {
@@ -165,6 +160,15 @@ function GymCordApp() {
         console.warn(`[GymCord Persistence] startup load skipped: ${error.message}`);
         persistenceHydrated.current = true;
       });
+    return () => { active = false; };
+  }, [auth.session]);
+
+
+  useEffect(() => {
+    let active = true;
+    atlasCoachRepository.loadConversation(auth.session)
+      .then((entries) => { if (active) setConversation(entries); })
+      .catch((error: Error) => console.warn(`[Atlas Repository] conversation load skipped: ${error.message}`));
     return () => { active = false; };
   }, [auth.session]);
 
@@ -223,8 +227,8 @@ function GymCordApp() {
   const atlasMemory = useMemo(() => buildAtlasMemory({ profile, logs, mission, nextAchievement }), [logs, mission, nextAchievement, profile]);
 
   useEffect(() => {
-    AtlasStore.saveMemory(atlasMemory);
-  }, [atlasMemory]);
+    if (persistenceHydrated.current) void atlasCoachRepository.saveMemory(auth.session, atlasMemory);
+  }, [auth.session, atlasMemory]);
 
   const atlasContext = useMemo(() => buildAtlasContext({ memory: atlasMemory, dayLog, mission, streak, todayWorkout, transformation }), [atlasMemory, dayLog, mission, streak, todayWorkout, transformation]);
 
@@ -380,8 +384,9 @@ function GymCordApp() {
         />
       )}
 
-      {page === "coach" && <Coach profile={profile} dayLog={dayLog} mission={mission} xp={xp} streak={streak} nextAchievement={nextAchievement} atlasInsights={atlasInsights} atlasMemory={atlasMemory} atlasContext={atlasContext} conversation={conversation} onRememberConversation={(entry) => {
+      {page === "coach" && <AtlasCoach profile={profile} dayLog={dayLog} mission={mission} streak={streak} todayWorkout={todayWorkout} atlasInsights={atlasInsights} atlasMemory={atlasMemory} atlasContext={atlasContext} conversation={conversation} onRememberConversation={(entry) => {
         setConversation([entry, ...conversation]);
+        void atlasCoachRepository.rememberConversation(auth.session, entry);
         telemetryService.track(AnalyticsEventNames.AtlasConversation, { conversationId: profile.id, messageLength: entry.question.length }, "atlas-conversation-engine");
         void realtimeService.publish(EventTypes.MessageReceived, {
           id: entry.id,
@@ -507,6 +512,10 @@ export default function App() {
         <DeveloperNutrition />
       </AuthProvider>
     );
+  }
+
+  if (window.location.pathname === "/dev/atlas") {
+    return <DeveloperAtlas />;
   }
 
   return (

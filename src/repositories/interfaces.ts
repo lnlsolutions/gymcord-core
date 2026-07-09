@@ -1,4 +1,4 @@
-import type { AtlasConversationEntry, DailyLog } from "../types/gymcord";
+import type { AtlasConversationEntry, AtlasMemory, DailyLog } from "../types/gymcord";
 import type { Achievement, EntityId, Organization, Trainer, ExerciseLog, MealLog, Mission, Notification, ProgressPhoto, User, WorkoutSession } from "../types/domain";
 import type { Repository, RepositoryResult } from "./base";
 
@@ -31,6 +31,8 @@ export interface ProgressRepository {
 export interface AtlasRepository {
   loadConversation(userId: EntityId): Promise<RepositoryResult<AtlasConversationEntry[]>>;
   rememberConversation(userId: EntityId, entry: AtlasConversationEntry): Promise<RepositoryResult<AtlasConversationEntry>>;
+  loadMemory(userId: EntityId, fallback: AtlasMemory): Promise<RepositoryResult<AtlasMemory>>;
+  saveMemory(userId: EntityId, memory: AtlasMemory): Promise<RepositoryResult<AtlasMemory>>;
 }
 
 export interface NotificationRepository extends Repository<Notification> {

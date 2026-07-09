@@ -1611,3 +1611,114 @@ body {
   border-radius: 16px;
   background: rgba(0, 0, 0, 0.32);
 }
+
+.atlas-coach-page {
+  display: grid;
+  gap: 16px;
+}
+
+.atlas-coach-header,
+.atlas-chat-shell,
+.atlas-memory-card,
+.atlas-insights {
+  border-radius: 30px;
+  padding: 22px;
+}
+
+.atlas-coach-header {
+  background:
+    radial-gradient(circle at 85% 0%, rgba(117, 240, 178, 0.18), transparent 34%),
+    radial-gradient(circle at 15% 20%, rgba(255, 79, 160, 0.24), transparent 32%),
+    var(--panel);
+}
+
+.atlas-disclaimer {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid rgba(117, 240, 178, 0.28);
+  border-radius: 18px;
+  color: rgba(255, 255, 255, 0.78);
+  background: rgba(117, 240, 178, 0.08);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.atlas-prompt-grid {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.atlas-prompt-grid button {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  color: white;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.atlas-prompt-grid strong,
+.atlas-prompt-grid span {
+  display: block;
+}
+
+.atlas-prompt-grid span {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.atlas-history {
+  display: grid;
+  gap: 12px;
+  max-height: 460px;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.atlas-message {
+  display: grid;
+  gap: 8px;
+}
+
+.atlas-message-user,
+.atlas-message-atlas {
+  padding: 12px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+}
+
+.atlas-message-user {
+  margin-left: 28px;
+  background: rgba(255, 79, 160, 0.14);
+}
+
+.atlas-message-atlas {
+  margin-right: 28px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.atlas-message span,
+.empty-state {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.atlas-message p {
+  margin: 5px 0 0;
+  line-height: 1.45;
+}
+
+.dev-screen pre {
+  max-height: 360px;
+  overflow: auto;
+  white-space: pre-wrap;
+  color: var(--muted);
+  font-size: 12px;
+}

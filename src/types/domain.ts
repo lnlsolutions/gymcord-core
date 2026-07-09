@@ -30,6 +30,15 @@ export interface Trainer extends AuditMetadata {
   bio?: string;
 }
 
+export interface MemberProfile extends AuditMetadata {
+  id: EntityId;
+  userId: EntityId;
+  organizationId?: EntityId;
+  trainerId?: EntityId;
+  goals: string[];
+  status: MembershipStatus;
+}
+
 export interface Gym extends AuditMetadata {
   id: EntityId;
   organizationId: EntityId;

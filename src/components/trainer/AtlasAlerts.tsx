@@ -1,0 +1,2 @@
+import type { TrainerAtlasAlert } from "../../types/domain";
+export function AtlasAlerts({ alerts }: { alerts: TrainerAtlasAlert[] }) { return <section className="panel premium-card"><p className="pill">Atlas alerts</p><h2>{alerts.filter((a) => !a.resolved).length} open</h2><ul className="check-list">{alerts.map((alert) => <li key={alert.id}>{alert.priority}: {alert.title} — {alert.description}</li>)}</ul></section>; }

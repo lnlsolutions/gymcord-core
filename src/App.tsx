@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { appConfig } from "./config";
 import { AppContextProvider } from "./context/AppContext";
 import { AuthProvider, ForgotPasswordScreen, LoadingScreen, LoginScreen, ProtectedRoute, SignupScreen, useAuth } from "./auth";
-import type { AtlasConversationEntry, DailyLog, Page, Profile } from "./types/gymcord";
+import type { AtlasConversationEntry, DailyLog, Profile } from "./types/gymcord";
 
 import { workouts } from "./lib/program";
 import {
@@ -26,7 +26,6 @@ import { buildAtlasMemory } from "./lib/engines/memoryEngine";
 import { buildAtlasContext } from "./lib/engines/contextEngine";
 import { buildTransformationSnapshot } from "./lib/engines/transformationEngine";
 
-import { AppLayout } from "./components/Common/AppLayout";
 import { DateStrip } from "./components/Common/DateStrip";
 import { Dashboard } from "./components/Dashboard/Dashboard";
 import { Train } from "./components/Workout/Train";
@@ -59,6 +58,10 @@ import { DeveloperBilling } from "./components/Dev/DeveloperBilling";
 import { DeveloperTenancy } from "./components/Dev/DeveloperTenancy";
 import { DeveloperAdmin } from "./components/Dev/DeveloperAdmin";
 import { TrainerDashboard } from "./components/Trainer/TrainerDashboard";
+import { AppShell } from "./components/app-shell/AppShell";
+import { EmptyState } from "./components/app-shell/EmptyState";
+import { DevToolsIndex } from "./components/app-shell/DevToolsIndex";
+import { appShellRepository, type AppRouteId } from "./repositories/AppShellRepository";
 import { dashboardRepository } from "./repositories/DashboardRepository";
 import { nutritionRepository } from "./repositories/NutritionRepository";
 import { progressExperienceRepository } from "./repositories/ProgressExperienceRepository";
@@ -68,7 +71,7 @@ import { telemetryService, AnalyticsEventNames } from "./core/analytics";
 
 function GymCordApp() {
   const auth = useAuth();
-  const [page, setPage] = useState<Page>("home");
+  const [page, setPage] = useState<AppRouteId>("dashboard");
   const [tenant, setTenant] = useState<TenantContext | null>(null);
   const [selectedDate, setSelectedDate] = useState(todayKey());
   const [profileComplete, setProfileComplete] = useState(() =>
@@ -325,14 +328,14 @@ function GymCordApp() {
 
   return (
     <AppContextProvider>
-    <AppLayout profile={profile} organization={tenant?.organization} page={page} setPage={setPage}>
+    <AppShell activeRoute={page} onRouteChange={setPage}>
       <DateStrip
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
         logs={logs}
       />
 
-      {page === "home" && (
+      {page === "dashboard" && (
         <Dashboard
           profile={profile}
           dayLog={dayLog}
@@ -347,11 +350,11 @@ function GymCordApp() {
           nextAchievement={nextAchievement}
           atlasInsights={atlasInsights}
           transformation={transformation}
-          setPage={setPage}
+          setPage={(nextPage) => { const routeMap = { home: "dashboard", train: "workouts", meals: "nutrition", progress: "progress", coach: "atlas", settings: "tenancy" } as const; setPage(routeMap[nextPage]); }}
         />
       )}
 
-      {page === "train" && <Train dayLog={dayLog} updateDay={updateDay} mission={mission} xp={xp} achievements={achievements} onWorkoutStarted={(workout) => {
+      {page === "workouts" && <Train dayLog={dayLog} updateDay={updateDay} mission={mission} xp={xp} achievements={achievements} onWorkoutStarted={(workout) => {
         telemetryService.track(AnalyticsEventNames.WorkoutStarted, { workoutId: workout.id, title: workout.title }, "workout-engine");
       }} onWorkoutCompleted={({ workout, dayLog: completedDayLog, durationMinutes, xpEarned }) => {
         telemetryService.track(AnalyticsEventNames.WorkoutCompleted, { workoutId: workout.id, title: workout.title, durationMinutes, xpEarned }, "workout-engine");
@@ -364,7 +367,7 @@ function GymCordApp() {
         }, "workout-engine");
       }} />}
 
-      {page === "meals" && <Meals dayLog={dayLog} updateDay={(patch) => {
+      {page === "nutrition" && <Meals dayLog={dayLog} updateDay={(patch) => {
         const nextLog = getUpdatedDay(patch);
         updateDay(patch);
         telemetryService.track(AnalyticsEventNames.MealLogged, { fields: Object.keys(patch) }, "meal-engine");
@@ -387,7 +390,7 @@ function GymCordApp() {
         />
       )}
 
-      {page === "coach" && <Coach profile={profile} dayLog={dayLog} mission={mission} xp={xp} streak={streak} nextAchievement={nextAchievement} atlasInsights={atlasInsights} atlasMemory={atlasMemory} atlasContext={atlasContext} conversation={conversation} onRememberConversation={(entry) => {
+      {page === "atlas" && <Coach profile={profile} dayLog={dayLog} mission={mission} xp={xp} streak={streak} nextAchievement={nextAchievement} atlasInsights={atlasInsights} atlasMemory={atlasMemory} atlasContext={atlasContext} conversation={conversation} onRememberConversation={(entry) => {
         const nextConversation = [entry, ...conversation];
         setConversation(nextConversation);
         void atlasCoachRepository.rememberConversation(auth.session, entry, nextConversation);
@@ -407,7 +410,7 @@ function GymCordApp() {
         }, "notification-engine");
       }} />}
 
-      {page === "settings" && tenant && (
+      {page === "tenancy" && tenant && (
         <OrganizationSettings
           organization={tenant.organization}
           role={tenant.role}
@@ -421,7 +424,17 @@ function GymCordApp() {
         />
       )}
 
-    </AppLayout>
+      {!["dashboard", "workouts", "nutrition", "progress", "atlas", "tenancy"].includes(page) && (
+        <EmptyState
+          title={`${page.replace(/-/g, " ")} is connected`}
+          description="This beta route is visible from tenant, role, and feature metadata. Module data stays behind repository/provider mappings until the full workflow is opened."
+          actionLabel="Back to dashboard"
+          onAction={() => setPage("dashboard")}
+        />
+      )}
+
+
+    </AppShell>
     </AppContextProvider>
   );
 }
@@ -596,6 +609,16 @@ export default function App() {
         <DeveloperNutrition />
       </AuthProvider>
     );
+  }
+
+  if (window.location.pathname === "/dev/app-shell") {
+    function DeveloperAppShell() {
+      const [route, setRoute] = useState<AppRouteId>("dashboard");
+      const [snapshot, setSnapshot] = useState<Awaited<ReturnType<typeof appShellRepository.loadSnapshot>>["data"] | null>(null);
+      useEffect(() => { void appShellRepository.loadSnapshot("consumer").then((result) => setSnapshot(result.data)); }, []);
+      return <AppShell activeRoute={route} onRouteChange={setRoute} developer>{snapshot ? <DevToolsIndex snapshot={snapshot} /> : <section className="panel">Loading dev app shell…</section>}</AppShell>;
+    }
+    return <DeveloperAppShell />;
   }
 
   return (

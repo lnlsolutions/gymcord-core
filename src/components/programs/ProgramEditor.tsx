@@ -1,0 +1,6 @@
+import type { Program, ProgramDifficulty } from "../../repositories";
+import { WeeklyScheduleBuilder } from "./WeeklyScheduleBuilder";
+export function ProgramEditor({ program, onChange }: { program?: Program; onChange: (program: Program) => void }) {
+  if (!program) return <section className="panel-card"><h2>Select or create a program</h2><p>Program detail editor opens here.</p></section>;
+  return <section className="program-editor"><article className="panel-card"><p className="eyebrow">Program detail editor</p><div className="form-grid"><input value={program.title} onChange={(e) => onChange({ ...program, title: e.target.value })} /><input value={program.goal} onChange={(e) => onChange({ ...program, goal: e.target.value })} /><select value={program.difficulty} onChange={(e) => onChange({ ...program, difficulty: e.target.value as ProgramDifficulty })}><option>beginner</option><option>intermediate</option><option>advanced</option></select><input type="number" value={program.durationWeeks} onChange={(e) => onChange({ ...program, durationWeeks: Number(e.target.value) })} /><textarea value={program.description} onChange={(e) => onChange({ ...program, description: e.target.value })} /></div></article><WeeklyScheduleBuilder schedule={program.schedule} onChange={(schedule) => onChange({ ...program, schedule })} /></section>;
+}

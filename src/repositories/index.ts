@@ -6,4 +6,6 @@ export { MemberRepository, memberRepository } from "./MemberRepository";
 export { DashboardRepository, dashboardRepository } from "./DashboardRepository";
 export type { DashboardRepositoryState } from "./DashboardRepository";
 export { NutritionRepository, nutritionRepository } from "./NutritionRepository";
+export { ProgramRepository, programRepository, programTemplates, createExerciseBlock, createWorkoutDay } from "./ProgramRepository";
+export type { Program, ProgramAssignment, ProgramDifficulty, ProgramExerciseBlock, ProgramSetPrescription, ProgramStatus, ProgramTemplate, ProgramWorkoutDay } from "./ProgramRepository";
 export { AtlasCoachRepository, atlasCoachRepository } from "./AtlasCoachRepository";

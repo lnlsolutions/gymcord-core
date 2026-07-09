@@ -1,0 +1,1 @@
+import type { QADiagnosticSnapshot } from "../../repositories/QARepository"; import { QAPanel } from "./QAPanel"; export function WhiteLabelQAChecklist({ snapshot }: { snapshot: QADiagnosticSnapshot }) { return <QAPanel title="White-label QA checklist" items={snapshot.whiteLabel} />; }

@@ -1,0 +1,1 @@
+import type { QADiagnosticSnapshot } from "../../repositories/QARepository"; import { QAPanel } from "./QAPanel"; export function BillingQAChecklist({ snapshot }: { snapshot: QADiagnosticSnapshot }) { return <QAPanel title="Billing metadata QA checklist" items={snapshot.billing} />; }

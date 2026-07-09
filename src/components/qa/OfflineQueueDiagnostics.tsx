@@ -1,0 +1,1 @@
+import type { QADiagnosticSnapshot } from "../../repositories/QARepository"; import { QAPanel } from "./QAPanel"; export function OfflineQueueDiagnostics({ snapshot }: { snapshot: QADiagnosticSnapshot }) { return <QAPanel title="Offline queue diagnostics" items={snapshot.offlineQueue} />; }

@@ -1,0 +1,1 @@
+import type { QADiagnosticSnapshot } from "../../repositories/QARepository"; import { QAPanel } from "./QAPanel"; export function SupabaseReadiness({ snapshot }: { snapshot: QADiagnosticSnapshot }) { return <QAPanel title="Supabase readiness diagnostics" items={snapshot.supabase} />; }

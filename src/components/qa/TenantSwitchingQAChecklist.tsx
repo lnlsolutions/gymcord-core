@@ -1,0 +1,1 @@
+import type { QADiagnosticSnapshot } from "../../repositories/QARepository"; import { QAPanel } from "./QAPanel"; export function TenantSwitchingQAChecklist({ snapshot }: { snapshot: QADiagnosticSnapshot }) { return <QAPanel title="Tenant switching QA checklist" items={snapshot.tenantSwitching} />; }

@@ -1,0 +1,1 @@
+import type { QADiagnosticSnapshot } from "../../repositories/QARepository"; import { QAPanel } from "./QAPanel"; export function AuthQAChecklist({ snapshot }: { snapshot: QADiagnosticSnapshot }) { return <QAPanel title="Auth QA checklist" items={snapshot.auth} />; }

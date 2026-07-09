@@ -1,0 +1,1 @@
+import type { QADiagnosticSnapshot } from "../../repositories/QARepository"; import { QAPanel } from "./QAPanel"; export function ProviderDiagnostics({ snapshot }: { snapshot: QADiagnosticSnapshot }) { return <QAPanel title="Provider diagnostics" items={snapshot.provider} />; }

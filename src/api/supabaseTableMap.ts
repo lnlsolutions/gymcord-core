@@ -24,6 +24,7 @@ const tables = [
   "atlas_conversations",
   "calendar_events",
   "calendar_availability",
+  "check_ins",
 ] as const;
 
 export type SupabaseTableName = (typeof tables)[number];

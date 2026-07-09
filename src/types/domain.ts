@@ -314,6 +314,47 @@ export interface Message extends AuditMetadata {
   status: MessageStatus;
 }
 
+
+export type CheckInStatus = "draft" | "submitted" | "in_review" | "reviewed" | "archived";
+export type CheckInRiskFlag = "low_mood" | "pain" | "missed_workouts" | "nutrition_gap" | "needs_follow_up";
+
+export interface CheckInAtlasInsightMetadata {
+  summary: string;
+  confidenceScore: number;
+  recommendedActions: string[];
+  generatedAt: IsoDateTimeString;
+}
+
+export interface CheckInFollowUpTask {
+  id: EntityId;
+  title: string;
+  ownerRole: "atlas" | "trainer" | "member";
+  dueAt?: IsoDateTimeString;
+  completedAt?: IsoDateTimeString;
+}
+
+export interface CheckIn extends AuditMetadata {
+  id: EntityId;
+  organizationId?: EntityId;
+  memberId: EntityId;
+  trainerId?: EntityId;
+  title: string;
+  prompt: string;
+  response: string;
+  status: CheckInStatus;
+  submittedAt?: IsoDateTimeString;
+  reviewedAt?: IsoDateTimeString;
+  archivedAt?: IsoDateTimeString;
+  moodScore?: number;
+  energyScore?: number;
+  riskFlags: CheckInRiskFlag[];
+  atlasInsight?: CheckInAtlasInsightMetadata;
+  followUpTasks: CheckInFollowUpTask[];
+  sourceModule?: "atlas_coach" | "trainer_portal" | "member_app" | "notifications" | "calendar";
+  calendarEventId?: EntityId;
+  notificationIds?: EntityId[];
+}
+
 export interface Notification extends AuditMetadata {
   id: EntityId;
   userId: EntityId;

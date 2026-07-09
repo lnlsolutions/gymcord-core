@@ -34,6 +34,7 @@ import { Meals } from "./components/Meals/Meals";
 import { Progress } from "./components/Progress/Progress";
 import { Coach } from "./components/Coach/Coach";
 import { Onboarding } from "./components/Onboarding";
+import { PublicBetaDevOnboarding, PublicDemo, PublicLanding, PublicOnboarding } from "./components/PublicBeta";
 import { OrganizationSettings } from "./components/Settings/OrganizationSettings";
 import { organizationService } from "./services/OrganizationService";
 import { TenantContext } from "./lib/tenant";
@@ -446,6 +447,17 @@ function AuthGate() {
 }
 
 export default function App() {
+  if (window.location.pathname === "/") return <PublicLanding />;
+  if (window.location.pathname === "/onboarding") return <PublicOnboarding />;
+  if (window.location.pathname === "/demo") return <PublicDemo />;
+  if (window.location.pathname === "/dev/onboarding") return <PublicBetaDevOnboarding />;
+  if (window.location.pathname === "/app") {
+    return (
+      <AuthProvider>
+        <AuthGate />
+      </AuthProvider>
+    );
+  }
   if (window.location.pathname === "/dev/qa") {
     return (
       <AuthProvider>

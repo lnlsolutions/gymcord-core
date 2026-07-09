@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { appConfig } from "./config";
 import { AppContextProvider } from "./context/AppContext";
-import { AuthProvider, ForgotPasswordScreen, LoadingScreen, LoginScreen, ProtectedRoute, SignupScreen, useAuth } from "./auth";
+import { AuthProvider, LoadingScreen, ProtectedRoute, useAuth } from "./auth";
 import type { AtlasConversationEntry, DailyLog, Page, Profile } from "./types/gymcord";
 
 import { workouts } from "./lib/program";
@@ -35,6 +35,15 @@ import { Progress } from "./components/Progress/Progress";
 import { Coach } from "./components/Coach/Coach";
 import { Onboarding } from "./components/Onboarding";
 import { PublicBetaDevOnboarding, PublicDemo, PublicLanding, PublicOnboarding } from "./components/PublicBeta";
+import { AuthEntryPage } from "./components/auth-entry/AuthEntryPage";
+import { SignupEntry } from "./components/auth-entry/SignupEntry";
+import { LoginEntry } from "./components/auth-entry/LoginEntry";
+import { ForgotPasswordEntry } from "./components/auth-entry/ForgotPasswordEntry";
+import { ResetPasswordEntry } from "./components/auth-entry/ResetPasswordEntry";
+import { VerifyEmailEntry } from "./components/auth-entry/VerifyEmailEntry";
+import { LogoutEntry } from "./components/auth-entry/LogoutEntry";
+import { InviteEntryPage } from "./components/auth-entry/InviteEntryPage";
+import { DeveloperAuthEntry } from "./components/Dev/DeveloperAuthEntry";
 import { OrganizationSettings } from "./components/Settings/OrganizationSettings";
 import { organizationService } from "./services/OrganizationService";
 import { TenantContext } from "./lib/tenant";
@@ -68,6 +77,7 @@ import { progressExperienceRepository } from "./repositories/ProgressExperienceR
 import { atlasCoachRepository } from "./repositories/AtlasCoachRepository";
 import { onboardingRepository } from "./services/OnboardingRepository";
 import { telemetryService, AnalyticsEventNames } from "./core/analytics";
+import { sessionRoutingRepository } from "./repositories/SessionRoutingRepository";
 
 function GymCordApp() {
   const auth = useAuth();
@@ -432,12 +442,13 @@ function GymCordApp() {
 
 function AuthGate() {
   const auth = useAuth();
-  const [mode, setMode] = useState<"login" | "signup" | "forgot">("login");
 
   if (auth.status === "loading") return <LoadingScreen />;
-  if (!auth.isAuthenticated && mode === "signup") return <SignupScreen onModeChange={setMode} />;
-  if (!auth.isAuthenticated && mode === "forgot") return <ForgotPasswordScreen onModeChange={setMode} />;
-  if (!auth.isAuthenticated) return <LoginScreen onModeChange={setMode} />;
+  if (!auth.isAuthenticated) {
+    sessionRoutingRepository.setReturnRoute("/app");
+    window.location.href = "/auth/login";
+    return <LoadingScreen />;
+  }
 
   return (
     <ProtectedRoute permissions={["dashboard:view"]}>
@@ -450,6 +461,16 @@ export default function App() {
   if (window.location.pathname === "/") return <PublicLanding />;
   if (window.location.pathname === "/onboarding") return <PublicOnboarding />;
   if (window.location.pathname === "/demo") return <PublicDemo />;
+
+  if (window.location.pathname === "/auth") return <AuthEntryPage />;
+  if (window.location.pathname === "/auth/signup") return <AuthProvider><SignupEntry /></AuthProvider>;
+  if (window.location.pathname === "/auth/login") return <AuthProvider><LoginEntry /></AuthProvider>;
+  if (window.location.pathname === "/auth/forgot-password") return <AuthProvider><ForgotPasswordEntry /></AuthProvider>;
+  if (window.location.pathname === "/auth/reset-password") return <AuthProvider><ResetPasswordEntry /></AuthProvider>;
+  if (window.location.pathname === "/auth/logout") return <AuthProvider><LogoutEntry /></AuthProvider>;
+  if (window.location.pathname === "/auth/verify-email") return <AuthProvider><VerifyEmailEntry /></AuthProvider>;
+  if (window.location.pathname.startsWith("/invite/")) return <InviteEntryPage code={decodeURIComponent(window.location.pathname.split("/").pop() || "")} />;
+  if (window.location.pathname === "/dev/auth-entry") return <AuthProvider><DeveloperAuthEntry /></AuthProvider>;
   if (window.location.pathname === "/dev/onboarding") return <PublicBetaDevOnboarding />;
   if (window.location.pathname === "/app") {
     return (

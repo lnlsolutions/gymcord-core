@@ -32,7 +32,7 @@ import { DateStrip } from "./components/Common/DateStrip";
 import { Dashboard } from "./components/Dashboard/Dashboard";
 import { Train } from "./components/Workout/Train";
 import { Meals } from "./components/Meals/Meals";
-import { Progress } from "./components/Progress/Progress";
+import { ProgressExperience } from "./components/progress/ProgressExperience";
 import { Coach } from "./components/Coach/Coach";
 import { Onboarding } from "./components/Onboarding";
 import { OrganizationSettings } from "./components/Settings/OrganizationSettings";
@@ -49,6 +49,7 @@ import { DeveloperPersistence } from "./components/Dev/DeveloperPersistence";
 import { DeveloperDashboard } from "./components/Dev/DeveloperDashboard";
 import { DeveloperWorkout } from "./components/Dev/DeveloperWorkout";
 import { DeveloperNutrition } from "./components/Dev/DeveloperNutrition";
+import { DeveloperProgress } from "./components/Dev/DeveloperProgress";
 import { TrainerOS } from "./components/Trainer/TrainerOS";
 import { dashboardRepository } from "./repositories/DashboardRepository";
 import { nutritionRepository } from "./repositories/NutritionRepository";
@@ -364,13 +365,11 @@ function GymCordApp() {
       }} />}
 
       {page === "progress" && (
-        <Progress
+        <ProgressExperience
           logs={logs}
           selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
           dayLog={dayLog}
           updateDay={(patch) => { updateDay(patch); if (patch.photos) telemetryService.track(AnalyticsEventNames.ProgressPhotoAdded, { date: selectedDate }, "progress-engine"); }}
-          transformation={transformation}
         />
       )}
 
@@ -499,6 +498,14 @@ export default function App() {
     return (
       <AuthProvider>
         <DeveloperNutrition />
+      </AuthProvider>
+    );
+  }
+
+  if (window.location.pathname === "/dev/progress") {
+    return (
+      <AuthProvider>
+        <DeveloperProgress />
       </AuthProvider>
     );
   }

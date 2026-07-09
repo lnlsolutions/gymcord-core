@@ -10,3 +10,6 @@ export { AtlasCoachRepository, atlasCoachRepository } from "./AtlasCoachReposito
 
 export { ProgramRepository, programRepository } from "./ProgramRepository";
 export type { CreateProgramInput, UpdateProgramInput } from "./ProgramRepository";
+
+export { ExerciseRepository, exerciseRepository } from "./ExerciseRepository";
+export type { CreateExerciseInput, UpdateExerciseInput } from "./ExerciseRepository";

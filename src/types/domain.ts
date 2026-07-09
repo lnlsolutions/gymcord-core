@@ -140,6 +140,23 @@ export interface Program extends AuditMetadata {
   publishedAt?: IsoDateTimeString;
 }
 
+
+export type ExerciseStatus = "active" | "archived";
+
+export interface Exercise extends AuditMetadata {
+  id: EntityId;
+  organizationId?: EntityId;
+  trainerId?: EntityId;
+  name: string;
+  description: string;
+  category: string;
+  muscleGroups: string[];
+  equipment: string[];
+  instructions: string[];
+  mediaUrl?: string;
+  status: ExerciseStatus;
+}
+
 export interface WorkoutSession extends AuditMetadata {
   id: EntityId;
   userId: EntityId;

@@ -14,9 +14,9 @@ export function AppShellValidation() {
     <main className="app-shell-validation">
       <header className="app-shell-header" style={{ borderColor: snapshot.activeBrand.primaryColor }}>
         <div>
-          <p className="eyebrow">Tenant-aware header</p>
+          <p className="eyebrow">Clickable beta app shell · PR #66 baseline</p>
           <h1>{snapshot.activeBrand.name}</h1>
-          <p>Active brand indicator: {snapshot.activeBrand.primaryColor}</p>
+          <p>Active white-label brand indicator: {snapshot.activeBrand.primaryColor}. Use the role buttons and route launcher to validate the demo flow.</p>
         </div>
         <div>
           <strong>{snapshot.activeContext.gymName}</strong>
@@ -34,12 +34,12 @@ export function AppShellValidation() {
       <nav className="shell-panel" aria-label="Beta app shell navigation">
         <h2>Navigation</h2>
         <div className="module-grid">
-          {visibleRoutes.map((route) => <a key={route.id} href={route.path}>{route.label}</a>)}
+          {visibleRoutes.map((route) => <a key={route.id} href={route.path}>{route.label}<span>{route.path}</span></a>)}
         </div>
       </nav>
 
       <section className="shell-panel">
-        <h2>Module launcher</h2>
+        <h2>Module launcher (clickable beta demo)</h2>
         <ul>{visibleRoutes.map((route) => <li key={route.id}>{route.module} · {route.status}</li>)}</ul>
       </section>
 

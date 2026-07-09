@@ -1,0 +1,3 @@
+import type { BillingPortalMetadata } from "../../repositories/BillingRepository";
+import { BillingCard, MetadataList } from "./shared";
+export function BillingPortalPanel({ portal }: { portal: BillingPortalMetadata }) { return <BillingCard title="Billing portal metadata"><MetadataList rows={[{ label: "Portal", value: portal.enabled ? "enabled" : "disabled", detail: "UI stores metadata only; future secure backend creates sessions." }, { label: "Return URL", value: portal.returnUrl ?? "not configured" }, { label: "Configuration", value: portal.configurationId ?? "default", detail: JSON.stringify(portal.metadata) }]} /></BillingCard>; }

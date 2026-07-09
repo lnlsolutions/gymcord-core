@@ -1,0 +1,2 @@
+import type { AppNotification } from "../../types/domain";
+export function PushMetadataPanel({ notification }: { notification?: AppNotification | null }) { return <section className="panel"><h2>Push metadata</h2><pre>{JSON.stringify(notification?.delivery.push ?? { enabled: true, deepLink: "gymcord://notifications" }, null, 2)}</pre><h2>Email/SMS metadata</h2><pre>{JSON.stringify({ email: notification?.delivery.email, sms: notification?.delivery.sms }, null, 2)}</pre></section>; }

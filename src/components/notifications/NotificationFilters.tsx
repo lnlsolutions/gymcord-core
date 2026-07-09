@@ -1,0 +1,4 @@
+import type { NotificationFilters as Filters } from "../../repositories/NotificationRepository";
+export function NotificationFilters({ filters, onChange }: { filters: Filters; onChange: (filters: Filters) => void; }) {
+  return <section className="panel"><h3>Filters</h3><div className="grid"><select className="input" value={filters.status ?? "active"} onChange={(e) => onChange({ ...filters, status: e.target.value as Filters["status"] })}><option value="active">Active</option><option value="unread">Unread</option><option value="read">Read</option><option value="archived">Archived</option></select><select className="input" value={filters.channel ?? "all"} onChange={(e) => onChange({ ...filters, channel: e.target.value as Filters["channel"] })}><option value="all">All channels</option><option value="in_app">In-app</option><option value="push">Push</option><option value="email">Email</option><option value="sms">SMS</option></select></div></section>;
+}

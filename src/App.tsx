@@ -54,6 +54,7 @@ import { DeveloperExerciseLibrary } from "./components/Dev/DeveloperExerciseLibr
 import { DeveloperCalendar } from "./components/Dev/DeveloperCalendar";
 import { DeveloperMessaging } from "./components/Dev/DeveloperMessaging";
 import { DeveloperNotifications } from "./components/Dev/DeveloperNotifications";
+import { DeveloperCheckIns } from "./components/Dev/DeveloperCheckIns";
 import { TrainerDashboard } from "./components/Trainer/TrainerDashboard";
 import { dashboardRepository } from "./repositories/DashboardRepository";
 import { nutritionRepository } from "./repositories/NutritionRepository";
@@ -526,6 +527,14 @@ export default function App() {
     return (
       <AuthProvider>
         <DeveloperNotifications />
+      </AuthProvider>
+    );
+  }
+
+  if (window.location.pathname === "/dev/check-ins") {
+    return (
+      <AuthProvider>
+        <DeveloperCheckIns />
       </AuthProvider>
     );
   }

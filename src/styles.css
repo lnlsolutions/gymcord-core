@@ -1693,3 +1693,26 @@ body {
   font-size: 0.78rem;
   margin-top: 4px;
 }
+
+.public-page {
+  min-height: 100vh;
+  padding: 24px;
+  color: #f8fafc;
+  background: radial-gradient(circle at top left, color-mix(in srgb, var(--brand-accent, #f97316) 30%, transparent), transparent 36rem), #080b12;
+}
+.public-nav, .public-cta-row, .stepper, .option-grid { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.public-nav { justify-content: space-between; max-width: 1180px; margin: 0 auto 56px; }
+.public-nav strong { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 14px; background: var(--brand-accent, #f97316); color: #111827; }
+.public-nav a { color: #f8fafc; text-decoration: none; }
+.public-hero { max-width: 980px; margin: 0 auto 36px; padding: 56px; border: 1px solid rgba(255,255,255,.12); border-radius: 32px; background: rgba(15,23,42,.78); box-shadow: 0 24px 80px rgba(0,0,0,.35); }
+.public-hero h1 { font-size: clamp(2.5rem, 7vw, 5.8rem); line-height: .95; letter-spacing: -0.08em; margin: 12px 0; }
+.public-hero p { max-width: 760px; color: #cbd5e1; font-size: 1.1rem; }
+.public-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; max-width: 1180px; margin: 0 auto; }
+.public-grid .panel, .onboarding-v1 .panel { background: rgba(15,23,42,.84); border: 1px solid rgba(255,255,255,.12); color: #f8fafc; }
+.public-grid .panel p { color: #cbd5e1; }
+.public-footer { max-width: 1180px; margin: 36px auto 0; color: #94a3b8; }
+.onboarding-v1 .panel { max-width: 860px; margin: 40px auto; padding: 32px; border-radius: 28px; }
+.onboarding-v1 progress { width: 100%; height: 12px; accent-color: var(--brand-accent, #f97316); }
+.stepper button, .option-grid button, .secondary-button { border: 1px solid rgba(255,255,255,.16); border-radius: 14px; padding: 12px 16px; background: rgba(255,255,255,.08); color: #f8fafc; cursor: pointer; }
+.option-grid button.selected { background: var(--brand-accent, #f97316); color: #111827; }
+.public-page pre { white-space: pre-wrap; overflow: auto; color: #dbeafe; }

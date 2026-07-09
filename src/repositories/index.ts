@@ -33,3 +33,6 @@ export { AdminRepository, adminRepository } from "./AdminRepository";
 export type { AdminDashboard, AdminTenantContext, AdminImpersonationContext, WhiteLabelPreview } from "./AdminRepository";
 export { AppShellRepository, appShellRepository } from "./AppShellRepository";
 export type { AppShellMode, AppShellRoute, AppShellSnapshot } from "./AppShellRepository";
+
+export { QARepository, qaRepository } from "./QARepository";
+export type { QAReadinessItem, QAReadinessSnapshot } from "./QARepository";

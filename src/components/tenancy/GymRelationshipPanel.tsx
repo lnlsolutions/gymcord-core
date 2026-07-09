@@ -1,0 +1,2 @@
+import { Card, Rows, relationshipRows, type TenancyPanelProps } from "./TenancyShared";
+export function GymRelationshipPanel({ snapshot, onRevoke }: TenancyPanelProps) { const gyms = snapshot.relationships.filter((r) => r.kind === "gym" || r.kind === "enterprise_gym"); return <Card title="Gym relationships"><Rows rows={relationshipRows(gyms)} /><div className="dev-actions">{gyms.map((r) => <button key={r.id} type="button" onClick={() => onRevoke?.(r.id)}>End/revoke {r.displayName}</button>)}</div></Card>; }

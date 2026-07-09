@@ -28,6 +28,9 @@ const tables = [
   "billing_plans",
   "billing_subscriptions",
   "billing_preferences",
+  "tenancy_relationships",
+  "tenant_branding",
+  "tenant_settings",
 ] as const;
 
 export type SupabaseTableName = (typeof tables)[number];

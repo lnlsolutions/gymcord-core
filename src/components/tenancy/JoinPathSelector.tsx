@@ -1,0 +1,2 @@
+import { Card, Rows, type TenancyPanelProps } from "./TenancyShared";
+export function JoinPathSelector({ snapshot }: TenancyPanelProps) { return <Card title="Join path"><Rows rows={[{ label: "Current path", value: snapshot.joinPath }, { label: "Personal signup", value: "supported" }, { label: "Trainer onboarding link", value: "supported", detail: "Invite code metadata captured." }, { label: "Gym enterprise onboarding link", value: "supported", detail: "Enterprise access grant does not own personal data." }]} /></Card>; }

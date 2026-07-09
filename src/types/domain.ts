@@ -104,6 +104,42 @@ export interface Membership extends AuditMetadata {
   gymId?: EntityId;
 }
 
+
+export type ProgramStatus = "draft" | "published" | "archived";
+
+export interface ProgramExercise {
+  id: EntityId;
+  name: string;
+  sets: number;
+  reps: string;
+  restSeconds?: number;
+  notes?: string;
+}
+
+export interface ProgramDay {
+  id: EntityId;
+  title: string;
+  exercises: ProgramExercise[];
+}
+
+export interface ProgramWeek {
+  id: EntityId;
+  title: string;
+  days: ProgramDay[];
+}
+
+export interface Program extends AuditMetadata {
+  id: EntityId;
+  organizationId?: EntityId;
+  trainerId?: EntityId;
+  assignedMemberIds: EntityId[];
+  title: string;
+  description: string;
+  status: ProgramStatus;
+  weeks: ProgramWeek[];
+  publishedAt?: IsoDateTimeString;
+}
+
 export interface WorkoutSession extends AuditMetadata {
   id: EntityId;
   userId: EntityId;

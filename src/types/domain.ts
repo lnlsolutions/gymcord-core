@@ -221,3 +221,44 @@ export interface Mission extends AuditMetadata {
   xpReward: number;
   completedAt?: IsoDateTimeString;
 }
+
+export type ExerciseDifficulty = "beginner" | "intermediate" | "advanced";
+export type ExerciseStatus = "active" | "archived";
+export type ExerciseMediaType = "image" | "video" | "external_link";
+
+export interface ExerciseMediaMetadata {
+  id: EntityId;
+  type: ExerciseMediaType;
+  title: string;
+  url: string;
+  thumbnailUrl?: string;
+  durationSeconds?: number;
+  altText?: string;
+  provider?: string;
+}
+
+export interface ExerciseProgramBuilderDefaults {
+  defaultSets: number;
+  defaultReps: string;
+  defaultRestSeconds: number;
+  tempo?: string;
+  loadType?: "bodyweight" | "weight" | "distance" | "time";
+}
+
+export interface Exercise extends AuditMetadata {
+  id: EntityId;
+  organizationId?: EntityId;
+  trainerId?: EntityId;
+  name: string;
+  description: string;
+  muscleGroups: string[];
+  equipment: string[];
+  difficulty: ExerciseDifficulty;
+  media: ExerciseMediaMetadata[];
+  coachingCues: string[];
+  movementStandards: string[];
+  safetyNotes: string[];
+  tags: string[];
+  status: ExerciseStatus;
+  programBuilder: ExerciseProgramBuilderDefaults;
+}

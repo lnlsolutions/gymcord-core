@@ -46,11 +46,11 @@ const activeTenant: Organization = {
 };
 
 const routes: AppShellRoute[] = [
-  ["dashboard", "Dashboard", "/", "Dashboard", ["consumer", "trainer", "gym", "admin"]],
-  ["workouts", "Workouts", "/train", "Workout", ["consumer", "trainer", "gym"]],
-  ["nutrition", "Nutrition", "/meals", "Nutrition", ["consumer", "trainer", "gym"]],
+  ["home", "Dashboard", "/", "Dashboard", ["consumer", "trainer", "gym", "admin"]],
+  ["train", "Workouts", "/train", "Workout", ["consumer", "trainer", "gym"]],
+  ["meals", "Nutrition", "/meals", "Nutrition", ["consumer", "trainer", "gym"]],
   ["progress", "Progress", "/progress", "Progress", ["consumer", "trainer", "gym"]],
-  ["atlas", "Atlas Coach", "/coach", "Atlas Coach", ["consumer", "trainer", "gym"]],
+  ["coach", "Atlas Coach", "/coach", "Atlas Coach", ["consumer", "trainer", "gym"]],
   ["trainer-portal", "Trainer Portal", "/dev/trainer", "Trainer Portal", ["trainer", "gym", "admin"]],
   ["program-builder", "Program Builder", "/dev/program-builder", "Program Builder", ["trainer", "gym", "admin"]],
   ["exercise-library", "Exercise Library", "/dev/exercise-library", "Exercise Library", ["trainer", "gym", "admin"]],
@@ -68,7 +68,7 @@ const routes: AppShellRoute[] = [
   module: module as string,
   modes: modes as AppShellMode[],
   roles: ["member", "trainer", "owner", "admin"],
-  guard: { requiresAuth: true, allowMock: true, providerMapping: `/${String(id).replace(/-/g, "")}`, permissions: [`${id}:read`] },
+  guard: { requiresAuth: true, allowMock: true, providerMapping: String(path), permissions: [`${id}:read`] },
   status: "connected" as const,
   emptyState: `${label} has no beta data yet.`,
 }));
@@ -103,7 +103,12 @@ export class AppShellRepository {
   }
 
   getOfflineQueue(): QueuedWrite[] {
-    return offlineEngine.getQueue();
+    try {
+      return offlineEngine.getQueue();
+    } catch (error) {
+      console.warn("[GymCord AppShell] offline queue diagnostics unavailable", error);
+      return [];
+    }
   }
 }
 

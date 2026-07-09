@@ -54,14 +54,14 @@ export class QARepository {
       navigationQA: [pass("navigation-modes", "Navigation QA", "Route availability is derived from the app shell mode registry for consumer, trainer, gym, and admin modes.")],
       tenantSwitchingQA: [pass("tenant-switching", "Tenant switching QA", "Tenant context remains represented by app shell fixtures and tenancy validation modules.")],
       whiteLabelQA: [pass("white-label", "White-label QA", "Active brand name, color, logo metadata, and tenant settings remain visible in validation surfaces.")],
-      authQA: [pass("protected-route", "Auth QA", "/dev/qa is wrapped with ProtectedRoute and does not skip authentication.")],
+      authQA: [pass("protected-route", "Auth QA", "/dev/qa is wrapped with ProtectedRoute and only bypasses permissions when mock mode is explicitly enabled.")],
       billingMetadataQA: [pass("billing-metadata", "Billing metadata QA", "Billing readiness is metadata-only and avoids destructive billing actions.")],
       knownBlockers: this.getLaunchBlockers(),
     };
     return { ...snapshot, score: this.calculateReadinessScore(snapshot) };
   }
 
-  calculateReadinessScore(snapshot = this.loadSnapshot()): number {
+  calculateReadinessScore(snapshot: QAReadinessSnapshot): number {
     const groups = [snapshot.smokeTestChecklist, snapshot.providerDiagnostics, snapshot.environmentDiagnostics, snapshot.supabaseReadiness, snapshot.mockModeReadiness, snapshot.offlineQueueDiagnostics, snapshot.navigationQA, snapshot.tenantSwitchingQA, snapshot.whiteLabelQA, snapshot.authQA, snapshot.billingMetadataQA].flat();
     const possible = groups.length * 2;
     const earned = groups.reduce((sum, item) => sum + (item.status === "pass" ? 2 : item.status === "warning" ? 1 : 0), 0);
@@ -91,7 +91,11 @@ export class QARepository {
   }
 
   getOfflineQueueDiagnostics(): QAReadinessItem[] {
-    return [pass("offline-queue", "Offline queue diagnostics", `Queued offline writes: ${offlineEngine.getQueue().length}.`)];
+    try {
+      return [pass("offline-queue", "Offline queue diagnostics", `Queued offline writes: ${offlineEngine.getQueue().length}.`)];
+    } catch (error) {
+      return [warning("offline-queue", "Offline queue diagnostics", `Offline queue diagnostics unavailable: ${error instanceof Error ? error.message : "unknown error"}.`)];
+    }
   }
 }
 

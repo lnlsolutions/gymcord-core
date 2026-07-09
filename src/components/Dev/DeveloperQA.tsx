@@ -12,7 +12,7 @@ export function DeveloperQA() {
     <main className="app-shell-validation">
       <header className="app-shell-header">
         <div>
-          <p className="eyebrow">Build 039 beta QA validation</p>
+          <p className="eyebrow">Build 040 beta QA validation</p>
           <h1>Deployment readiness score: {snapshot.score}%</h1>
           <p>Provider: {snapshot.provider}</p>
         </div>

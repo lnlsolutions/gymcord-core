@@ -1,0 +1,2 @@
+import { Card, Rows, type TenancyPanelProps } from "./TenancyShared";
+export function FeatureTogglePanel({ snapshot }: TenancyPanelProps) { const brand = snapshot.branding.find((item) => item.id === snapshot.activeTenantContextId) ?? snapshot.branding[0]; return <Card title="Feature toggles"><Rows rows={Object.entries(brand.featureToggles).map(([label, enabled]) => ({ label, value: enabled ? "enabled" : "disabled" }))} /></Card>; }

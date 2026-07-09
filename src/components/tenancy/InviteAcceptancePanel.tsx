@@ -1,0 +1,2 @@
+import { Card, JsonBlock, type TenancyPanelProps } from "./TenancyShared";
+export function InviteAcceptancePanel({ snapshot }: TenancyPanelProps) { return <Card title="Invite acceptance metadata"><JsonBlock value={snapshot.relationships.map((r) => ({ relationship: r.displayName, inviteCodeMetadata: r.inviteCodeMetadata, invitationAcceptanceMetadata: r.invitationAcceptanceMetadata }))} /></Card>; }

@@ -1,0 +1,2 @@
+import { Card, Rows, type TenancyPanelProps } from "./TenancyShared";
+export function ConsumerSubscriptionPanel({ snapshot }: TenancyPanelProps) { const s = snapshot.consumerSubscription; return <Card title="Consumer subscription"><Rows rows={[{ label: "Status", value: s.status }, { label: "Independent", value: s.independentFromTenantRelationships ? "yes" : "no", detail: "Consumer subscription remains separate from gym/trainer grants." }, { label: "Entitlement", value: s.entitlement }]} /></Card>; }

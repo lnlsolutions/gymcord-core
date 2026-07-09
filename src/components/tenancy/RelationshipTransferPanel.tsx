@@ -1,0 +1,2 @@
+import { Card, JsonBlock, type TenancyPanelProps } from "./TenancyShared";
+export function RelationshipTransferPanel({ snapshot }: TenancyPanelProps) { return <Card title="Relationship transfer + revoked access metadata"><JsonBlock value={snapshot.relationships.map((r) => ({ relationship: r.displayName, transferMetadata: r.transferMetadata, revokedAccessMetadata: r.revokedAccessMetadata }))} /></Card>; }

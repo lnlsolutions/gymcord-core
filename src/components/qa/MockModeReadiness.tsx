@@ -1,0 +1,1 @@
+import type { QADiagnosticSnapshot } from "../../repositories/QARepository"; import { QAPanel } from "./QAPanel"; export function MockModeReadiness({ snapshot }: { snapshot: QADiagnosticSnapshot }) { return <QAPanel title="Mock mode readiness diagnostics" items={snapshot.mockMode} />; }

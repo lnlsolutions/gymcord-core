@@ -1,0 +1,1 @@
+import type { QADiagnosticSnapshot } from "../../repositories/QARepository"; import { QAPanel } from "./QAPanel"; export function EnvironmentDiagnostics({ snapshot }: { snapshot: QADiagnosticSnapshot }) { return <QAPanel title="Environment variable diagnostics" items={snapshot.environmentVariables} />; }

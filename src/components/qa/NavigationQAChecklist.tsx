@@ -1,0 +1,1 @@
+import type { QADiagnosticSnapshot } from "../../repositories/QARepository"; import { QAPanel } from "./QAPanel"; export function NavigationQAChecklist({ snapshot }: { snapshot: QADiagnosticSnapshot }) { return <QAPanel title="Navigation QA checklist" items={snapshot.navigation} />; }

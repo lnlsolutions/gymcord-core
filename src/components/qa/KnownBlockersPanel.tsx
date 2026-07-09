@@ -1,0 +1,1 @@
+import type { QADiagnosticSnapshot } from "../../repositories/QARepository"; import { QAPanel } from "./QAPanel"; export function KnownBlockersPanel({ snapshot }: { snapshot: QADiagnosticSnapshot }) { return <QAPanel title="Known blockers and launch risks" items={snapshot.blockers} />; }

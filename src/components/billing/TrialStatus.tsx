@@ -1,0 +1,3 @@
+import type { TrialMetadata } from "../../repositories/BillingRepository";
+import { BillingCard, MetadataList } from "./shared";
+export function TrialStatus({ trial }: { trial?: TrialMetadata }) { return <BillingCard title="Trial status"><MetadataList rows={trial ? [{ label: "Trial", value: trial.active ? "active" : "inactive", detail: `${trial.daysRemaining} day(s) remaining` }, { label: "Window", value: `${trial.startAt ? new Date(trial.startAt).toLocaleDateString() : "unknown"} → ${trial.endAt ? new Date(trial.endAt).toLocaleDateString() : "unknown"}` }] : [{ label: "Trial", value: "not active" }]} /></BillingCard>; }

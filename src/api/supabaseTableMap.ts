@@ -25,6 +25,12 @@ const tables = [
   "calendar_events",
   "calendar_availability",
   "check_ins",
+  "billing_accounts",
+  "membership_plans",
+  "billing_subscriptions",
+  "billing_invoices",
+  "billing_failed_payment_alerts",
+  "billing_webhook_events",
 ] as const;
 
 export type SupabaseTableName = (typeof tables)[number];

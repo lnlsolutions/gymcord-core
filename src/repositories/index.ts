@@ -1,6 +1,9 @@
 export type { ListResult, QueryOptions, Repository, RepositoryResult } from "./base";
 export type { AchievementRepository, AtlasRepository, MemberRepository as MemberRepositoryContract, MissionRepository, ProgressRepository, UserRepository, WorkoutRepository, ProgramRepository as ProgramRepositoryContract, TrainerRepository as TrainerRepositoryContract, OrganizationRepository as OrganizationRepositoryContract } from "./interfaces";
-export { OrganizationRepository, defaultOrganization } from "./OrganizationRepository";
+export { OrganizationRepository, defaultOrganization, adminOrganizations, getOrganizationStatus } from "./OrganizationRepository";
+export type { OrganizationStatus } from "./OrganizationRepository";
+export { AdminRepository, adminRepository } from "./AdminRepository";
+export type { AdminDashboardSnapshot, AdminTenantContext, AdminImpersonationTarget } from "./AdminRepository";
 export { TrainerRepository, trainerRepository } from "./TrainerRepository";
 export { MemberRepository, memberRepository } from "./MemberRepository";
 export { DashboardRepository, dashboardRepository } from "./DashboardRepository";

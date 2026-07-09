@@ -1,5 +1,5 @@
 import { appConfig } from "../config";
-import { defaultOrganization } from "../repositories/OrganizationRepository";
+import { adminOrganizations } from "../repositories/OrganizationRepository";
 import { ApiClient } from "./ApiClient";
 import { FirebaseProvider, MockBackendProvider, RESTProvider, SupabaseProvider } from "./providers";
 import type { ApiMiddleware, BackendProvider } from "./types";
@@ -11,7 +11,7 @@ export function createBackendProvider(): BackendProvider {
     case "rest": return new RESTProvider(appConfig.backend.endpoints.apiBaseUrl);
     case "mock":
     default:
-      return new MockBackendProvider({ organizations: { [defaultOrganization.id]: defaultOrganization } });
+      return new MockBackendProvider({ organizations: Object.fromEntries(adminOrganizations.map((organization) => [organization.id, organization])) });
   }
 }
 

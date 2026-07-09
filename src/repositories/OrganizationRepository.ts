@@ -48,7 +48,13 @@ export class OrganizationRepository {
 
   async list(_options?: QueryOptions): Promise<RepositoryResult<ListResult<Organization>>> {
     const result = await this.backend.request<ListResult<Organization>>({ method: "GET", path: endpoint, headers: {}, retryAttempts: appConfig.backend.retryAttempts, timeoutMs: appConfig.backend.timeoutMs, queuedWhenOffline: false });
-    return { data: result.data, source: result.source };
+    return { data: { ...result.data, items: result.data.items.filter((item) => !item.deletedAt) }, source: result.source };
+  }
+
+  async search(query: string): Promise<RepositoryResult<ListResult<Organization>>> {
+    const result = await this.list();
+    const normalized = query.trim().toLowerCase();
+    return { data: { items: result.data.items.filter((item) => !normalized || item.name.toLowerCase().includes(normalized) || item.slug.toLowerCase().includes(normalized)) }, source: result.source };
   }
 
   async create(input: Omit<Organization, "id" | "createdAt" | "updatedAt">): Promise<RepositoryResult<Organization>> {
@@ -61,7 +67,16 @@ export class OrganizationRepository {
     return { data: result.data, source: result.source };
   }
 
+  async archive(id: EntityId): Promise<RepositoryResult<Organization>> {
+    const archivedAt = new Date().toISOString();
+    return this.update(id, { deletedAt: archivedAt, updatedAt: archivedAt });
+  }
+
+  async restore(id: EntityId): Promise<RepositoryResult<Organization>> {
+    return this.update(id, { deletedAt: undefined, updatedAt: new Date().toISOString() });
+  }
+
   async delete(id: EntityId): Promise<void> {
-    await this.backend.request<void>({ method: "DELETE", path: `${endpoint}/${id}`, headers: {}, retryAttempts: appConfig.backend.retryAttempts, timeoutMs: appConfig.backend.timeoutMs, queuedWhenOffline: true });
+    await this.archive(id);
   }
 }

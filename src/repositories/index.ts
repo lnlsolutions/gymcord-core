@@ -13,3 +13,6 @@ export type { CreateProgramInput, UpdateProgramInput } from "./ProgramRepository
 
 export { ExerciseRepository, exerciseRepository } from "./ExerciseRepository";
 export type { CreateExerciseInput, UpdateExerciseInput } from "./ExerciseRepository";
+
+export { CalendarRepository, calendarRepository } from "./CalendarRepository";
+export type { CreateCalendarEventInput, UpdateCalendarEventInput, CreateCalendarAvailabilityInput, UpdateCalendarAvailabilityInput } from "./CalendarRepository";

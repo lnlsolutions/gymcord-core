@@ -7,6 +7,7 @@ const pathAliases: Record<string, SupabaseTableName> = {
   users: "users",
   memberProfiles: "member_profiles",
   trainerProfiles: "trainer_profiles",
+  programs: "programs",
   workouts: "workouts",
   exercises: "exercises",
   workoutSessions: "workout_sessions",

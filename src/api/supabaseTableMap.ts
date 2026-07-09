@@ -3,6 +3,7 @@ const tables = [
   "users",
   "member_profiles",
   "trainer_profiles",
+  "programs",
   "workouts",
   "exercises",
   "workout_sessions",

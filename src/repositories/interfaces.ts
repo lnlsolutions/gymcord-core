@@ -1,5 +1,5 @@
 import type { AtlasConversationEntry, DailyLog } from "../types/gymcord";
-import type { Achievement, EntityId, Organization, Trainer, ExerciseLog, MealLog, MemberProfile, Mission, Notification, ProgressPhoto, User, WorkoutSession } from "../types/domain";
+import type { Achievement, EntityId, Organization, Trainer, Program, ExerciseLog, MealLog, MemberProfile, Mission, Notification, ProgressPhoto, User, WorkoutSession } from "../types/domain";
 import type { Repository, RepositoryResult } from "./base";
 
 export interface TrainerRepository extends Repository<Trainer, Omit<Trainer, "id" | "createdAt" | "updatedAt">> {
@@ -12,6 +12,13 @@ export interface MemberRepository extends Repository<MemberProfile, Omit<MemberP
 
 export interface UserRepository extends Repository<User, Omit<User, "id" | "createdAt" | "updatedAt">> {
   findByEmail(email: string): Promise<RepositoryResult<User | null>>;
+}
+
+export interface ProgramRepository extends Repository<Program, Omit<Program, "id" | "createdAt" | "updatedAt">> {
+  duplicate(id: EntityId): Promise<RepositoryResult<Program>>;
+  assign(id: EntityId, memberIds: EntityId[]): Promise<RepositoryResult<Program>>;
+  publish(id: EntityId): Promise<RepositoryResult<Program>>;
+  saveDraft(id: EntityId, input: Partial<Omit<Program, "id" | "createdAt" | "updatedAt">>): Promise<RepositoryResult<Program>>;
 }
 
 export interface WorkoutRepository extends Repository<WorkoutSession> {

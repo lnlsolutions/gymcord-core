@@ -24,7 +24,6 @@ import { buildAchievements, getNextAchievement } from "./lib/engines/achievement
 import { buildAtlasInsights } from "./lib/engines/atlasEngine";
 import { buildAtlasMemory } from "./lib/engines/memoryEngine";
 import { buildAtlasContext } from "./lib/engines/contextEngine";
-import { AtlasStore } from "./lib/atlasStore";
 import { buildTransformationSnapshot } from "./lib/engines/transformationEngine";
 
 import { AppLayout } from "./components/Common/AppLayout";
@@ -49,10 +48,12 @@ import { DeveloperPersistence } from "./components/Dev/DeveloperPersistence";
 import { DeveloperDashboard } from "./components/Dev/DeveloperDashboard";
 import { DeveloperWorkout } from "./components/Dev/DeveloperWorkout";
 import { DeveloperNutrition } from "./components/Dev/DeveloperNutrition";
+import { DeveloperAtlas } from "./components/Dev/DeveloperAtlas";
 import { TrainerOS } from "./components/Trainer/TrainerOS";
 import { dashboardRepository } from "./repositories/DashboardRepository";
 import { nutritionRepository } from "./repositories/NutritionRepository";
 import { progressExperienceRepository } from "./repositories/ProgressExperienceRepository";
+import { atlasCoachRepository } from "./repositories/AtlasCoachRepository";
 import { onboardingRepository } from "./services/OnboardingRepository";
 import { telemetryService, AnalyticsEventNames } from "./core/analytics";
 
@@ -87,7 +88,7 @@ function GymCordApp() {
   );
 
   const [conversation, setConversation] = useState<AtlasConversationEntry[]>(() =>
-    AtlasStore.loadConversation()
+    atlasCoachRepository.loadCachedConversation()
   );
 
   const dayLog = logs[selectedDate] || createEmptyDay(selectedDate);
@@ -148,9 +149,6 @@ function GymCordApp() {
     save(appConfig.storageKeys.dailyLogs, logs);
   }, [logs]);
 
-  useEffect(() => {
-    AtlasStore.saveConversation(conversation);
-  }, [conversation]);
 
   useEffect(() => {
     let active = true;
@@ -159,6 +157,7 @@ function GymCordApp() {
         if (!active) return;
         setProfile(state.profile);
         setLogs(state.logs);
+        void atlasCoachRepository.loadConversation(auth.session).then(setConversation);
         persistenceHydrated.current = true;
       })
       .catch((error: Error) => {
@@ -221,14 +220,13 @@ function GymCordApp() {
   }), [logs, mission, profile.startDate, selectedDate, streak, totalExercises, transformationScore, xp]);
 
   const atlasMemory = useMemo(() => buildAtlasMemory({ profile, logs, mission, nextAchievement }), [logs, mission, nextAchievement, profile]);
+  const atlasInsights = useMemo(() => buildAtlasInsights(mission, xp, streak, nextAchievement, transformation), [mission, nextAchievement, streak, transformation, xp]);
 
   useEffect(() => {
-    AtlasStore.saveMemory(atlasMemory);
-  }, [atlasMemory]);
+    void atlasCoachRepository.saveMemory(auth.session, atlasMemory, atlasInsights[0]?.message);
+  }, [auth.session, atlasInsights, atlasMemory]);
 
   const atlasContext = useMemo(() => buildAtlasContext({ memory: atlasMemory, dayLog, mission, streak, todayWorkout, transformation }), [atlasMemory, dayLog, mission, streak, todayWorkout, transformation]);
-
-  const atlasInsights = buildAtlasInsights(mission, xp, streak, nextAchievement, transformation);
 
   useEffect(() => {
     if (!previousMissionComplete.current && mission.completed) {
@@ -381,7 +379,9 @@ function GymCordApp() {
       )}
 
       {page === "coach" && <Coach profile={profile} dayLog={dayLog} mission={mission} xp={xp} streak={streak} nextAchievement={nextAchievement} atlasInsights={atlasInsights} atlasMemory={atlasMemory} atlasContext={atlasContext} conversation={conversation} onRememberConversation={(entry) => {
-        setConversation([entry, ...conversation]);
+        const nextConversation = [entry, ...conversation];
+        setConversation(nextConversation);
+        void atlasCoachRepository.rememberConversation(auth.session, entry, nextConversation);
         telemetryService.track(AnalyticsEventNames.AtlasConversation, { conversationId: profile.id, messageLength: entry.question.length }, "atlas-conversation-engine");
         void realtimeService.publish(EventTypes.MessageReceived, {
           id: entry.id,
@@ -497,6 +497,14 @@ export default function App() {
     return (
       <AuthProvider>
         <DeveloperWorkout />
+      </AuthProvider>
+    );
+  }
+
+  if (window.location.pathname === "/dev/atlas") {
+    return (
+      <AuthProvider>
+        <DeveloperAtlas />
       </AuthProvider>
     );
   }

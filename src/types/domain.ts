@@ -5,7 +5,7 @@ export type MembershipRole = "owner" | "admin" | "manager" | "trainer" | "member
 export type MembershipStatus = "active" | "invited" | "paused" | "cancelled";
 export type NotificationChannel = "in_app" | "email" | "push" | "sms";
 export type NotificationStatus = "queued" | "sent" | "read" | "failed";
-export type MessageStatus = "draft" | "sent" | "delivered" | "read";
+export type MessageStatus = "draft" | "queued" | "sent" | "delivered" | "read" | "failed" | "archived";
 
 export interface AuditMetadata {
   createdAt: IsoDateTimeString;
@@ -250,10 +250,15 @@ export interface ProgressPhoto extends AuditMetadata {
 export interface Message extends AuditMetadata {
   id: EntityId;
   organizationId?: EntityId;
+  conversationId?: EntityId;
   senderUserId: EntityId;
   recipientUserIds: EntityId[];
   body: string;
+  kind?: MessageKind;
   status: MessageStatus;
+  attachments?: MessageAttachment[];
+  moderation?: MessageModerationMetadata;
+  editedAt?: IsoDateTimeString;
 }
 
 export interface Notification extends AuditMetadata {
@@ -287,4 +292,44 @@ export interface Mission extends AuditMetadata {
   description: string;
   xpReward: number;
   completedAt?: IsoDateTimeString;
+}
+
+export type MessageConversationType = "direct" | "team_announcement" | "system";
+export type MessageConversationStatus = "active" | "archived";
+export type MessageKind = "direct" | "announcement" | "system";
+
+export interface MessageAttachment {
+  id: EntityId;
+  name: string;
+  mimeType: string;
+  sizeBytes: number;
+  storagePath?: string;
+  url?: string;
+  uploadedByUserId: EntityId;
+  createdAt: IsoDateTimeString;
+}
+
+export interface MessageModerationMetadata {
+  status: "clear" | "flagged" | "hidden" | "review_required";
+  flags: string[];
+  reviewedBy?: EntityId | "automated" | "system";
+  reviewedAt?: IsoDateTimeString;
+  notes?: string;
+}
+
+export interface MessageConversation extends AuditMetadata {
+  id: EntityId;
+  organizationId?: EntityId;
+  title: string;
+  type: MessageConversationType;
+  participantUserIds: EntityId[];
+  trainerId?: EntityId;
+  memberId?: EntityId;
+  teamId?: EntityId;
+  status: MessageConversationStatus;
+  readByUserIds: EntityId[];
+  archivedByUserIds: EntityId[];
+  lastMessagePreview?: string;
+  lastMessageAt?: IsoDateTimeString;
+  realtimeTopic: string;
 }

@@ -16,3 +16,6 @@ export type { CreateExerciseInput, UpdateExerciseInput } from "./ExerciseReposit
 
 export { CalendarRepository, calendarRepository } from "./CalendarRepository";
 export type { CreateCalendarEventInput, UpdateCalendarEventInput, CreateCalendarAvailabilityInput, UpdateCalendarAvailabilityInput } from "./CalendarRepository";
+
+export { MessagingRepository, messagingRepository } from "./MessagingRepository";
+export type { CreateConversationInput, SendMessageInput, UpdateMessageInput } from "./MessagingRepository";

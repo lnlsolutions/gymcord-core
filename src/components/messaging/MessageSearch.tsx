@@ -1,0 +1,1 @@
+export function MessageSearch({ query, onChange }: { query: string; onChange: (query: string) => void }) { return <label className="message-search"><span>Search messages</span><input value={query} onChange={(event) => onChange(event.target.value)} placeholder="Search body or attachments" /></label>; }

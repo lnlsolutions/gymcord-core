@@ -16,6 +16,7 @@ const tables = [
   "progress_photos",
   "measurements",
   "messages",
+  "message_conversations",
   "notifications",
   "atlas_memory",
   "atlas_conversations",

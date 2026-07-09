@@ -1,0 +1,4 @@
+import type { DailyLog } from "../../types/gymcord";
+export function ProgressPhotoLogger({ photos, metadata, onChange }: { photos: DailyLog["photos"]; metadata: Array<{ id: string; date: string; angle: string; imageUrl: string }>; onChange: (photos: DailyLog["photos"]) => void }) {
+  return <div className="panel premium-card"><p className="eyebrow">Progress photos</p><h3>Photo metadata</h3><div className="measurement-grid">{["front","side","back"].map((angle) => <label key={angle}><span>{angle} URL/path</span><input className="input" value={photos[angle as keyof typeof photos]} onChange={(event) => onChange({ ...photos, [angle]: event.target.value })} placeholder="storage path or image URL" /></label>)}</div><div className="timeline-list">{metadata.slice(0, 6).map((item) => <div className="timeline-item" key={item.id}><strong>{item.angle}</strong><span>{item.date} • {item.imageUrl}</span></div>)}</div></div>;
+}

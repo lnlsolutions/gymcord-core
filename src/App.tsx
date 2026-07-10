@@ -59,6 +59,13 @@ import { DeveloperMessaging } from "./components/Dev/DeveloperMessaging";
 import { DeveloperNotifications } from "./components/Dev/DeveloperNotifications";
 import { DeveloperCheckIns } from "./components/Dev/DeveloperCheckIns";
 import { DeveloperBilling } from "./components/Dev/DeveloperBilling";
+import { DeveloperPayments } from "./components/Dev/DeveloperPayments";
+import { PricingPage } from "./components/Subscriptions/PricingPage";
+import { SubscribePage } from "./components/Subscriptions/SubscribePage";
+import { ConsumerSubscription } from "./components/Subscriptions/ConsumerSubscription";
+import { TrainerSubscription } from "./components/Subscriptions/TrainerSubscription";
+import { GymSubscription } from "./components/Subscriptions/GymSubscription";
+import { BillingHome } from "./components/Subscriptions/BillingHome";
 import { DeveloperTenancy } from "./components/Dev/DeveloperTenancy";
 import { DeveloperAdmin } from "./components/Dev/DeveloperAdmin";
 import { AppShellValidation } from "./components/Dev/AppShellValidation";
@@ -597,6 +604,38 @@ export default function App() {
     return (
       <AuthProvider>
         <DeveloperCheckIns />
+      </AuthProvider>
+    );
+  }
+
+  if (window.location.pathname === "/pricing") {
+    return <PricingPage />;
+  }
+
+  if (window.location.pathname === "/subscribe") {
+    return <SubscribePage />;
+  }
+
+  if (window.location.pathname === "/subscribe/consumer") {
+    return <ConsumerSubscription />;
+  }
+
+  if (window.location.pathname === "/subscribe/trainer") {
+    return <TrainerSubscription />;
+  }
+
+  if (window.location.pathname === "/subscribe/gym") {
+    return <GymSubscription />;
+  }
+
+  if (window.location.pathname === "/billing") {
+    return <BillingHome />;
+  }
+
+  if (window.location.pathname === "/dev/payments") {
+    return (
+      <AuthProvider>
+        <DeveloperPayments />
       </AuthProvider>
     );
   }

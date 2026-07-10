@@ -30,6 +30,7 @@ export function DeveloperQA() {
       <StatusList title="White-label QA" items={snapshot.whiteLabelQA} />
       <StatusList title="Auth QA" items={snapshot.authQA} />
       <StatusList title="Billing metadata QA" items={snapshot.billingMetadataQA} />
+      <section className="shell-panel"><h2>Build 047 QA checks</h2><ul>{["zero-state metrics","fake-score prevention","workout library completeness","muscle group coverage","training split coverage","meal photo journal","multiple photos per meal","sleep zero-state","recovery zero-state","progress zero-state","navigation drawer","pricing visibility","billing visibility","subscription visibility","dead links","route errors","raw JSON exposure on member pages","demo-data isolation","ownership preservation"].map((item) => <li key={item}>{item} — review required in deploy preview</li>)}</ul></section>
       <StatusList title="Known blockers" items={snapshot.knownBlockers} />
     </main>
   );

@@ -1,6 +1,7 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import type { Page, Profile } from "../../types/gymcord";
-import { BottomNav } from "./BottomNav";
+import { MobileBottomNavigation } from "../navigation/MobileBottomNavigation";
+import { MobileMenuDrawer } from "../navigation/MobileMenuDrawer";
 import type { Organization } from "../../types/domain";
 
 export function AppLayout({
@@ -16,6 +17,7 @@ export function AppLayout({
   setPage: (page: Page) => void;
   children: ReactNode;
 }) {
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
     <div className="app">
       <main className="screen">
@@ -33,7 +35,8 @@ export function AppLayout({
         {children}
       </main>
 
-      <BottomNav page={page} setPage={setPage} />
+      <MobileBottomNavigation page={page} setPage={setPage} onMenu={() => setMenuOpen(true)} />
+      <MobileMenuDrawer open={menuOpen} onClose={() => setMenuOpen(false)} />
     </div>
   );
 }

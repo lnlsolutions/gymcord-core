@@ -30,7 +30,7 @@ export function PublicOnboarding() {
 export function PublicDemo() {
   const [mode, setMode] = useState<"consumer" | "trainer" | "gym">("consumer");
   const content = useMemo(() => landingRepository.getLandingContent(mode === "consumer" ? "default" : mode === "trainer" ? "atlasstrength.example.com" : "summit.example.com"), [mode]);
-  return <main className="screen public-beta-screen"><section className="hero-card"><p className="pill">Repository metadata demo</p><h1>/demo switches consumer/trainer/gym without login.</h1><p>No auth bypass is used; this route renders repository metadata only.</p><div className="button-row"><button onClick={() => setMode("consumer")}>consumer</button><button onClick={() => setMode("trainer")}>trainer</button><button onClick={() => setMode("gym")}>gym</button></div></section><section className="panel"><h2>{mode} metadata</h2><pre>{JSON.stringify(content, null, 2)}</pre></section></main>;
+  return <main className="screen public-beta-screen"><section className="hero-card"><p className="pill">Demo Mode</p><h1>/demo switches consumer/trainer/gym without login.</h1><p>No auth bypass is used; this route renders repository metadata only.</p><div className="button-row"><button onClick={() => setMode("consumer")}>consumer</button><button onClick={() => setMode("trainer")}>trainer</button><button onClick={() => setMode("gym")}>gym</button></div></section><section className="panel"><h2>{mode} metadata</h2><pre>{JSON.stringify(content, null, 2)}</pre></section></main>;
 }
 
 export function PublicBetaDevOnboarding() {

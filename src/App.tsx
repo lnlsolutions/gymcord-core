@@ -71,9 +71,15 @@ import { atlasCoachRepository } from "./repositories/AtlasCoachRepository";
 import { onboardingRepository } from "./services/OnboardingRepository";
 import { telemetryService, AnalyticsEventNames } from "./core/analytics";
 
+function routePage(pathname: string): Page {
+  if (["/atlas", "/atlas/chat", "/atlas/plan", "/atlas/nutrition", "/atlas/check-in"].includes(pathname)) return "coach";
+  if (pathname === "/atlas/progress") return "progress";
+  return "home";
+}
+
 function GymCordApp() {
   const auth = useAuth();
-  const [page, setPage] = useState<Page>("home");
+  const [page, setPage] = useState<Page>(() => routePage(window.location.pathname));
   const [tenant, setTenant] = useState<TenantContext | null>(null);
   const [selectedDate, setSelectedDate] = useState(todayKey());
   const [profileComplete, setProfileComplete] = useState(() =>

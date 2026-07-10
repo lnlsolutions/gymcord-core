@@ -8,7 +8,7 @@ export function Coach({ profile, dayLog, mission, xp, streak, nextAchievement, a
 
   return (
     <>
-      <AtlasConversation profile={profile} atlasContext={atlasContext} conversation={conversation} onRememberConversation={onRememberConversation} />
+      <AtlasConversation profile={profile} atlasContext={atlasContext} conversation={conversation} atlasMemory={atlasMemory} onRememberConversation={onRememberConversation} />
       <section className="page">
         <div className="atlas-dashboard panel">
           <p className="pill">Persistent Coach</p>

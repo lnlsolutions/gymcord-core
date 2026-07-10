@@ -1,12 +1,14 @@
 import { FormEvent, useState } from "react";
 import { Bot, Send, Sparkles } from "lucide-react";
-import type { AtlasContext, AtlasConversationEntry, Profile } from "../../types/gymcord";
-import { answerAtlasQuestion, createConversationEntry } from "../../lib/engines/conversationEngine";
+import type { AtlasContext, AtlasConversationEntry, AtlasMemory, Profile } from "../../types/gymcord";
+import { answerAtlasQuestion, createMockAtlasConversationEntry } from "../../lib/engines/conversationEngine";
+import { atlasCoachRepository } from "../../repositories/AtlasCoachRepository";
 
 interface AtlasConversationProps {
   profile: Profile;
   atlasContext: AtlasContext;
   conversation: AtlasConversationEntry[];
+  atlasMemory: AtlasMemory;
   onRememberConversation: (entry: AtlasConversationEntry) => void;
 }
 
@@ -18,7 +20,7 @@ function buildPromptSuggestions(profile: Profile, atlasContext: AtlasContext) {
   ];
 }
 
-export function AtlasConversation({ profile, atlasContext, conversation, onRememberConversation }: AtlasConversationProps) {
+export function AtlasConversation({ profile, atlasContext, conversation, atlasMemory, onRememberConversation }: AtlasConversationProps) {
   const [question, setQuestion] = useState("");
   const suggestions = buildPromptSuggestions(profile, atlasContext);
   const latestConversation = conversation.slice(0, 3);
@@ -28,7 +30,7 @@ export function AtlasConversation({ profile, atlasContext, conversation, onRemem
     if (!trimmed) return;
 
     const answer = answerAtlasQuestion(trimmed, atlasContext.coachingMessages);
-    onRememberConversation(createConversationEntry(trimmed, answer));
+    onRememberConversation(createMockAtlasConversationEntry({ question: trimmed, answer, memory: atlasMemory, provider: atlasCoachRepository.providerName, userGoal: profile.goal }));
     setQuestion("");
   }
 

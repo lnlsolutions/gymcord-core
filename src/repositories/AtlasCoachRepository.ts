@@ -1,6 +1,7 @@
 import { appConfig } from "../config";
 import type { AuthSession } from "../auth/types";
 import type { AtlasConversationEntry, AtlasMemory } from "../types/gymcord";
+import { buildAtlasFoundationMetadata, buildMockAtlasPlans, type AtlasFoundationMetadata, type AtlasGeneratedPlans } from "../lib/engines/atlasProductionFoundation";
 import { saved, save } from "../lib/storage";
 import { AtlasStore } from "../lib/atlasStore";
 import { offlineEngine, type QueuedWrite } from "../services/sync";
@@ -37,6 +38,10 @@ export interface AtlasCoachDiagnostics {
   latestInsight: string;
   saveStatus: string;
   offlineQueue: QueuedWrite[];
+  providerStatus: string;
+  currentCoachMode: string;
+  foundationMetadata: AtlasFoundationMetadata;
+  generatedPlans: AtlasGeneratedPlans;
 }
 
 function currentUserId(session: AuthSession | null) {
@@ -110,6 +115,10 @@ export class AtlasCoachRepository {
       latestInsight,
       saveStatus: this.getLastSaveStatus(),
       offlineQueue: this.getOfflineQueue(),
+      providerStatus: this.backend.name === "mock" ? "mock_active" : "provider_metadata_ready",
+      currentCoachMode: "consumer_self_coaching",
+      foundationMetadata: buildAtlasFoundationMetadata({ memory: fallbackMemory, provider: this.backend.name, userGoal: fallbackMemory.goal }),
+      generatedPlans: buildMockAtlasPlans(fallbackMemory),
     };
   }
 
@@ -133,5 +142,12 @@ export class AtlasCoachRepository {
     }
   }
 }
+
+export class AtlasRepository extends AtlasCoachRepository {}
+export class AtlasConversationRepository extends AtlasCoachRepository {}
+export class AtlasPlanRepository extends AtlasCoachRepository {
+  generateMockPlans(memory: AtlasMemory) { return buildMockAtlasPlans(memory); }
+}
+export class AtlasMemoryRepository extends AtlasCoachRepository {}
 
 export const atlasCoachRepository = new AtlasCoachRepository();

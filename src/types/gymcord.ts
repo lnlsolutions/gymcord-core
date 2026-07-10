@@ -284,4 +284,15 @@ export interface AtlasConversationEntry {
   answer: string;
   timestamp: string;
   category: "training" | "nutrition" | "recovery" | "progress" | "general";
+  metadata?: {
+    coachMode: string;
+    userGoal: string;
+    tenantContext: unknown;
+    trainerContext: unknown;
+    onboardingContext: unknown;
+    memory: unknown;
+    pendingProviderRequests: unknown[];
+    failedProviderRequests: unknown[];
+    safety: unknown;
+  };
 }

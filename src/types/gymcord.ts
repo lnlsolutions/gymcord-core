@@ -1,6 +1,10 @@
 export type Page =
   | "home"
   | "train"
+  | "workouts"
+  | "journal"
+  | "atlas"
+  | "menu"
   | "meals"
   | "progress"
   | "coach"

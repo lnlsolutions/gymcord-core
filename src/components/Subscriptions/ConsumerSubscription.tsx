@@ -1,3 +1,1 @@
-import { subscriptionRepository } from "../../repositories/SubscriptionRepository";
-import { SubscriptionPlanCard } from "./SubscriptionPlanCard";
-export function ConsumerSubscription() { const plan = subscriptionRepository.findPlan("consumer-monthly"); return <main className="dev-page"><header className="dev-header"><h1>Consumer subscription</h1><p>Independent monthly subscription metadata; trainer and gym relationships never own this member data.</p></header><SubscriptionPlanCard plan={plan} selected /></main>; }
+export function ConsumerSubscription() { return <main className="pricing-page"><header className="pricing-hero"><p className="eyebrow">Consumer</p><h1>Your premium fitness companion.</h1><p>Workouts, Journal, Atlas coaching, and progress in one simple membership.</p><a className="secondary-button" href="/billing">Continue to billing</a></header></main>; }

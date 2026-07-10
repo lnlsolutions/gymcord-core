@@ -59,6 +59,7 @@ import { DeveloperMessaging } from "./components/Dev/DeveloperMessaging";
 import { DeveloperNotifications } from "./components/Dev/DeveloperNotifications";
 import { DeveloperCheckIns } from "./components/Dev/DeveloperCheckIns";
 import { DeveloperBilling } from "./components/Dev/DeveloperBilling";
+import { DeveloperEntitlements } from "./components/Dev/DeveloperEntitlements";
 import { DeveloperPayments } from "./components/Dev/DeveloperPayments";
 import { PricingPage } from "./components/Subscriptions/PricingPage";
 import { SubscribePage } from "./components/Subscriptions/SubscribePage";
@@ -628,7 +629,7 @@ export default function App() {
     return <GymSubscription />;
   }
 
-  if (window.location.pathname === "/billing") {
+  if (window.location.pathname === "/billing" || window.location.pathname === "/upgrade" || window.location.pathname === "/account/subscription") {
     return <BillingHome />;
   }
 
@@ -644,6 +645,14 @@ export default function App() {
     return (
       <AuthProvider>
         <DeveloperBilling />
+      </AuthProvider>
+    );
+  }
+
+  if (window.location.pathname === "/dev/entitlements") {
+    return (
+      <AuthProvider>
+        <DeveloperEntitlements />
       </AuthProvider>
     );
   }

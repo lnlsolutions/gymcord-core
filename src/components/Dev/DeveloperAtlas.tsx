@@ -44,6 +44,8 @@ export function DeveloperAtlas() {
         <h2>Atlas Coach</h2>
         <div className="atlas-status-grid">
           <div><span>Active provider</span><strong>{diagnostics?.provider ?? atlasCoachRepository.providerName}</strong></div>
+          <div><span>Atlas provider status</span><strong>{diagnostics?.providerStatus ?? "mock_active"}</strong></div>
+          <div><span>Current coach mode</span><strong>{diagnostics?.currentCoachMode ?? "consumer_self_coaching"}</strong></div>
           <div><span>Latest insight</span><strong>{diagnostics?.latestInsight ?? latestInsight}</strong></div>
           <div><span>Save status</span><strong>{diagnostics?.saveStatus ?? atlasCoachRepository.getLastSaveStatus()}</strong></div>
           <div><span>Offline queue</span><strong>{diagnostics?.offlineQueue.length ?? atlasCoachRepository.getOfflineQueue().length} queued Atlas writes</strong></div>
@@ -54,8 +56,36 @@ export function DeveloperAtlas() {
         {(diagnostics?.conversationHistory ?? []).map((entry) => <div className="coach-card" key={entry.id}><strong>{entry.category}</strong><p>{entry.question}</p><p>{entry.answer}</p></div>)}
       </section>
       <section className="panel">
-        <h3>Memory state</h3>
+        <h3>Tenant context</h3>
+        <pre>{JSON.stringify(diagnostics?.foundationMetadata.tenantContext, null, 2)}</pre>
+      </section>
+      <section className="panel">
+        <h3>Trainer context</h3>
+        <pre>{JSON.stringify(diagnostics?.foundationMetadata.trainerContext, null, 2)}</pre>
+      </section>
+      <section className="panel">
+        <h3>Onboarding context</h3>
+        <pre>{JSON.stringify(diagnostics?.foundationMetadata.onboardingContext, null, 2)}</pre>
+      </section>
+      <section className="panel">
+        <h3>Memory metadata</h3>
         <pre>{JSON.stringify(diagnostics?.memoryState ?? memory, null, 2)}</pre>
+      </section>
+      <section className="panel">
+        <h3>Generated plans</h3>
+        <pre>{JSON.stringify(diagnostics?.generatedPlans, null, 2)}</pre>
+      </section>
+      <section className="panel">
+        <h3>Pending provider requests</h3>
+        <pre>{JSON.stringify(diagnostics?.foundationMetadata.pendingProviderRequests ?? [], null, 2)}</pre>
+      </section>
+      <section className="panel">
+        <h3>Failed provider requests</h3>
+        <pre>{JSON.stringify(diagnostics?.foundationMetadata.failedProviderRequests ?? [], null, 2)}</pre>
+      </section>
+      <section className="panel">
+        <h3>Safety metadata</h3>
+        <pre>{JSON.stringify(diagnostics?.foundationMetadata.safety, null, 2)}</pre>
       </section>
     </main>
   );

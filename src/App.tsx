@@ -59,11 +59,13 @@ import { DeveloperMessaging } from "./components/Dev/DeveloperMessaging";
 import { DeveloperNotifications } from "./components/Dev/DeveloperNotifications";
 import { DeveloperCheckIns } from "./components/Dev/DeveloperCheckIns";
 import { DeveloperBilling } from "./components/Dev/DeveloperBilling";
+import { DeveloperPayments } from "./components/Dev/DeveloperPayments";
 import { DeveloperTenancy } from "./components/Dev/DeveloperTenancy";
 import { DeveloperAdmin } from "./components/Dev/DeveloperAdmin";
 import { AppShellValidation } from "./components/Dev/AppShellValidation";
 import { DeveloperQA } from "./components/Dev/DeveloperQA";
 import { TrainerDashboard } from "./components/Trainer/TrainerDashboard";
+import { BillingHome, ConsumerSubscription, GymSubscription, PricingPage, SubscribePage, TrainerSubscription } from "./components/payments";
 import { dashboardRepository } from "./repositories/DashboardRepository";
 import { nutritionRepository } from "./repositories/NutritionRepository";
 import { progressExperienceRepository } from "./repositories/ProgressExperienceRepository";
@@ -458,6 +460,12 @@ export default function App() {
   if (window.location.pathname === "/") return <PublicLanding />;
   if (window.location.pathname === "/onboarding") return <PublicOnboarding />;
   if (window.location.pathname === "/demo") return <PublicDemo />;
+  if (window.location.pathname === "/pricing") return <PricingPage />;
+  if (window.location.pathname === "/subscribe") return <SubscribePage />;
+  if (window.location.pathname === "/subscribe/consumer") return <ConsumerSubscription />;
+  if (window.location.pathname === "/subscribe/trainer") return <TrainerSubscription />;
+  if (window.location.pathname === "/subscribe/gym") return <GymSubscription />;
+  if (window.location.pathname === "/billing") return <BillingHome />;
   if (window.location.pathname === "/dev/onboarding") return <PublicBetaDevOnboarding />;
   if (window.location.pathname === "/auth" || window.location.pathname.startsWith("/auth/")) {
     return (
@@ -597,6 +605,14 @@ export default function App() {
     return (
       <AuthProvider>
         <DeveloperCheckIns />
+      </AuthProvider>
+    );
+  }
+
+  if (window.location.pathname === "/dev/payments") {
+    return (
+      <AuthProvider>
+        <DeveloperPayments />
       </AuthProvider>
     );
   }

@@ -52,6 +52,12 @@ import { DeveloperDashboard } from "./components/Dev/DeveloperDashboard";
 import { DeveloperWorkout } from "./components/Dev/DeveloperWorkout";
 import { DeveloperNutrition } from "./components/Dev/DeveloperNutrition";
 import { DeveloperAtlas } from "./components/Dev/DeveloperAtlas";
+import { AtlasHome } from "./components/atlas/AtlasHome";
+import { AtlasChat } from "./components/atlas/AtlasChat";
+import { AtlasPlanBuilder } from "./components/atlas/AtlasPlanBuilder";
+import { AtlasNutritionCoach } from "./components/atlas/AtlasNutritionCoach";
+import { AtlasCheckInCoach } from "./components/atlas/AtlasCheckInCoach";
+import { AtlasProgressInsights } from "./components/atlas/AtlasProgressInsights";
 import { DeveloperProgramBuilder } from "./components/Dev/DeveloperProgramBuilder";
 import { DeveloperExerciseLibrary } from "./components/Dev/DeveloperExerciseLibrary";
 import { DeveloperCalendar } from "./components/Dev/DeveloperCalendar";
@@ -432,6 +438,26 @@ function GymCordApp() {
 }
 
 
+
+  const AtlasRoute = ({ route }: { route: string }) => {
+    const auth = useAuth();
+    const profile = saved(appConfig.storageKeys.profile, createEmptyProfile());
+    const logs = saved<Record<string, DailyLog>>(appConfig.storageKeys.dailyLogs, {});
+    const selectedDate = todayKey();
+    const dayLog = logs[selectedDate] || createEmptyDay(selectedDate);
+    const totalExercises = workouts.reduce((sum, workout) => sum + workout.exercises.length, 0);
+    const todayWorkout = workouts[new Date(selectedDate + "T00:00:00").getDay() % workouts.length];
+    const mission = buildDailyMission({ dayLog, todayWorkout, totalExercises });
+    const memory = buildAtlasMemory({ profile, logs, mission, nextAchievement: { id: "atlas-route", title: "Atlas route", description: "Atlas route", unlocked: false, progress: 0, target: 1, completionPercentage: 0 } });
+    const context = buildAtlasContext({ memory, dayLog, mission, streak: buildStreakSnapshot(logs, totalExercises, selectedDate), todayWorkout, transformation: buildTransformationSnapshot({ logs, startDate: profile.startDate || selectedDate, currentDate: selectedDate, totalExercises, score: 0, mission, xp: buildXpSnapshot(logs, [mission]), streak: buildStreakSnapshot(logs, totalExercises, selectedDate) }) });
+    if (route === "/atlas/chat") return <AtlasChat session={auth.session} profile={profile} atlasContext={context} memory={memory} />;
+    if (route === "/atlas/plan") return <AtlasPlanBuilder />;
+    if (route === "/atlas/nutrition") return <AtlasNutritionCoach />;
+    if (route === "/atlas/check-in") return <AtlasCheckInCoach />;
+    if (route === "/atlas/progress") return <AtlasProgressInsights />;
+    return <AtlasHome />;
+  };
+
 function AuthGate() {
   const auth = useAuth();
   const [mode, setMode] = useState<"login" | "signup" | "forgot">("login");
@@ -467,6 +493,15 @@ export default function App() {
       </AuthProvider>
     );
   }
+
+  if (["/atlas", "/atlas/chat", "/atlas/plan", "/atlas/nutrition", "/atlas/check-in", "/atlas/progress"].includes(window.location.pathname)) {
+    return (
+      <AuthProvider>
+        <AtlasRoute route={window.location.pathname} />
+      </AuthProvider>
+    );
+  }
+
   if (window.location.pathname === "/dev/auth-entry") {
     return <DeveloperAuthEntry />;
   }

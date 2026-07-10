@@ -38,3 +38,8 @@ export { QARepository, qaRepository } from "./QARepository";
 export type { QAReadinessItem, QAReadinessSnapshot } from "./QARepository";
 
 export { AuthEntryRepository, InviteEntryRepository, SessionRoutingRepository, authEntryRepository, inviteEntryRepository, sessionRoutingRepository, onboardingContinuationRepository } from "./AuthEntryRepository";
+export { AtlasRepository as AtlasFoundationRepository, atlasRepository } from "./AtlasRepository";
+export type { AtlasCoachMode, AtlasPlanType, AtlasGeneratedPlan, AtlasFoundationState, AtlasSafetyMetadata } from "./AtlasRepository";
+export { AtlasConversationRepository, atlasConversationRepository } from "./AtlasConversationRepository";
+export { AtlasPlanRepository, atlasPlanRepository } from "./AtlasPlanRepository";
+export { AtlasMemoryRepository, atlasMemoryRepository } from "./AtlasMemoryRepository";

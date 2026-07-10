@@ -1,0 +1,3 @@
+import type { AtlasMemory } from "../../types/gymcord";
+import { atlasMemoryRepository } from "../../repositories/AtlasMemoryRepository";
+export function AtlasMemoryPanel({ memory }: { memory: AtlasMemory | null }) { const metadata = atlasMemoryRepository.metadata(memory); return <section className="panel"><h3>Conversation memory metadata</h3><div className="memory-grid"><div><strong>Goal</strong><span>{metadata.goal}</span></div><div><strong>Workouts</strong><span>{metadata.workouts}</span></div><div><strong>Nutrition days</strong><span>{metadata.nutritionDays}</span></div><div><strong>Recovery days</strong><span>{metadata.recoveryDays}</span></div><div><strong>PRs</strong><span>{metadata.prs}</span></div></div></section>; }

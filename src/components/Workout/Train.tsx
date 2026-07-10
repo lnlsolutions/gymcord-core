@@ -71,14 +71,9 @@ export function Train({
 
   if (!activeWorkout) {
     return (
-      <section className="page">
-        <div className="panel">
-          <h3>Training Plan</h3>
-          <p>
-            Choose today&apos;s workout. Start Workout now opens a full-screen immersive session with guided exercises, rest timers, PR tracking, and a premium finish.
-          </p>
-        </div>
-
+      <section className="page workout-library">
+        <div className="home-header-card"><p className="eyebrow">Workouts</p><h2>Train with clarity.</h2><span>Today's Workout · Browse Library · Programs · Training Splits · Create Workout · History · Favorites · Recently Used</span></div>
+        <div className="filter-row">{["Muscle", "Equipment", "Difficulty", "Goal", "Split", "Duration"].map((filter) => <button key={filter}>{filter}</button>)}</div>
         {workouts.map((workout) => (
           <WorkoutDayCard key={workout.id} workout={workout} onStart={() => startWorkout(workout)} />
         ))}

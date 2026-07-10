@@ -82,7 +82,9 @@ import { onboardingRepository } from "./services/OnboardingRepository";
 import { telemetryService, AnalyticsEventNames } from "./core/analytics";
 
 function routePage(pathname: string): Page {
-  if (["/atlas", "/atlas/chat", "/atlas/plan", "/atlas/nutrition", "/atlas/check-in"].includes(pathname)) return "coach";
+  if (["/atlas", "/atlas/chat", "/atlas/plan", "/atlas/nutrition", "/atlas/check-in"].includes(pathname)) return "atlas";
+  if (pathname === "/workouts") return "workouts";
+  if (pathname === "/journal") return "journal";
   if (pathname === "/atlas/progress") return "progress";
   return "home";
 }
@@ -322,7 +324,7 @@ function GymCordApp() {
         }}
         onSubmit={() => {
           if (!profile.name.trim() || !profile.goal.trim()) {
-            setOnboardingError("Add your name and primary goal to personalize Mission Control.");
+            setOnboardingError("Add your name and primary goal to personalize your experience.");
             return;
           }
 
@@ -372,7 +374,7 @@ function GymCordApp() {
         />
       )}
 
-      {page === "train" && <Train dayLog={dayLog} updateDay={updateDay} mission={mission} xp={xp} achievements={achievements} onWorkoutStarted={(workout) => {
+      {(page === "train" || page === "workouts") && <Train dayLog={dayLog} updateDay={updateDay} mission={mission} xp={xp} achievements={achievements} onWorkoutStarted={(workout) => {
         telemetryService.track(AnalyticsEventNames.WorkoutStarted, { workoutId: workout.id, title: workout.title }, "workout-engine");
       }} onWorkoutCompleted={({ workout, dayLog: completedDayLog, durationMinutes, xpEarned }) => {
         telemetryService.track(AnalyticsEventNames.WorkoutCompleted, { workoutId: workout.id, title: workout.title, durationMinutes, xpEarned }, "workout-engine");
@@ -385,7 +387,7 @@ function GymCordApp() {
         }, "workout-engine");
       }} />}
 
-      {page === "meals" && <Meals dayLog={dayLog} updateDay={(patch) => {
+      {(page === "meals" || page === "journal") && <Meals dayLog={dayLog} updateDay={(patch) => {
         const nextLog = getUpdatedDay(patch);
         updateDay(patch);
         telemetryService.track(AnalyticsEventNames.MealLogged, { fields: Object.keys(patch) }, "meal-engine");
@@ -408,7 +410,7 @@ function GymCordApp() {
         />
       )}
 
-      {page === "coach" && <Coach profile={profile} dayLog={dayLog} mission={mission} xp={xp} streak={streak} nextAchievement={nextAchievement} atlasInsights={atlasInsights} atlasMemory={atlasMemory} atlasContext={atlasContext} conversation={conversation} onRememberConversation={(entry) => {
+      {(page === "coach" || page === "atlas") && <Coach profile={profile} dayLog={dayLog} mission={mission} xp={xp} streak={streak} nextAchievement={nextAchievement} atlasInsights={atlasInsights} atlasMemory={atlasMemory} atlasContext={atlasContext} conversation={conversation} onRememberConversation={(entry) => {
         const nextConversation = [entry, ...conversation];
         setConversation(nextConversation);
         void atlasCoachRepository.rememberConversation(auth.session, entry, nextConversation);

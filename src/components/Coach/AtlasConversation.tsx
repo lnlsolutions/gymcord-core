@@ -43,9 +43,9 @@ export function AtlasConversation({ profile, atlasContext, conversation, atlasMe
     <section className="page atlas-page">
       <div className="atlas-hero panel">
         <div className="atlas-orb"><Bot size={30} /></div>
-        <p className="pill"><Sparkles size={14} /> Atlas Memory V1</p>
+        <p className="pill"><Sparkles size={14} /> Atlas Coach</p>
         <h2>{atlasContext.greeting}</h2>
-        <p>{atlasContext.coachingMessages[0] || `I’m tracking ${profile.goal || "your mission"} and will coach from your stored training, nutrition, sleep, and recovery patterns.`}</p>
+        <p>{atlasContext.coachingMessages[0] || `I’m here to help with training, meals, sleep, and recovery today.`}</p>
       </div>
 
       <div className="panel conversation-shell">
@@ -57,9 +57,9 @@ export function AtlasConversation({ profile, atlasContext, conversation, atlasMe
 
         {latestConversation.map((entry) => (
           <div className="conversation-memory" key={entry.id}>
-            <strong>{entry.category} · {new Date(entry.timestamp).toLocaleString()}</strong>
-            <p>Q: {entry.question}</p>
-            <span>A: {entry.answer}</span>
+            <strong>{new Date(entry.timestamp).toLocaleString()}</strong>
+            <p>{entry.question}</p>
+            <span>{entry.answer}</span>
           </div>
         ))}
 

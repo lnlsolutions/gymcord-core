@@ -1,3 +1,1 @@
-import { subscriptionRepository } from "../../repositories/SubscriptionRepository";
-import { SubscriptionPlanCard } from "./SubscriptionPlanCard";
-export function TrainerSubscription() { const plan = subscriptionRepository.findPlan("trainer-business"); return <main className="dev-page"><header className="dev-header"><h1>Trainer subscription</h1><p>Business subscription grants coaching access metadata only and never owns member data.</p></header><SubscriptionPlanCard plan={plan} selected /></main>; }
+export function TrainerSubscription() { return <main className="pricing-page"><header className="pricing-hero"><p className="eyebrow">Trainer</p><h1>Coach clients with less friction.</h1><p>Programs, messages, check-ins, and client progress workflows.</p><a className="secondary-button" href="/billing">Continue to billing</a></header></main>; }

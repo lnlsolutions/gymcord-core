@@ -1723,3 +1723,60 @@ body {
   text-decoration: none;
   font-weight: 900;
 }
+
+/* Premium member experience */
+.premium-topbar { margin-bottom: 10px; }
+.home-header-card, .premium-card, .pricing-card {
+  border: 1px solid rgba(255,255,255,.1);
+  background: linear-gradient(180deg, rgba(255,255,255,.105), rgba(255,255,255,.055));
+  border-radius: 30px;
+  padding: 22px;
+  box-shadow: 0 24px 70px rgba(0,0,0,.28);
+}
+.home-header-card { margin-top: 18px; background: linear-gradient(135deg, rgba(255,79,160,.2), rgba(255,255,255,.07)); }
+.home-header-card h2 { margin: 8px 0; font-size: 38px; line-height: .95; }
+.home-header-card span, .premium-card span { color: var(--muted); font-weight: 750; }
+.premium-home { display: grid; gap: 16px; }
+.card-heading { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.card-heading h3 { margin: 4px 0 0; font-size: 25px; }
+.primary-workout-card { background: radial-gradient(circle at 80% 0%, rgba(255,255,255,.18), transparent 28%), linear-gradient(145deg, rgba(255,79,160,.26), rgba(255,255,255,.075)); }
+.primary-button.dark { background: #fff; color: #10060d; }
+.secondary-button { border: 1px solid var(--line); border-radius: 16px; padding: 13px 16px; background: rgba(255,255,255,.09); color: #fff; font-weight: 900; }
+.exercise-pills, .filter-row { display:flex; gap:9px; flex-wrap:wrap; margin: 16px 0; }
+.exercise-pills span, .filter-row button { border:1px solid var(--line); border-radius:999px; padding:8px 11px; background:rgba(255,255,255,.08); color:#fff; font-size:12px; font-weight:850; }
+.atlas-home-card { width:100%; display:flex; align-items:center; text-align:left; gap:14px; color:#fff; }
+.atlas-home-card h3 { margin: 3px 0 5px; font-size:21px; }
+.journal-metrics { display:grid; gap:10px; margin-top: 12px; }
+.journal-metrics span, .activity-row { display:flex; align-items:center; gap:10px; padding:12px; border-radius:18px; background:rgba(255,255,255,.07); }
+.weekly-progress-card { display:flex; align-items:center; gap:18px; }
+.progress-ring-large, .progress-ring { --progress: 0%; width:82px; height:82px; border-radius:50%; display:grid; place-items:center; background: conic-gradient(var(--pink) var(--progress), rgba(255,255,255,.09) 0); }
+.progress-ring-large::before { content:""; position:absolute; width:62px; height:62px; border-radius:50%; background:#120913; }
+.progress-ring-large strong { position:relative; z-index:1; }
+.empty-state { display:grid; justify-items:start; gap:10px; padding:16px 0; }
+.empty-icon { width:46px; height:46px; border-radius:18px; display:grid; place-items:center; background:rgba(255,255,255,.09); color:var(--pink-2); }
+.empty-state h3 { margin:0; font-size:21px; }
+.empty-state p { margin:0; color:var(--muted); }
+.bottom-nav { position:fixed; left:50%; bottom:16px; transform:translateX(-50%); width:min(460px, calc(100% - 24px)); display:grid; grid-template-columns:repeat(5,1fr); gap:6px; padding:8px; border:1px solid var(--line); border-radius:26px; background:rgba(12,7,14,.86); backdrop-filter:blur(22px); z-index:20; }
+.bottom-nav button { border:0; border-radius:18px; padding:9px 4px; display:grid; place-items:center; gap:3px; color:var(--muted); background:transparent; font-weight:850; }
+.bottom-nav button.active { color:#fff; background:rgba(255,255,255,.11); }
+.bottom-nav span { font-size:20px; }
+.bottom-nav small { font-size:11px; }
+.menu-drawer { margin-top:16px; display:grid; gap:14px; }
+.drawer-section { display:grid; gap:8px; padding:14px; border:1px solid var(--line); border-radius:24px; background:rgba(255,255,255,.06); }
+.drawer-section button { text-align:left; border:0; border-radius:14px; padding:13px; color:#fff; background:rgba(255,255,255,.06); font-weight:850; }
+.atlas-fab { position:fixed; right:22px; bottom:96px; z-index:25; width:56px; height:56px; border:0; border-radius:22px; color:#120913; background:#fff; box-shadow:var(--glow); font-size:24px; }
+.journal-page, .workout-library { display:grid; gap:16px; }
+.journal-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.timeline-card img { width:100%; border-radius:20px; }
+.pricing-page { min-height:100vh; width:min(1100px, 100%); margin:0 auto; padding:42px 18px; }
+.pricing-hero { text-align:center; padding:48px 0 26px; }
+.pricing-hero h1 { font-size: clamp(38px, 7vw, 72px); line-height:.9; margin:10px auto; max-width:900px; }
+.pricing-hero p { color:var(--muted); font-weight:750; }
+.pricing-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:16px; }
+.pricing-card strong { display:block; font-size:38px; margin:12px 0; }
+.pricing-card p, .pricing-card li { color:var(--muted); line-height:1.5; }
+.pricing-card ul { padding-left:0; list-style:none; display:grid; gap:8px; }
+.pricing-card button { width:100%; border:0; border-radius:18px; padding:14px; background:#fff; color:#120913; font-weight:950; }
+.pricing-faq { margin-top:18px; padding:22px; border-radius:28px; background:rgba(255,255,255,.06); }
+.danger { margin-top:16px; color:#ffccd6; }
+@media (max-width: 420px) { .journal-grid { grid-template-columns:1fr; } .home-header-card h2 { font-size:32px; } }

@@ -38,3 +38,10 @@ export { QARepository, qaRepository } from "./QARepository";
 export type { QAReadinessItem, QAReadinessSnapshot } from "./QARepository";
 
 export { AuthEntryRepository, InviteEntryRepository, SessionRoutingRepository, authEntryRepository, inviteEntryRepository, sessionRoutingRepository, onboardingContinuationRepository } from "./AuthEntryRepository";
+
+export { EntitlementRepository, entitlementRepository, entitlementFeatures } from "./EntitlementRepository";
+export type { EntitlementFeature, EntitlementLimits, EntitlementOwnerType, EntitlementPlan, EntitlementPlanDefinition, EntitlementSnapshot } from "./EntitlementRepository";
+export { LicenseRepository, licenseRepository } from "./LicenseRepository";
+export type { LicenseRecord, LicenseStatus } from "./LicenseRepository";
+export { SubscriptionAccessRepository, subscriptionAccessRepository } from "./SubscriptionAccessRepository";
+export type { SubscriptionAccessDecision, SubscriptionAccessSnapshot } from "./SubscriptionAccessRepository";

@@ -80,10 +80,26 @@ import { progressExperienceRepository } from "./repositories/ProgressExperienceR
 import { atlasCoachRepository } from "./repositories/AtlasCoachRepository";
 import { onboardingRepository } from "./services/OnboardingRepository";
 import { telemetryService, AnalyticsEventNames } from "./core/analytics";
+import { WorkoutHome } from "./components/workouts/WorkoutHome";
+import { WorkoutLibrary } from "./components/workouts/WorkoutLibrary";
+import { WorkoutDetail } from "./components/workouts/WorkoutDetail";
+import { WorkoutPlayer } from "./components/workouts/WorkoutPlayer";
+import { WorkoutHistory } from "./components/workouts/WorkoutHistory";
+import { CustomWorkoutBuilder } from "./components/workouts/CustomWorkoutBuilder";
+import { TrainingSplitSelector } from "./components/workouts/TrainingSplitSelector";
+import { NutritionJournal } from "./components/nutrition-journal/NutritionJournal";
+import { SleepHome } from "./components/sleep/SleepHome";
+import { SleepLogForm } from "./components/sleep/SleepLogForm";
+import { RecoveryHome } from "./components/recovery/RecoveryHome";
+import { RecoveryCheckInForm } from "./components/recovery/RecoveryCheckInForm";
+
 
 function routePage(pathname: string): Page {
-  if (["/atlas", "/atlas/chat", "/atlas/plan", "/atlas/nutrition", "/atlas/check-in"].includes(pathname)) return "coach";
-  if (pathname === "/atlas/progress") return "progress";
+  if (["/atlas", "/atlas/chat", "/atlas/plan", "/atlas/nutrition", "/atlas/check-in", "/messages", "/check-ins"].includes(pathname)) return "coach";
+  if (["/progress", "/progress/measurements", "/progress/photos", "/progress/history", "/atlas/progress", "/calendar"].includes(pathname)) return "progress";
+  if (["/settings", "/profile", "/notifications"].includes(pathname)) return "settings";
+  if (pathname.startsWith("/nutrition")) return "meals";
+  if (pathname.startsWith("/workouts")) return "train";
   return "home";
 }
 
@@ -493,6 +509,19 @@ export default function App() {
       </AuthProvider>
     );
   }
+  if (window.location.pathname === "/workouts") return <WorkoutHome />;
+  if (window.location.pathname === "/workouts/library") return <WorkoutLibrary />;
+  if (window.location.pathname === "/workouts/programs") return <TrainingSplitSelector />;
+  if (window.location.pathname === "/workouts/custom") return <CustomWorkoutBuilder />;
+  if (window.location.pathname === "/workouts/history") return <WorkoutHistory />;
+  if (window.location.pathname.startsWith("/workouts/") && window.location.pathname.endsWith("/start")) return <WorkoutPlayer id={window.location.pathname.split("/")[2]} />;
+  if (window.location.pathname.startsWith("/workouts/")) return <WorkoutDetail id={window.location.pathname.split("/")[2]} />;
+  if (["/nutrition", "/nutrition/journal", "/nutrition/meals", "/nutrition/photos"].includes(window.location.pathname) || window.location.pathname.startsWith("/nutrition/day/") || window.location.pathname.startsWith("/nutrition/meal/")) return <NutritionJournal />;
+  if (window.location.pathname === "/sleep") return <SleepHome />;
+  if (window.location.pathname === "/sleep/log") return <SleepLogForm />;
+  if (window.location.pathname === "/recovery") return <RecoveryHome />;
+  if (window.location.pathname === "/recovery/check-in") return <RecoveryCheckInForm />;
+
   if (window.location.pathname === "/dev/qa") {
     return (
       <AuthProvider>

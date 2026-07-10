@@ -1,0 +1,1 @@
+export function SleepHome(){return <section className="card"><p className="eyebrow">Sleep</p><h2>No data yet</h2><p>Log last night's sleep. Not enough data to calculate a sleep score.</p><a className="primary" href="/sleep/log">Add your first entry</a></section>}

@@ -1,0 +1,1 @@
+export function RecoveryHome(){return <section className="card"><p className="eyebrow">Recovery</p><h2>No data yet</h2><p>Not enough data to calculate readiness or recovery.</p><a className="primary" href="/recovery/check-in">Add your first entry</a></section>}

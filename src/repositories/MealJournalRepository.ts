@@ -1,0 +1,6 @@
+import type { MealPhoto } from "./MealPhotoRepository";
+export type MealType="breakfast"|"morning snack"|"lunch"|"afternoon snack"|"dinner"|"evening snack"|"pre-workout"|"post-workout"|"other";
+export interface MealEntry { id:string; memberId:string; date:string; time:string; mealType:MealType; title:string; description:string; foodNotes:string; estimatedCalories?:number; protein?:number; carbohydrates?:number; fat?:number; fiber?:number; sodium?:number; servingNotes:string; hungerBefore?:string; fullnessAfter?:string; mood?:string; location?:string; tags:string[]; photos:MealPhoto[]; createdByMember:boolean; trainerVisibility:{visible:boolean; reviewed:boolean}; gymVisibility:{visible:boolean}; archived:boolean; analysisStatus:"manual entry"|"AI analysis pending"|"trainer reviewed"|"unreviewed"; }
+const KEY="gymcord.mealJournal";
+export class MealJournalRepository { list():MealEntry[]{return JSON.parse(localStorage.getItem(KEY)||"[]");} save(entry:MealEntry){localStorage.setItem(KEY,JSON.stringify([entry,...this.list().filter(e=>e.id!==entry.id)]));} archive(mealId:string){localStorage.setItem(KEY,JSON.stringify(this.list().map(e=>e.id===mealId?{...e,archived:true}:e)));} byDate(date:string){return this.list().filter(e=>e.date===date&&!e.archived);} }
+export const mealJournalRepository = new MealJournalRepository();

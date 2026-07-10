@@ -38,3 +38,10 @@ export { QARepository, qaRepository } from "./QARepository";
 export type { QAReadinessItem, QAReadinessSnapshot } from "./QARepository";
 
 export { AuthEntryRepository, InviteEntryRepository, SessionRoutingRepository, authEntryRepository, inviteEntryRepository, sessionRoutingRepository, onboardingContinuationRepository } from "./AuthEntryRepository";
+
+export { paymentRepository, PaymentRepository } from "./PaymentRepository";
+export type { PaymentAudience, PaymentCustomerMetadata, PaymentProviderStatusSnapshot } from "./PaymentRepository";
+export { subscriptionRepository, SubscriptionRepository } from "./SubscriptionRepository";
+export type { SubscriptionMetadata, SubscriptionPlanMetadata } from "./SubscriptionRepository";
+export { checkoutRepository, CheckoutRepository } from "./CheckoutRepository";
+export type { CheckoutSessionMetadata } from "./CheckoutRepository";

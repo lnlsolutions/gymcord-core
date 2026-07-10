@@ -36,3 +36,5 @@ export type { AppShellMode, AppShellRoute, AppShellSnapshot } from "./AppShellRe
 
 export { QARepository, qaRepository } from "./QARepository";
 export type { QAReadinessItem, QAReadinessSnapshot } from "./QARepository";
+
+export { AuthEntryRepository, InviteEntryRepository, SessionRoutingRepository, authEntryRepository, inviteEntryRepository, sessionRoutingRepository, onboardingContinuationRepository } from "./AuthEntryRepository";

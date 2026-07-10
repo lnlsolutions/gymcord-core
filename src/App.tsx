@@ -35,6 +35,8 @@ import { Progress } from "./components/Progress/Progress";
 import { Coach } from "./components/Coach/Coach";
 import { Onboarding } from "./components/Onboarding";
 import { PublicBetaDevOnboarding, PublicDemo, PublicLanding, PublicOnboarding } from "./components/PublicBeta";
+import { AuthEntryScreen, InviteEntryScreen } from "./components/AuthEntry";
+import { DeveloperAuthEntry } from "./components/Dev/DeveloperAuthEntry";
 import { OrganizationSettings } from "./components/Settings/OrganizationSettings";
 import { organizationService } from "./services/OrganizationService";
 import { TenantContext } from "./lib/tenant";
@@ -451,6 +453,23 @@ export default function App() {
   if (window.location.pathname === "/onboarding") return <PublicOnboarding />;
   if (window.location.pathname === "/demo") return <PublicDemo />;
   if (window.location.pathname === "/dev/onboarding") return <PublicBetaDevOnboarding />;
+  if (window.location.pathname === "/auth" || window.location.pathname.startsWith("/auth/")) {
+    return (
+      <AuthProvider>
+        <AuthEntryScreen />
+      </AuthProvider>
+    );
+  }
+  if (window.location.pathname.startsWith("/invite/")) {
+    return (
+      <AuthProvider>
+        <InviteEntryScreen code={decodeURIComponent(window.location.pathname.replace("/invite/", ""))} />
+      </AuthProvider>
+    );
+  }
+  if (window.location.pathname === "/dev/auth-entry") {
+    return <DeveloperAuthEntry />;
+  }
   if (window.location.pathname === "/app") {
     return (
       <AuthProvider>

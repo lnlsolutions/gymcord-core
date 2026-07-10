@@ -66,6 +66,9 @@ import { ConsumerSubscription } from "./components/Subscriptions/ConsumerSubscri
 import { TrainerSubscription } from "./components/Subscriptions/TrainerSubscription";
 import { GymSubscription } from "./components/Subscriptions/GymSubscription";
 import { BillingHome } from "./components/Subscriptions/BillingHome";
+import { UpgradePage } from "./components/Subscriptions/UpgradePage";
+import { AccountSubscriptionPage } from "./components/Subscriptions/AccountSubscriptionPage";
+import { DeveloperEntitlements } from "./components/Dev/DeveloperEntitlements";
 import { DeveloperTenancy } from "./components/Dev/DeveloperTenancy";
 import { DeveloperAdmin } from "./components/Dev/DeveloperAdmin";
 import { AppShellValidation } from "./components/Dev/AppShellValidation";
@@ -630,6 +633,22 @@ export default function App() {
 
   if (window.location.pathname === "/billing") {
     return <BillingHome />;
+  }
+
+  if (window.location.pathname === "/upgrade") {
+    return <UpgradePage />;
+  }
+
+  if (window.location.pathname === "/account/subscription") {
+    return <AccountSubscriptionPage />;
+  }
+
+  if (window.location.pathname === "/dev/entitlements") {
+    return (
+      <AuthProvider>
+        <DeveloperEntitlements />
+      </AuthProvider>
+    );
   }
 
   if (window.location.pathname === "/dev/payments") {

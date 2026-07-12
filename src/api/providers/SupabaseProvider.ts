@@ -107,7 +107,8 @@ export class SupabaseProvider implements BackendProvider {
     }
 
     if (request.method === "POST") {
-      const { data, error, status } = await this.client.from(table).insert(keysToSnake(request.body)).select("*").single();
+      const input = keysToSnake(request.body);
+      const { data, error, status } = await this.client.from(table).upsert(input).select("*").single();
       if (error) throw new ApiError(error.message, status, error.code, error);
       return this.response(keysToCamel(data) as TResponse, status);
     }
